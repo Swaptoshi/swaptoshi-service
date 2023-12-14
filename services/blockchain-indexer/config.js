@@ -33,7 +33,7 @@ config.dex.maxRouteLength = process.env.DEX_PRICE_INDEXING_MAX_ROUTE_LENGTH || 5
 config.dex.tickTimeframe = process.env.DEX_PRICE_INDEXING_TICK_TIMEFRAME || '5m';
 config.dex.ohlcTimeframes = process.env.DEX_PRICE_INDEXING_OHLC_TIMEFRAMES || '1h,4h,1d,1w,1M';
 config.dex.indexTokenConcurrency = process.env.DEX_INDEX_TOKEN_CONCURRENCY || 64;
-config.dex.lastPriceInterval = process.env.DEX_LAST_PRICE_UPDATE_INTERVAL || 300;
+config.dex.lastPriceInterval = process.env.DEX_LAST_PRICE_UPDATE_INTERVAL || '5m';
 
 /**
  * NFT.Storage Config

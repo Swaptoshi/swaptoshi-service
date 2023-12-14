@@ -199,7 +199,7 @@ module.exports = {
 				// INVOKE_ALLOWED_METHODS: 'dynamicReward_getExpectedValidatorRewards,token_hasUserAccount,token_getInitializationFees,interoperability_getMinimumMessageFee,txpool_getTransactionsFromPool,dex',
 				// DEX_PRICE_INDEXING_MAX_ROUTE_LENGTH: 5,
 				// DEX_INDEX_TOKEN_CONCURRENCY: 8,
-				// DEX_LAST_PRICE_UPDATE_INTERVAL: 300,
+				// DEX_LAST_PRICE_UPDATE_INTERVAL: '5m',
 				// DEX_PRICE_INDEXING_TICK_TIMEFRAME: 300,
 				// DEX_PRICE_INDEXING_OHLC_TIMEFRAMES: '1h,4h,1d,1w,1M',
 				// NFT_STORAGE_API_KEY: '',
