@@ -49,56 +49,58 @@ const getEventsInfoToIndex = (block, events) => {
 	};
 
 	events.forEach((event, eventIndex) => {
-		const eventInfo = {
-			id: event.id,
-			name: event.name,
-			module: event.module,
-			height: block.height,
-			index: event.index,
-			blockID: block.id,
-			timestamp: block.timestamp,
-		};
-
-		// Store whole event when persistence is enabled or block is not finalized yet
-		// Storing event of non-finalized block is required to fetch events of a deleted block
-		if (!block.isFinal || config.db.isPersistEvents) {
-			eventInfo.eventStr = JSON.stringify(event);
-		}
-
-		eventsInfoToIndex.eventsInfo.push(eventInfo);
-
-		event.topics.forEach(topic => {
-			const eventTopicInfo = {
-				eventID: event.id,
-				topic,
+		if (event.topics) {
+			const eventInfo = {
+				id: event.id,
+				name: event.name,
+				module: event.module,
+				height: block.height,
+				index: event.index,
+				blockID: block.id,
+				timestamp: block.timestamp,
 			};
-			eventsInfoToIndex.eventTopicsInfo.push(eventTopicInfo);
 
-			// Add the corresponding transactionID as a topic when not present in the topics list
-			// i.e. only when the topic starts with the CCM ID prefix
-			// Useful to fetch the relevant events when queried by transactionID
-			if (
-				topic.startsWith(EVENT_TOPIC_PREFIX.CCM_ID) &&
-				topic.length === EVENT_TOPIC_PREFIX.CCM_ID.length + LENGTH_ID
-			) {
-				const commandExecResultEvent = events
-					.slice(eventIndex)
-					.find(e => e.name === EVENT.COMMAND_EXECUTION_RESULT);
-
-				const [topicTransactionID] = commandExecResultEvent.topics;
-
-				const transactionID = // Remove the topic prefix from transactionID before indexing
-					topicTransactionID.length === EVENT_TOPIC_PREFIX.TX_ID.length + LENGTH_ID
-						? topicTransactionID.slice(EVENT_TOPIC_PREFIX.TX_ID.length)
-						: topicTransactionID;
-
-				const eventTopicAdditionalInfo = {
-					eventID: event.id,
-					topic: transactionID,
-				};
-				eventsInfoToIndex.eventTopicsInfo.push(eventTopicAdditionalInfo);
+			// Store whole event when persistence is enabled or block is not finalized yet
+			// Storing event of non-finalized block is required to fetch events of a deleted block
+			if (!block.isFinal || config.db.isPersistEvents) {
+				eventInfo.eventStr = JSON.stringify(event);
 			}
-		});
+
+			eventsInfoToIndex.eventsInfo.push(eventInfo);
+
+			event.topics.forEach(topic => {
+				const eventTopicInfo = {
+					eventID: event.id,
+					topic,
+				};
+				eventsInfoToIndex.eventTopicsInfo.push(eventTopicInfo);
+
+				// Add the corresponding transactionID as a topic when not present in the topics list
+				// i.e. only when the topic starts with the CCM ID prefix
+				// Useful to fetch the relevant events when queried by transactionID
+				if (
+					topic.startsWith(EVENT_TOPIC_PREFIX.CCM_ID) &&
+					topic.length === EVENT_TOPIC_PREFIX.CCM_ID.length + LENGTH_ID
+				) {
+					const commandExecResultEvent = events
+						.slice(eventIndex)
+						.find(e => e.name === EVENT.COMMAND_EXECUTION_RESULT);
+
+					const [topicTransactionID] = commandExecResultEvent.topics;
+
+					const transactionID = // Remove the topic prefix from transactionID before indexing
+						topicTransactionID.length === EVENT_TOPIC_PREFIX.TX_ID.length + LENGTH_ID
+							? topicTransactionID.slice(EVENT_TOPIC_PREFIX.TX_ID.length)
+							: topicTransactionID;
+
+					const eventTopicAdditionalInfo = {
+						eventID: event.id,
+						topic: transactionID,
+					};
+					eventsInfoToIndex.eventTopicsInfo.push(eventTopicAdditionalInfo);
+				}
+			});
+		}
 	});
 
 	return eventsInfoToIndex;
@@ -141,7 +143,29 @@ const deleteEventStrTillHeight = async toHeight => {
 	}
 };
 
+const parseSingleEvent = (events, module, event, topic) => {
+	const singleEvent = events.find(
+		t =>
+			t.module === module &&
+			t.name === event &&
+			(topic !== undefined ? t.topics.includes(topic) : true),
+	);
+	return singleEvent;
+};
+
+const parseEvents = (events, module, event, topic) => {
+	const eventItem = events.filter(
+		t =>
+			t.module === module &&
+			t.name === event &&
+			(topic !== undefined ? t.topics.includes(topic) : true),
+	);
+	return eventItem;
+};
+
 module.exports = {
 	getEventsInfoToIndex,
 	deleteEventStrTillHeight,
+	parseSingleEvent,
+	parseEvents,
 };
