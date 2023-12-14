@@ -75,11 +75,58 @@ const {
 	MODULE_NAME_LEGACY,
 	EVENT_NAME_ACCOUNT_RECLAIMED,
 	EVENT_NAME_KEYS_REGISTERED,
+
+	MODULE_NAME_DEX,
+	EVENT_NAME_POOL_CREATED,
+	EVENT_NAME_TREASURIFY,
+	EVENT_NAME_INCREASE_OBSERVATION_CARDINALITY_NEXT,
+	EVENT_NAME_POOL_INITIALIZED,
+	EVENT_NAME_DEX_MINT,
+	EVENT_NAME_COLLECT,
+	EVENT_NAME_DEX_BURN,
+	EVENT_NAME_COLLECT_PROTOCOL,
+	EVENT_NAME_SWAP,
+	EVENT_NAME_FLASH,
+	EVENT_NAME_INCREASE_LIQUIDITY,
+	EVENT_NAME_DECREASE_LIQUIDITY,
+	EVENT_NAME_TOKEN_URI_CREATED,
+	EVENT_NAME_COLLECT_POSITION,
+	EVENT_NAME_TOKEN_URI_DESTROYED,
+	EVENT_NAME_TOKEN_REGISTERED,
+
+	MODULE_NAME_NFT,
+	EVENT_NAME_NFT_TRANSFER,
+	MODULE_NAME_TOKEN_FACTORY,
+	EVENT_NAME_TOKEN_FACTORY_CREATE,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
 
 const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
+	[MODULE_NAME_DEX]: {
+		[EVENT_NAME_POOL_CREATED]: ['transactionID', 'poolAddress'],
+		[EVENT_NAME_TREASURIFY]: ['transactionID', 'poolAddress', 'treasuryAddress'],
+		[EVENT_NAME_INCREASE_OBSERVATION_CARDINALITY_NEXT]: ['transactionID', 'poolAddress'],
+		[EVENT_NAME_POOL_INITIALIZED]: ['transactionID', 'poolAddress'],
+		[EVENT_NAME_DEX_MINT]: ['transactionID', 'poolAddress', 'recipientAddress'],
+		[EVENT_NAME_COLLECT]: ['transactionID', 'poolAddress', 'recipientAddress'],
+		[EVENT_NAME_DEX_BURN]: ['transactionID', 'poolAddress', 'senderAddress'],
+		[EVENT_NAME_COLLECT_PROTOCOL]: ['transactionID', 'poolAddress', 'treasuryAddress'],
+		[EVENT_NAME_SWAP]: ['transactionID', 'poolAddress', 'senderAddress', 'token0ID', 'token1ID'],
+		[EVENT_NAME_FLASH]: ['transactionID', 'poolAddress', 'recipientAddress'],
+		[EVENT_NAME_INCREASE_LIQUIDITY]: ['transactionID', 'poolAddress', 'senderAddress'],
+		[EVENT_NAME_DECREASE_LIQUIDITY]: ['transactionID', 'poolAddress', 'senderAddress'],
+		[EVENT_NAME_TOKEN_URI_CREATED]: ['transactionID', 'senderAddress'],
+		[EVENT_NAME_COLLECT_POSITION]: ['transactionID', 'poolAddress', 'recipientAddress'],
+		[EVENT_NAME_TOKEN_URI_DESTROYED]: ['transactionID', 'poolAddress', 'senderAddress'],
+		[EVENT_NAME_TOKEN_REGISTERED]: ['transactionID'],
+	},
+	[MODULE_NAME_NFT]: {
+		[EVENT_NAME_NFT_TRANSFER]: ['transactionID', 'senderAddress', 'recipientAddress'],
+	},
+	[MODULE_NAME_TOKEN_FACTORY]: {
+		[EVENT_NAME_TOKEN_FACTORY_CREATE]: ['transactionID', 'senderAddress'],
+	},
 	[MODULE_NAME_AUTH]: {
 		[EVENT_NAME_MULTISIGNATURE_REGISTERED]: ['transactionID', 'senderAddress'],
 		[EVENT_NAME_INVALID_SIGNATURE]: ['transactionID', 'senderAddress'],
