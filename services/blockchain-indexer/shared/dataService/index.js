@@ -109,7 +109,82 @@ const { getValidator, validateBLSKey } = require('./validator');
 const { getGenerators } = require('./generators');
 const { invokeEndpoint } = require('./invoke');
 
+const {
+	addPriceIndex,
+	deletePriceIndex,
+	addGenesisPriceIndex,
+	getWeightedPrice,
+	getPrice,
+	getRoute,
+	transformTickToOhlc,
+	getLastPrice,
+	getLSKUSDCandles,
+	getLSKUSDPrice,
+	getLSKUSDPriceAtTimestamp,
+	getLSKUSDLastPrice,
+	intervalToSecond,
+	normalizeBlockTime,
+	getDEXTokens,
+	getPools,
+	getPoolTicks,
+	getPositions,
+	getPositionValue,
+	getPositionMetadata,
+	getTickPrice,
+	getOhlcPrice,
+	quoteSwapMethod,
+	quotePriceMethod,
+	getRouteMethod,
+	getDEXStatisticSummary,
+	generateSparklineBuffer,
+} = require('./dex');
+const {
+	createTokenFactory,
+	getTokenFactoriesMeta,
+	getFactoryStatistics,
+	getTokenFactories,
+} = require('./tokenFactory');
+const { nftStorageUpload } = require('./nft.storage');
+
 module.exports = {
+	// Dex
+	addPriceIndex,
+	deletePriceIndex,
+	addGenesisPriceIndex,
+	getWeightedPrice,
+	getPrice,
+	getRoute,
+	transformTickToOhlc,
+	getLastPrice,
+	getLSKUSDCandles,
+	getLSKUSDPrice,
+	getLSKUSDPriceAtTimestamp,
+	getLSKUSDLastPrice,
+	intervalToSecond,
+	normalizeBlockTime,
+	getDEXTokens,
+	getPools,
+	getPoolTicks,
+	getPositions,
+	getPositionValue,
+	getPositionMetadata,
+	getTickPrice,
+	getOhlcPrice,
+	quoteSwapMethod,
+	quotePriceMethod,
+	getRouteMethod,
+	getDEXStatisticSummary,
+	generateSparklineBuffer,
+
+	// TokenFactory
+	createTokenFactory,
+	getTokenFactoriesMeta,
+	getFactoryStatistics,
+	getTokenFactories,
+
+	// NFT.storage
+	nftStorageUpload,
+
 	// Blocks
 	formatBlock,
 	getBlocks,
