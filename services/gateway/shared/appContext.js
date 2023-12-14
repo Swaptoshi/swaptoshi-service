@@ -20,7 +20,15 @@ const setAppContext = h => (app = h);
 
 const getAppContext = () => app;
 
+const requestRpc = async (service, method, params = {}) => {
+	const data = await getAppContext().requestRpc(`${service}.${method}`, params);
+	return data;
+};
+
+const requestIndexer = async (method, params) => requestRpc('indexer', method, params);
+
 module.exports = {
 	setAppContext,
 	getAppContext,
+	requestIndexer,
 };
