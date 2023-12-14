@@ -51,6 +51,7 @@ po/*.pot
 dump.rdb
 Thumbs.db
 blockchain_explorer.db.gz
+appendonlydir
 
 # Configs
 sftp-config.json
