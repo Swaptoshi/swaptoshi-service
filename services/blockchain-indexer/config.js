@@ -16,6 +16,8 @@
 const packageJson = require('./package.json');
 
 const config = {
+	dex: {},
+	nftStorage: {},
 	endpoints: {},
 	job: {},
 	log: {
@@ -23,6 +25,20 @@ const config = {
 		version: packageJson.version,
 	},
 };
+
+/**
+ * DEX config
+ */
+config.dex.maxRouteLength = process.env.DEX_PRICE_INDEXING_MAX_ROUTE_LENGTH || 5;
+config.dex.tickTimeframe = process.env.DEX_PRICE_INDEXING_TICK_TIMEFRAME || '5m';
+config.dex.ohlcTimeframes = process.env.DEX_PRICE_INDEXING_OHLC_TIMEFRAMES || '1h,4h,1d,1w,1M';
+config.dex.indexTokenConcurrency = process.env.DEX_INDEX_TOKEN_CONCURRENCY || 64;
+config.dex.lastPriceInterval = process.env.DEX_LAST_PRICE_UPDATE_INTERVAL || 300;
+
+/**
+ * NFT.Storage Config
+ */
+config.nftStorage.apiKey = process.env.NFT_STORAGE_API_KEY || '';
 
 /**
  * Inter-service message broker
@@ -111,6 +127,26 @@ config.queue = {
 	indexAccountAddress: {
 		name: 'PendingAddressUpdates',
 		concurrency: 512,
+	},
+	indexPreviousLSKUSDTickPrice: {
+		name: 'IndexPreviousLSKUSDTickPrice',
+		concurrency: 8,
+	},
+	indexPreviousLSKUSDOhlcPrice: {
+		name: 'IndexPreviousLSKUSDOhlcPrice',
+		concurrency: 8,
+	},
+	indexCurrentLSKUSDPrice: {
+		name: 'IndexCurrentLSKUSDPrice',
+		concurrency: 1,
+	},
+	nftStorageUpload: {
+		name: 'NFTStorageUpload',
+		concurrency: 8,
+	},
+	nftStorageDelete: {
+		name: 'NFTStorageDelete',
+		concurrency: 8,
 	},
 };
 
