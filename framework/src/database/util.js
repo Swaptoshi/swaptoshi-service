@@ -38,7 +38,14 @@ const loadSchema = async (knex, tableName, tableConfig) => {
 			if (charset) table.charset(charset);
 
 			Object.keys(schema).map(p => {
-				const kProp = table[schema[p].type](p);
+				let kProp;
+				if (schema[p].type === 'decimal') {
+					kProp = table[schema[p].type](p, schema[p].precision, schema[p].scale);
+				} else if (schema[p].increments === true) {
+					kProp = table.increments(p, { primaryKey: false });
+				} else {
+					kProp = table[schema[p].type](p);
+				}
 				if (schema[p].null === false) kProp.notNullable();
 				if ('defaultValue' in schema[p]) kProp.defaultTo(schema[p].defaultValue);
 				if (indexes[p]) kProp.index();

@@ -27,7 +27,8 @@
 		"clean": "rm -rf ./node_modules",
 		"test": "yarn run test:unit",
 		"test:unit": "jest --config=jest.config.unit.js --detectOpenHandles --forceExit",
-		"test:functional": "jest --config=jest.config.functional.js --detectOpenHandles --forceExit"
+		"test:functional": "jest --config=jest.config.functional.js --detectOpenHandles --forceExit",
+		"postinstall": "patch-package"
 	},
 	"dependencies": {
 		"@liskhq/lisk-codec": "^0.5.0",
@@ -46,6 +47,8 @@
 		"lisk-service-framework": "https://github.com/LiskHQ/lisk-service/raw/5cb6fc8e9b9798595d1a4652b9148afcbfaaed1f/framework/dist/lisk-service-framework-1.6.11.tgz",
 		"lodash": "^4.17.21",
 		"nft.storage": "^7.1.1",
+		"patch-package": "^8.0.0",
+		"postinstall-postinstall": "^2.1.0",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
