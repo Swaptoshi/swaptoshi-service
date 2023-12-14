@@ -42,6 +42,9 @@ const {
 	getEventsByBlockID,
 	deleteEventsFromCacheByBlockID,
 	getTransactionsByBlockID,
+	addGenesisPriceIndex,
+	addPriceIndex,
+	deletePriceIndex,
 } = require('../dataService');
 
 const { range } = require('../utils/array');
@@ -72,6 +75,7 @@ const eventsTableSchema = require('../database/schema/events');
 const eventTopicsTableSchema = require('../database/schema/eventTopics');
 const transactionsTableSchema = require('../database/schema/transactions');
 const validatorsTableSchema = require('../database/schema/validators');
+const { applySwapEvent, revertSwapEvent } = require('./utils/swapProcess');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -364,6 +368,14 @@ const indexBlock = async job => {
 			reward: blockReward,
 		};
 
+		// DEX related index operation
+		if (blockToIndex.height === genesisHeight) {
+			await addGenesisPriceIndex(blockToIndex, dbTrx);
+		} else {
+			await addPriceIndex(blockToIndex, dbTrx);
+		}
+		await applySwapEvent(blockToIndex, events, dbTrx);
+
 		await blocksTable.upsert(blockToIndex, dbTrx);
 		await commitDBTransaction(dbTrx);
 		logger.debug(
@@ -629,6 +641,10 @@ const deleteIndexedBlocks = async job => {
 
 				// Invalidate cached events for this block. Must be done after processing all event related calculations
 				await deleteEventsFromCacheByBlockID(blockFromJob.id);
+
+				// DEX tokens price indexer
+				await revertSwapEvent(blockFromJob, events, dbTrx);
+				await deletePriceIndex(blockFromJob, dbTrx);
 			},
 			{ concurrency: 1 },
 		);
