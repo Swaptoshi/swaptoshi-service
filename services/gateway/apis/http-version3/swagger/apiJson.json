@@ -16,6 +16,14 @@
 		"basePath": "/api/v3",
 		"tags": [
 			{
+				"name": "DEX",
+				"description": "DEX module API calls."
+			},
+			{
+				"name": "TokenFactory",
+				"description": "Token Factory module API calls."
+			},
+			{
 				"name": "Blocks",
 				"description": "API calls for blocks from the Lisk network."
 			},
