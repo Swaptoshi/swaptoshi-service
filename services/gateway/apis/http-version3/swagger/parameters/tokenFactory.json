@@ -1,0 +1,32 @@
+{
+	"factoryCreateTransaction": {
+		"name": "transaction",
+		"in": "query",
+		"description": "tokenFactory:create transaction payload in hex string",
+		"type": "string"
+	},
+	"metadata": {
+		"name": "metadata",
+		"in": "query",
+		"description": "tokenFactory:create off-chain metadata",
+		"type": "string"
+	},
+	"logo": {
+		"name": "logo",
+		"in": "query",
+		"description": "tokenFactory:create logo image in hex string",
+		"type": "string"
+	},
+	"tokenIds": {
+		"name": "tokenIds",
+		"in": "query",
+		"description": "tokenIds to search, can be in CSV format",
+		"type": "string"
+	},
+	"registry": {
+		"name": "registry",
+		"in": "query",
+		"description": "whether to include token from official registry repository",
+		"type": "boolean"
+	}
+}

@@ -1,0 +1,141 @@
+{
+	"path": {
+		"name": "path",
+		"in": "query",
+		"description": "Swap path. If base/quote is provided, path is not needed (vice versa)",
+		"type": "string"
+	},
+	"base": {
+		"name": "base",
+		"in": "query",
+		"description": "Base tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"quote": {
+		"name": "quote",
+		"in": "query",
+		"description": "Quote tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"baseSymbol": {
+		"name": "base",
+		"in": "query",
+		"description": "Base token symbol, ex: SWT",
+		"type": "string"
+	},
+	"quoteSymbol": {
+		"name": "quote",
+		"in": "query",
+		"description": "Quote token symbol, ex: LSK",
+		"type": "string"
+	},
+	"baseTokenId": {
+		"name": "baseTokenId",
+		"in": "query",
+		"description": "Base tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"quoteTokenId": {
+		"name": "quoteTokenId",
+		"in": "query",
+		"description": "Quote tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"amountIn": {
+		"name": "amountIn",
+		"in": "query",
+		"description": "Number of token in, if specified, quote will be on exactIn mode",
+		"type": "string"
+	},
+	"amountOut": {
+		"name": "amountOut",
+		"in": "query",
+		"description": "Number of token out, if specified, quote will be on exactOut mode",
+		"type": "string"
+	},
+	"tokenIn": {
+		"name": "tokenIn",
+		"in": "query",
+		"description": "tokenIn as tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"tokenOut": {
+		"name": "tokenOut",
+		"in": "query",
+		"description": "tokenOut as tokenId, ex: 0053575400000000",
+		"type": "string"
+	},
+	"recursion": {
+		"name": "recursion",
+		"in": "query",
+		"description": "swap path length recursion",
+		"type": "integer",
+		"format": "int32"
+	},
+	"dexTokenSearch": {
+		"name": "search",
+		"in": "query",
+		"description": "search token by: tokenId, symbol, or tokenName",
+		"type": "string"
+	},
+	"changeWindow": {
+		"name": "changeWindow",
+		"in": "query",
+		"description": "change window interface for retrieving aggregated data on tokens list",
+		"type": "string"
+	},
+	"start": {
+		"name": "start",
+		"in": "query",
+		"description": "start time in second for aggregated tokens list data",
+		"type": "integer"
+	},
+	"end": {
+		"name": "end",
+		"in": "query",
+		"description": "end time in second for aggregated tokens list data",
+		"type": "integer"
+	},
+	"sortBy": {
+		"name": "sortBy",
+		"in": "query",
+		"description": "sort result by certain column",
+		"type": "string"
+	},
+	"sortOrder": {
+		"name": "sortOrder",
+		"in": "query",
+		"description": "sort by asc or desc",
+		"type": "string"
+	},
+	"dexPoolSearch": {
+		"name": "search",
+		"in": "query",
+		"description": "search pools by: poolAddress, token0, token1, or fee",
+		"type": "string"
+	},
+	"poolAddress": {
+		"name": "poolAddress",
+		"in": "query",
+		"description": "poolAddress in lisk32 format",
+		"type": "string"
+	},
+	"tokenId": {
+		"name": "tokenId",
+		"in": "query",
+		"description": "token id of the position (NFT ID)",
+		"type": "string"
+	},
+	"dexPositionSearch": {
+		"name": "search",
+		"in": "query",
+		"description": "search position by: poolAddress, tokenId (nft id) or owner",
+		"type": "string"
+	},
+	"timeframe": {
+		"name": "timeframe",
+		"in": "query",
+		"description": "timeframe to query candlestick price data",
+		"type": "string"
+	}
+}
