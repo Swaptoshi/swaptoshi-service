@@ -1,0 +1,799 @@
+{
+	"QuoteSwap": {
+		"type": "object",
+		"required": ["amount", "sqrtPriceX96AfterList", "initializedTicksCrossedList"],
+		"properties": {
+			"amount": {
+				"type": "string",
+				"description": "result of the quote swap execution",
+				"example": "10000"
+			},
+			"sqrtPriceX96AfterList": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"example": "80018020393569259756601362385",
+					"description": "price of the pool after swap execution, in sqrtPriceX96 format"
+				}
+			},
+			"initializedTicksCrossedList": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"example": "1",
+					"description": "number of ticks crossed after swap execution"
+				}
+			}
+		}
+	},
+	"QuoteSwapWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/QuoteSwap"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"QuotePrice": {
+		"type": "object",
+		"required": ["price"],
+		"properties": {
+			"price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of base/quote token",
+				"example": 1.132
+			}
+		}
+	},
+	"QuotePriceWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/QuotePrice"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"SwapRoute": {
+		"type": "object",
+		"required": ["totalFee", "path"],
+		"properties": {
+			"totalFee": {
+				"type": "integer",
+				"description": "total pool fee of the swap path in hundredths of a bips, ex: 3000 is 0.3%",
+				"example": 3000
+			},
+			"path": {
+				"type": "string",
+				"description": "swap path",
+				"example": "0400000000000000000bb80453575400000000"
+			}
+		}
+	},
+	"SwapRouteWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of swap route",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/SwapRoute"
+				}
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"DexTokens": {
+		"type": "object",
+		"required": [
+			"tokenId",
+			"symbol",
+			"tokenName",
+			"logo",
+			"decimal",
+			"volume",
+			"volumeUSD",
+			"feeGrowth",
+			"feeGrowthUSD",
+			"swapCount",
+			"poolCount",
+			"totalTvl",
+			"totalTvlUSD",
+			"price",
+			"priceUSD",
+			"priceChange",
+			"priceChangeUSD"
+		],
+		"properties": {
+			"tokenId": {
+				"type": "string",
+				"description": "token ID",
+				"example": "0053575400000000"
+			},
+			"symbol": {
+				"type": "string",
+				"description": "token symbol",
+				"example": "SWT"
+			},
+			"tokenName": {
+				"type": "string",
+				"description": "token name",
+				"example": "Swaptoshi"
+			},
+			"logo": {
+				"type": "string",
+				"description": "token logo url",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
+			},
+			"decimal": {
+				"type": "integer",
+				"description": "token decimal",
+				"example": 8
+			},
+			"volume": {
+				"type": "integer",
+				"description": "token trading volume denominated this tokens",
+				"example": 342938
+			},
+			"volumeUSD": {
+				"type": "integer",
+				"description": "token trading volume denominated in USD",
+				"example": 342938
+			},
+			"feeGrowth": {
+				"type": "integer",
+				"description": "trading fee generated from this token, denominated in this token",
+				"example": 342938
+			},
+			"feeGrowthUSD": {
+				"type": "integer",
+				"description": "trading fee generated from this token, denominated in USD",
+				"example": 342938
+			},
+			"swapCount": {
+				"type": "integer",
+				"description": "number of swap event",
+				"example": 341
+			},
+			"poolCount": {
+				"type": "integer",
+				"description": "number of liquidity pool created with this token",
+				"example": 123
+			},
+			"totalTvl": {
+				"type": "integer",
+				"description": "total of value locked in regards to this token, denominated in this token",
+				"example": 342938
+			},
+			"totalTvUSDl": {
+				"type": "integer",
+				"description": "total of value locked in regards to this token, denominated in USD",
+				"example": 342938
+			},
+			"price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of this token in LSK",
+				"example": 1.132
+			},
+			"priceUSD": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of this token in USD",
+				"example": 1.132
+			},
+			"priceChange": {
+				"type": "number",
+				"format": "float",
+				"description": "percentage of price change in terms of LSK",
+				"example": 5.321
+			},
+			"priceChangeUSD": {
+				"type": "number",
+				"format": "float",
+				"description": "percentage of price change in terms of USD",
+				"example": 5.321
+			}
+		}
+	},
+	"DexTokensWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of tradable tokens on DEX",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexTokens"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexTokensCompact": {
+		"type": "object",
+		"required": ["tokenId", "symbol", "tokenName", "logo"],
+		"properties": {
+			"tokenId": {
+				"type": "string",
+				"description": "token ID",
+				"example": "0053575400000000"
+			},
+			"symbol": {
+				"type": "string",
+				"description": "token symbol",
+				"example": "SWT"
+			},
+			"tokenName": {
+				"type": "string",
+				"description": "token name",
+				"example": "Swaptoshi"
+			},
+			"logo": {
+				"type": "string",
+				"description": "token logo url",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
+			},
+			"decimal": {
+				"type": "integer",
+				"description": "token decimal",
+				"example": 8
+			}
+		}
+	},
+	"DEXTokenCompactsWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of compact tradable tokens on DEX",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexTokensCompact"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexPools": {
+		"type": "object",
+		"required": [
+			"poolAddress",
+			"token0",
+			"token1",
+			"fee",
+			"liquidity",
+			"price",
+			"feeGrowth0",
+			"feeGrowth0USD",
+			"feeGrowth1",
+			"feeGrowth1USD",
+			"token0Price",
+			"token0PriceUSD",
+			"token1Price",
+			"token1PriceUSD",
+			"tick",
+			"volumeToken0",
+			"volumeToken0USD",
+			"volumeToken1",
+			"volumeToken1USD",
+			"swapCount",
+			"totalTvlToken0",
+			"totalTvlToken0USD",
+			"totalTvlToken1",
+			"totalTvlToken1USD",
+			"positionCount"
+		],
+		"properties": {
+			"poolAddress": {
+				"type": "string",
+				"description": "pool address in lisk32 format",
+				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+			},
+			"token0": {
+				"type": "string",
+				"description": "token0 id",
+				"example": "0053575400000000"
+			},
+			"token1": {
+				"type": "string",
+				"description": "token1 id",
+				"example": "0053575400000000"
+			},
+			"fee": {
+				"type": "integer",
+				"description": "pool fee in in hundredths of a bips, ex: 3000 is 0.3%",
+				"example": 3000
+			},
+			"liquidity": {
+				"type": "number",
+				"description": "pool liquidity at current tick",
+				"example": 500000000000000
+			},
+			"price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of base/quote token",
+				"example": 1.132
+			},
+			"feeGrowth0": {
+				"type": "number",
+				"description": "total fee growth from token0, denominated in token0",
+				"example": 100000000000
+			},
+			"feeGrowth0USD": {
+				"type": "number",
+				"description": "total fee growth from token0, denominated in USD",
+				"example": 100000000000
+			},
+			"feeGrowth1": {
+				"type": "number",
+				"description": "total fee growth from token1, denominated in token1",
+				"example": 100000000000
+			},
+			"feeGrowth1USD": {
+				"type": "number",
+				"description": "total fee growth from token1, denominated in USD",
+				"example": 100000000000
+			},
+			"token0Price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of token0 in LSK",
+				"example": 1.132
+			},
+			"token0PriceUSD": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of token0 in USD",
+				"example": 1.132
+			},
+			"token1Price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of token1 in LSK",
+				"example": 1.132
+			},
+			"token1PriceUSD": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of token1 in USD",
+				"example": 1.132
+			},
+			"tick": {
+				"type": "integer",
+				"format": "int32",
+				"minimum": -887272,
+				"maximum": 887272,
+				"description": "current pool tick",
+				"example": 887272
+			},
+			"volumeToken0": {
+				"type": "number",
+				"description": "total swap volume of token0, denominated token0",
+				"example": 100000000000
+			},
+			"volumeToken0USD": {
+				"type": "number",
+				"description": "total swap volume of token0, denominated in USD",
+				"example": 100000000000
+			},
+			"volumeToken1": {
+				"type": "number",
+				"description": "total swap volume of token1, denominated in token1",
+				"example": 100000000000
+			},
+			"volumeToken1USD": {
+				"type": "number",
+				"description": "total swap volume of token1, denominated in USD",
+				"example": 100000000000
+			},
+			"swapCount": {
+				"type": "integer",
+				"description": "total number of swap events in regards to this pool",
+				"example": 53241
+			},
+			"totalTvlToken0": {
+				"type": "number",
+				"description": "total TVL of token0, denominated in token0",
+				"example": 100000000000
+			},
+			"totalTvlToken0USD": {
+				"type": "number",
+				"description": "total TVL of token0, denominated in USD",
+				"example": 100000000000
+			},
+			"totalTvlToken1": {
+				"type": "number",
+				"description": "total TVL of token1, denominated in token1",
+				"example": 100000000000
+			},
+			"totalTvlToken1USD": {
+				"type": "number",
+				"description": "total TVL of token1, denominated in USD",
+				"example": 100000000000
+			},
+			"positionCount": {
+				"type": "integer",
+				"description": "total number of liquidity positions in regards to this pool",
+				"example": 53241
+			}
+		}
+	},
+	"DexPoolsWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of pools",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexPools"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexPoolTick": {
+		"type": "object",
+		"required": ["tick", "liquidityNet"],
+		"properties": {
+			"tick": {
+				"type": "integer",
+				"format": "int32",
+				"minimum": -887272,
+				"maximum": 887272,
+				"description": "current pool tick",
+				"example": 887272
+			},
+			"liquidityNet": {
+				"type": "number",
+				"description": "liquitidy net on corresponding tick",
+				"example": 500000000000000
+			}
+		}
+	},
+	"DexPoolTickWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of ticks on pools",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexPoolTick"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexPosition": {
+		"type": "object",
+		"required": [
+			"poolAddress",
+			"token0",
+			"token1",
+			"tokenId",
+			"owner",
+			"collectionId",
+			"tickLower",
+			"tickUpper",
+			"liquidity"
+		],
+		"properties": {
+			"poolAddress": {
+				"type": "string",
+				"description": "pool address in lisk32 format",
+				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+			},
+			"token0": {
+				"type": "string",
+				"description": "token0 id",
+				"example": "0053575400000000"
+			},
+			"token1": {
+				"type": "string",
+				"description": "token1 id",
+				"example": "0053575400000000"
+			},
+			"tokenId": {
+				"type": "string",
+				"description": "NFT id of current position, adheres to LIP52 format",
+				"example": "00535754001122330011223344556677"
+			},
+			"owner": {
+				"type": "string",
+				"description": "owner of this position in lisk32 format",
+				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+			},
+			"collectionId": {
+				"type": "string",
+				"description": "collectionId of this position",
+				"example": "00112233"
+			},
+			"tickLower": {
+				"type": "integer",
+				"format": "int32",
+				"minimum": -887272,
+				"maximum": 887272,
+				"description": "lower tick of this liquidity position",
+				"example": -887272
+			},
+			"tickUpper": {
+				"type": "integer",
+				"format": "int32",
+				"minimum": -887272,
+				"maximum": 887272,
+				"description": "upper tick of this liquidity position",
+				"example": 887272
+			},
+			"liquidity": {
+				"type": "number",
+				"description": "liquitidy of this position",
+				"example": 500000000000000
+			}
+		}
+	},
+	"DexPositionWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of liquidity position",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexPosition"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexPositionValue": {
+		"type": "object",
+		"required": ["tick", "liquidityNet"],
+		"properties": {
+			"token0": {
+				"type": "string",
+				"description": "token0 id",
+				"example": "0053575400000000"
+			},
+			"token1": {
+				"type": "string",
+				"description": "token1 id",
+				"example": "0053575400000000"
+			},
+			"fee": {
+				"type": "string",
+				"description": "pool fee as string in hundredths of a bips, ex: 3000 is 0.3%",
+				"example": "3000"
+			},
+			"tickLower": {
+				"type": "string",
+				"description": "lower tick of this liquidity position, in string",
+				"example": "887272"
+			},
+			"tickUpper": {
+				"type": "string",
+				"description": "upper tick of this liquidity position, in string",
+				"example": "887272"
+			},
+			"value": {
+				"description": "Position value",
+				"type": "object",
+				"properties": {
+					"principal0": {
+						"type": "string",
+						"description": "principal of token0 of this position, in string",
+						"example": "500000000000000"
+					},
+					"principal1": {
+						"type": "string",
+						"description": "principal of token1 of this position, in string",
+						"example": "500000000000000"
+					},
+					"fee0": {
+						"type": "string",
+						"description": "fees available to claim in token0 from this liqudiity position, in string",
+						"example": "500000000000000"
+					},
+					"fee1": {
+						"type": "string",
+						"description": "fees available to claim in token1 from this liqudiity position, in string",
+						"example": "500000000000000"
+					}
+				}
+			}
+		}
+	},
+	"DexPositionValueWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/DexPositionValue"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"DexPositionMetadata": {
+		"type": "object",
+		"required": ["name", "description", "image"],
+		"properties": {
+			"name": {
+				"type": "string",
+				"description": "name of this position",
+				"example": "Swaptoshi - 0.3% - SWT/LSK - 0.0000000000000000000000000000000000000029387<>271110000000000000000000000000000000000"
+			},
+			"description": {
+				"type": "string",
+				"description": "description of this position",
+				"example": "This NFT represents a liquidity position in a Swaptoshi SWT-LSK pool. The owner of this NFT can modify or redeem the position.\n\nPool Address: 0400000000000000045357540000000000000bb8\nSWT Address: 0453575400000000\nLSK Address: 0400000000000000\nFee Tier: 0.3%\nToken ID: 0\n\n⚠️ DISCLAIMER: Due diligence is imperative when assessing this NFT. Make sure token addresses match the expected tokens, as token symbols may be imitated."
+			},
+			"image": {
+				"type": "string",
+				"description": "image of this position",
+				"example": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjkwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDI5MCA1MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjxkZWZzPjxmaWx0ZXIgaWQ9ImYxIj48ZmVJbWFnZSByZXN1bHQ9InAwIiB4bGluazpocmVmPSJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUIzYVdSMGFEMG5Namt3SnlCb1pXbG5hSFE5SnpVd01DY2dkbWxsZDBKdmVEMG5NQ0F3SURJNU1DQTFNREFuSUhodGJHNXpQU2RvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh5TURBd0wzTjJaeWMrUEhKbFkzUWdkMmxrZEdnOUp6STVNSEI0SnlCb1pXbG5hSFE5SnpVd01IQjRKeUJtYVd4c1BTY2pPR1EyTVRCa0p5OCtQQzl6ZG1jKyIvPjxmZUltYWdlIHJlc3VsdD0icDEiIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwbk1qa3dKeUJvWldsbmFIUTlKelV3TUNjZ2RtbGxkMEp2ZUQwbk1DQXdJREk1TUNBMU1EQW5JSGh0Ykc1elBTZG9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5YytQR05wY21Oc1pTQmplRDBuTVRZbklHTjVQU2N4TURBbklISTlKekV5TUhCNEp5Qm1hV3hzUFNjak5XVTNNV05tSnk4K1BDOXpkbWMrIi8+PGZlSW1hZ2UgcmVzdWx0PSJwMiIgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBuTWprd0p5Qm9aV2xuYUhROUp6VXdNQ2NnZG1sbGQwSnZlRDBuTUNBd0lESTVNQ0ExTURBbklIaHRiRzV6UFNkb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnljK1BHTnBjbU5zWlNCamVEMG5NVFluSUdONVBTY3hNREFuSUhJOUp6RXlNSEI0SnlCbWFXeHNQU2NqTkRJeE1EVXhKeTgrUEM5emRtYysiIC8+PGZlSW1hZ2UgcmVzdWx0PSJwMyIgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBuTWprd0p5Qm9aV2xuYUhROUp6VXdNQ2NnZG1sbGQwSnZlRDBuTUNBd0lESTVNQ0ExTURBbklIaHRiRzV6UFNkb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnljK1BHTnBjbU5zWlNCamVEMG5NVFluSUdONVBTY3hNREFuSUhJOUp6RXdNSEI0SnlCbWFXeHNQU2NqTmpWaFl6VmtKeTgrUEM5emRtYysiIC8+PGZlQmxlbmQgbW9kZT0ib3ZlcmxheSIgaW49InAwIiBpbjI9InAxIiAvPjxmZUJsZW5kIG1vZGU9ImV4Y2x1c2lvbiIgaW4yPSJwMiIgLz48ZmVCbGVuZCBtb2RlPSJvdmVybGF5IiBpbjI9InAzIiByZXN1bHQ9ImJsZW5kT3V0IiAvPjxmZUdhdXNzaWFuQmx1ciBpbj0iYmxlbmRPdXQiIHN0ZERldmlhdGlvbj0iNDIiIC8+PC9maWx0ZXI+IDxjbGlwUGF0aCBpZD0iY29ybmVycyI+PHJlY3Qgd2lkdGg9IjI5MCIgaGVpZ2h0PSI1MDAiIHJ4PSI0MiIgcnk9IjQyIiAvPjwvY2xpcFBhdGg+PHBhdGggaWQ9InRleHQtcGF0aC1hIiBkPSJNNDAgMTIgSDI1MCBBMjggMjggMCAwIDEgMjc4IDQwIFY0NjAgQTI4IDI4IDAgMCAxIDI1MCA0ODggSDQwIEEyOCAyOCAwIDAgMSAxMiA0NjAgVjQwIEEyOCAyOCAwIDAgMSA0MCAxMiB6IiAvPjxwYXRoIGlkPSJtaW5pbWFwIiBkPSJNMjM0IDQ0NEMyMzQgNDU3Ljk0OSAyNDIuMjEgNDYzIDI1MyA0NjMiIC8+PGZpbHRlciBpZD0idG9wLXJlZ2lvbi1ibHVyIj48ZmVHYXVzc2lhbkJsdXIgaW49IlNvdXJjZUdyYXBoaWMiIHN0ZERldmlhdGlvbj0iMjQiIC8+PC9maWx0ZXI+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVwIiB4MT0iMSIgeDI9IjAiIHkxPSIxIiB5Mj0iMCI+PHN0b3Agb2Zmc2V0PSIwLjAiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjEiIC8+PHN0b3Agb2Zmc2V0PSIuOSIgc3RvcC1jb2xvcj0id2hpdGUiIHN0b3Atb3BhY2l0eT0iMCIgLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZC1kb3duIiB4MT0iMCIgeDI9IjEiIHkxPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwLjAiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjEiIC8+PHN0b3Agb2Zmc2V0PSIwLjkiIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiIC8+PC9saW5lYXJHcmFkaWVudD48bWFzayBpZD0iZmFkZS11cCIgbWFza0NvbnRlbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11cCkiIC8+PC9tYXNrPjxtYXNrIGlkPSJmYWRlLWRvd24iIG1hc2tDb250ZW50VW5pdHM9Im9iamVjdEJvdW5kaW5nQm94Ij48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtZG93bikiIC8+PC9tYXNrPjxtYXNrIGlkPSJub25lIiBtYXNrQ29udGVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCI+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0id2hpdGUiIC8+PC9tYXNrPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZC1zeW1ib2wiPjxzdG9wIG9mZnNldD0iMC43IiBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIxIiAvPjxzdG9wIG9mZnNldD0iLjk1IiBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIiAvPjwvbGluZWFyR3JhZGllbnQ+PG1hc2sgaWQ9ImZhZGUtc3ltYm9sIiBtYXNrQ29udGVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHJlY3Qgd2lkdGg9IjI5MHB4IiBoZWlnaHQ9IjIwMHB4IiBmaWxsPSJ1cmwoI2dyYWQtc3ltYm9sKSIgLz48L21hc2s+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjb3JuZXJzKSI+PHJlY3QgZmlsbD0iOGQ2MTBkIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5MHB4IiBoZWlnaHQ9IjUwMHB4IiAvPjxyZWN0IHN0eWxlPSJmaWx0ZXI6IHVybCgjZjEpIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5MHB4IiBoZWlnaHQ9IjUwMHB4IiAvPiA8ZyBzdHlsZT0iZmlsdGVyOnVybCgjdG9wLXJlZ2lvbi1ibHVyKTsgdHJhbnNmb3JtOnNjYWxlKDEuNSk7IHRyYW5zZm9ybS1vcmlnaW46Y2VudGVyIHRvcDsiPjxyZWN0IGZpbGw9Im5vbmUiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjkwcHgiIGhlaWdodD0iNTAwcHgiIC8+PGVsbGlwc2UgY3g9IjUwJSIgY3k9IjBweCIgcng9IjE4MHB4IiByeT0iMTIwcHgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuODUiIC8+PC9nPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyOTAiIGhlaWdodD0iNTAwIiByeD0iNDIiIHJ5PSI0MiIgZmlsbD0icmdiYSgwLDAsMCwwKSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIC8+PC9nPjx0ZXh0IHRleHQtcmVuZGVyaW5nPSJvcHRpbWl6ZVNwZWVkIj48dGV4dFBhdGggc3RhcnRPZmZzZXQ9Ii0xMDAlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IidDb3VyaWVyIE5ldycsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxMHB4IiB4bGluazpocmVmPSIjdGV4dC1wYXRoLWEiPjA0MDAwMDAwMDAwMDAwMDAg4oCiIExTSyA8YW5pbWF0ZSBhZGRpdGl2ZT0ic3VtIiBhdHRyaWJ1dGVOYW1lPSJzdGFydE9mZnNldCIgZnJvbT0iMCUiIHRvPSIxMDAlIiBiZWdpbj0iMHMiIGR1cj0iMzBzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz48L3RleHRQYXRoPiA8dGV4dFBhdGggc3RhcnRPZmZzZXQ9IjAlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IidDb3VyaWVyIE5ldycsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxMHB4IiB4bGluazpocmVmPSIjdGV4dC1wYXRoLWEiPjA0MDAwMDAwMDAwMDAwMDAg4oCiIExTSyA8YW5pbWF0ZSBhZGRpdGl2ZT0ic3VtIiBhdHRyaWJ1dGVOYW1lPSJzdGFydE9mZnNldCIgZnJvbT0iMCUiIHRvPSIxMDAlIiBiZWdpbj0iMHMiIGR1cj0iMzBzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4gPC90ZXh0UGF0aD48dGV4dFBhdGggc3RhcnRPZmZzZXQ9IjUwJSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSInQ291cmllciBOZXcnLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTBweCIgeGxpbms6aHJlZj0iI3RleHQtcGF0aC1hIj4wNDUzNTc1NDAwMDAwMDAwIOKAoiBTV1QgPGFuaW1hdGUgYWRkaXRpdmU9InN1bSIgYXR0cmlidXRlTmFtZT0ic3RhcnRPZmZzZXQiIGZyb209IjAlIiB0bz0iMTAwJSIgYmVnaW49IjBzIiBkdXI9IjMwcyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+PC90ZXh0UGF0aD48dGV4dFBhdGggc3RhcnRPZmZzZXQ9Ii01MCUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ0NvdXJpZXIgTmV3JywgbW9ub3NwYWNlIiBmb250LXNpemU9IjEwcHgiIHhsaW5rOmhyZWY9IiN0ZXh0LXBhdGgtYSI+MDQ1MzU3NTQwMDAwMDAwMCDigKIgU1dUIDxhbmltYXRlIGFkZGl0aXZlPSJzdW0iIGF0dHJpYnV0ZU5hbWU9InN0YXJ0T2Zmc2V0IiBmcm9tPSIwJSIgdG89IjEwMCUiIGJlZ2luPSIwcyIgZHVyPSIzMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPjwvdGV4dFBhdGg+PC90ZXh0PjxnIG1hc2s9InVybCgjZmFkZS1zeW1ib2wpIj48cmVjdCBmaWxsPSJub25lIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5MHB4IiBoZWlnaHQ9IjIwMHB4IiAvPiA8dGV4dCB5PSI3MHB4IiB4PSIzMnB4IiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IidDb3VyaWVyIE5ldycsIG1vbm9zcGFjZSIgZm9udC13ZWlnaHQ9IjIwMCIgZm9udC1zaXplPSIzNnB4Ij5TV1QvTFNLPC90ZXh0Pjx0ZXh0IHk9IjExNXB4IiB4PSIzMnB4IiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IidDb3VyaWVyIE5ldycsIG1vbm9zcGFjZSIgZm9udC13ZWlnaHQ9IjIwMCIgZm9udC1zaXplPSIzNnB4Ij4wLjMlPC90ZXh0PjwvZz48cmVjdCB4PSIxNiIgeT0iMTYiIHdpZHRoPSIyNTgiIGhlaWdodD0iNDY4IiByeD0iMjYiIHJ5PSIyNiIgZmlsbD0icmdiYSgwLDAsMCwwKSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIC8+PGcgbWFzaz0idXJsKCNub25lKSIgc3R5bGU9InRyYW5zZm9ybTp0cmFuc2xhdGUoNzJweCwxODlweCkiPjxyZWN0IHg9Ii0xNnB4IiB5PSItMTZweCIgd2lkdGg9IjE4MHB4IiBoZWlnaHQ9IjE4MHB4IiBmaWxsPSJub25lIiAvPjxwYXRoIGQ9Ik0xIDFDMSA5NyA0OSAxNDUgMTQ1IDE0NSIgc3Ryb2tlPSJyZ2JhKDAsMCwwLDAuMykiIHN0cm9rZS13aWR0aD0iMzJweCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiAvPjwvZz48ZyBtYXNrPSJ1cmwoI25vbmUpIiBzdHlsZT0idHJhbnNmb3JtOnRyYW5zbGF0ZSg3MnB4LDE4OXB4KSI+PHJlY3QgeD0iLTE2cHgiIHk9Ii0xNnB4IiB3aWR0aD0iMTgwcHgiIGhlaWdodD0iMTgwcHgiIGZpbGw9Im5vbmUiIC8+PHBhdGggZD0iTTEgMUMxIDk3IDQ5IDE0NSAxNDUgMTQ1IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMSkiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz48L2c+PGNpcmNsZSBjeD0iNzNweCIgY3k9IjE5MHB4IiByPSI0cHgiIGZpbGw9IndoaXRlIiAvPjxjaXJjbGUgY3g9IjIxN3B4IiBjeT0iMzM0cHgiIHI9IjRweCIgZmlsbD0id2hpdGUiIC8+IDxnIHN0eWxlPSJ0cmFuc2Zvcm06dHJhbnNsYXRlKDI5cHgsIDM4NHB4KSI+PHJlY3Qgd2lkdGg9IjYzcHgiIGhlaWdodD0iMjZweCIgcng9IjhweCIgcnk9IjhweCIgZmlsbD0icmdiYSgwLDAsMCwwLjYpIiAvPjx0ZXh0IHg9IjEycHgiIHk9IjE3cHgiIGZvbnQtZmFtaWx5PSInQ291cmllciBOZXcnLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTJweCIgZmlsbD0id2hpdGUiPjx0c3BhbiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNikiPklEOiA8L3RzcGFuPjA8L3RleHQ+PC9nPiA8ZyBzdHlsZT0idHJhbnNmb3JtOnRyYW5zbGF0ZSgyOXB4LCA0MTRweCkiPjxyZWN0IHdpZHRoPSIxNDdweCIgaGVpZ2h0PSIyNnB4IiByeD0iOHB4IiByeT0iOHB4IiBmaWxsPSJyZ2JhKDAsMCwwLDAuNikiIC8+PHRleHQgeD0iMTJweCIgeT0iMTdweCIgZm9udC1mYW1pbHk9IidDb3VyaWVyIE5ldycsIG1vbm9zcGFjZSIgZm9udC1zaXplPSIxMnB4IiBmaWxsPSJ3aGl0ZSI+PHRzcGFuIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC42KSI+TWluIFRpY2s6IDwvdHNwYW4+LTg4NTAwMDwvdGV4dD48L2c+IDxnIHN0eWxlPSJ0cmFuc2Zvcm06dHJhbnNsYXRlKDI5cHgsIDQ0NHB4KSI+PHJlY3Qgd2lkdGg9IjE0MHB4IiBoZWlnaHQ9IjI2cHgiIHJ4PSI4cHgiIHJ5PSI4cHgiIGZpbGw9InJnYmEoMCwwLDAsMC42KSIgLz48dGV4dCB4PSIxMnB4IiB5PSIxN3B4IiBmb250LWZhbWlseT0iJ0NvdXJpZXIgTmV3JywgbW9ub3NwYWNlIiBmb250LXNpemU9IjEycHgiIGZpbGw9IndoaXRlIj48dHNwYW4gZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjYpIj5NYXggVGljazogPC90c3Bhbj44ODUwMDA8L3RleHQ+PC9nPjxnIHN0eWxlPSJ0cmFuc2Zvcm06dHJhbnNsYXRlKDIyNnB4LCA0MzNweCkiPjxyZWN0IHdpZHRoPSIzNnB4IiBoZWlnaHQ9IjM2cHgiIHJ4PSI4cHgiIHJ5PSI4cHgiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjIpIiAvPjxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZD0iTTggOUM4LjAwMDA0IDIyLjk0OTQgMTYuMjA5OSAyOCAyNyAyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgLz48Y2lyY2xlIHN0eWxlPSJ0cmFuc2Zvcm06dHJhbnNsYXRlM2QoMTNweCwgMjNweCwgMHB4KSIgY3g9IjBweCIgY3k9IjBweCIgcj0iNHB4IiBmaWxsPSJ3aGl0ZSIvPjwvZz48ZyBzdHlsZT0idHJhbnNmb3JtOnRyYW5zbGF0ZSgyMjZweCwgMzkycHgpIj48cmVjdCB3aWR0aD0iMzZweCIgaGVpZ2h0PSIzNnB4IiByeD0iOHB4IiByeT0iOHB4IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgLz48Zz48cGF0aCBzdHlsZT0idHJhbnNmb3JtOnRyYW5zbGF0ZSg2cHgsNnB4KSIgZD0iTTEyIDBMMTIuNjUyMiA5LjU2NTg3TDE4IDEuNjA3N0wxMy43ODE5IDEwLjIxODFMMjIuMzkyMyA2TDE0LjQzNDEgMTEuMzQ3OEwyNCAxMkwxNC40MzQxIDEyLjY1MjJMMjIuMzkyMyAxOEwxMy43ODE5IDEzLjc4MTlMMTggMjIuMzkyM0wxMi42NTIyIDE0LjQzNDFMMTIgMjRMMTEuMzQ3OCAxNC40MzQxTDYgMjIuMzkyM0wxMC4yMTgxIDEzLjc4MTlMMS42MDc3IDE4TDkuNTY1ODcgMTIuNjUyMkwwIDEyTDkuNTY1ODcgMTEuMzQ3OEwxLjYwNzcgNkwxMC4yMTgxIDEwLjIxODFMNiAxLjYwNzdMMTEuMzQ3OCA5LjU2NTg3TDEyIDBaIiBmaWxsPSJ3aGl0ZSIgLz48YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InJvdGF0ZSIgZnJvbT0iMCAxOCAxOCIgdG89IjM2MCAxOCAxOCIgZHVyPSIxMHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9nPjwvZz48L3N2Zz4="
+			}
+		}
+	},
+	"DexPositionMetadataWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/DexPositionMetadata"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"DexStatisticsSummary": {
+		"type": "object",
+		"required": [
+			"totalVolumeUSD",
+			"totalFeeGrowthUSD",
+			"swapCount",
+			"totalPoolCount",
+			"totalTvlUSD"
+		],
+		"properties": {
+			"totalVolumeUSD": {
+				"type": "integer",
+				"description": "total token trading volume denominated in USD",
+				"example": 342938
+			},
+			"totalFeeGrowthUSD": {
+				"type": "integer",
+				"description": "total fee has generated denominated in USD",
+				"example": 342938
+			},
+			"swapCount": {
+				"type": "integer",
+				"description": "number of swap event",
+				"example": 341
+			},
+			"totalPoolCount": {
+				"type": "integer",
+				"description": "total liquidity pool created",
+				"example": 5431
+			},
+			"totalTvlUSD": {
+				"type": "integer",
+				"description": "total TVL denominated in USD",
+				"example": 100000000000
+			}
+		}
+	},
+	"DexStatisticsSummaryWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/DexStatisticsSummary"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"DexPriceTick": {
+		"type": "object",
+		"required": ["time", "value"],
+		"properties": {
+			"time": {
+				"type": "integer",
+				"description": "UNIX timestamp in second",
+				"example": 1702488072
+			},
+			"value": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of base/quote token",
+				"example": 1.132
+			}
+		}
+	},
+	"DexPriceTickWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of price ticks",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexPriceTick"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"DexPriceOhlc": {
+		"type": "object",
+		"required": ["time", "open", "high", "low", "close"],
+		"properties": {
+			"time": {
+				"type": "integer",
+				"description": "UNIX timestamp in second",
+				"example": 1702488072
+			},
+			"open": {
+				"type": "number",
+				"format": "float",
+				"description": "opening price",
+				"example": 1.132
+			},
+			"high": {
+				"type": "number",
+				"format": "float",
+				"description": "highest price on specified perios",
+				"example": 1.132
+			},
+			"low": {
+				"type": "number",
+				"format": "float",
+				"description": "lowest price on specified perios",
+				"example": 1.132
+			},
+			"close": {
+				"type": "number",
+				"format": "float",
+				"description": "closing price",
+				"example": 1.132
+			}
+		}
+	},
+	"DexPriceOhlcWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of price ohlc data",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/DexPriceOhlc"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"emptyObject": {
+		"type": "object",
+		"properties": {}
+	}
+}

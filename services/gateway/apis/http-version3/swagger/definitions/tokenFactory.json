@@ -1,0 +1,238 @@
+{
+	"TokenFactoryCreate": {
+		"type": "object",
+		"required": ["message", "transactionID", "logoCid"],
+		"properties": {
+			"message": {
+				"type": "string",
+				"description": "transaction execution result",
+				"example": "Transaction payload was successfully passed to the network node."
+			},
+			"transactionID": {
+				"type": "string",
+				"description": "executed transaction uid",
+				"example": "29e308c1aa47a6abd512a4fa30c6c6b84d2d69782b3baf1357e483cd89bb8396"
+			},
+			"logoCid": {
+				"type": "string",
+				"description": "content id (CID) of logo uploaded to IPFS",
+				"example": "bafkreiadkscgioffsslry4mfg7sb3x7scspgiax4ie6k2z6zsvhhe76tvu"
+			}
+		}
+	},
+	"TokenFactoryCreateWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/TokenFactoryCreate"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	},
+	"TokenFactoryToken": {
+		"type": "object",
+		"required": ["tokenID", "owner", "supply", "price", "priceUSD", "marketCap", "marketCapUSD"],
+		"properties": {
+			"tokenID": {
+				"type": "string",
+				"description": "tokenId",
+				"example": "0053575400000000"
+			},
+			"owner": {
+				"type": "string",
+				"description": "factory owner which initiate token create transaction, in lisk32 format",
+				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+			},
+			"supply": {
+				"type": "number",
+				"description": "supply of created token",
+				"example": 2100000000000000
+			},
+			"price": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of the token, denominated in LSK",
+				"example": 1.132
+			},
+			"priceUSD": {
+				"type": "number",
+				"format": "float",
+				"description": "current price of the token, denominated in USD",
+				"example": 1.132
+			},
+			"marketCap": {
+				"type": "number",
+				"description": "market cap obtained by price of token in LSK multiplied by supply",
+				"example": 2377200000000000
+			},
+			"marketCapUSD": {
+				"type": "number",
+				"description": "market cap obtained by price of token in USD multiplied by supply",
+				"example": 2377200000000000
+			}
+		}
+	},
+	"TokenFactoryTokenWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of tokens created by Token Factory module",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/TokenFactoryToken"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"TokenFactoryMeta": {
+		"type": "object",
+		"required": [
+			"chainID",
+			"chainName",
+			"tokenID",
+			"tokenName",
+			"denomUnits",
+			"baseDenom",
+			"displayDenom",
+			"symbol"
+		],
+		"properties": {
+			"chainID": {
+				"type": "string",
+				"example": "00000000",
+				"description": "Chain ID of the blockchain application."
+			},
+			"chainName": {
+				"type": "string",
+				"example": "Lisk",
+				"description": "Chain name as registered on the network"
+			},
+			"tokenID": {
+				"type": "string",
+				"example": "0000000000000000",
+				"description": "The universal identifier for the token within the Lisk ecosystem."
+			},
+			"tokenName": {
+				"type": "string",
+				"example": "Lisk",
+				"description": "The name of the token. For example Lisk"
+			},
+			"networkType": {
+				"type": "string",
+				"example": "mainnet"
+			},
+			"description": {
+				"type": "string",
+				"example": "LSK is the utility token of Lisk"
+			},
+			"denomUnits": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"denom": {
+							"type": "string",
+							"example": "lsk",
+							"description": "Supported denomination. Example: Beddows, LSK"
+						},
+						"decimals": {
+							"type": "integer",
+							"example": 8,
+							"description": "The exponent over base 10 by which the denomination is a factor of the baseDenom. Example: 8 for LSK (1 LSK = 10^8 Beddows)"
+						},
+						"aliases": {
+							"type": "array",
+							"items": {
+								"type": "string",
+								"example": "LISK",
+								"description": "Human friendly aliases for the denomination unit"
+							}
+						}
+					}
+				}
+			},
+			"symbol": {
+				"type": "string",
+				"example": "LSK",
+				"description": "The symbol for the token. Example: LSK"
+			},
+			"displayDenom": {
+				"type": "string",
+				"example": "lsk",
+				"description": "The human friendly denomination unit of the token. Must be a 'denom' in denomUnits. Example: lsk"
+			},
+			"baseDenom": {
+				"type": "string",
+				"example": "beddows",
+				"description": "The base denomination unit of the token. Must be a 'denom' in denomUnits. Example: Beddows"
+			},
+			"logo": {
+				"type": "object",
+				"properties": {
+					"png": {
+						"type": "string",
+						"example": "https://downloads.lisk.com/lisk/images/logo.png",
+						"description": "URI to the PNG format of the token logo"
+					},
+					"svg": {
+						"type": "string",
+						"example": "https://downloads.lisk.com/lisk/images/logo.svg",
+						"description": "URI to the SVG format of the token logo"
+					}
+				}
+			}
+		}
+	},
+	"TokenFactoryMetaWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"description": "List of blockchain applications off-chain metadata for tokens",
+				"type": "array",
+				"items": {
+					"$ref": "#/definitions/TokenFactoryMeta"
+				}
+			},
+			"meta": {
+				"$ref": "#/definitions/pagination"
+			}
+		}
+	},
+	"TokenFactoryStatistic": {
+		"type": "object",
+		"required": ["tokenCreated", "totalMarketCap", "totalMarketCapUSD"],
+		"properties": {
+			"tokenCreated": {
+				"type": "number",
+				"description": "number of token created by token factory module",
+				"example": 153
+			},
+			"totalMarketCap": {
+				"type": "number",
+				"description": "total market cap of tokens created by token factory, denominated in LSK",
+				"example": 2377200000000000
+			},
+			"totalMarketCapUSD": {
+				"type": "number",
+				"description": "total market cap of tokens created by token factory, denominated in USD",
+				"example": 2377200000000000
+			}
+		}
+	},
+	"TokenFactoryStatisticWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/TokenFactoryStatistic"
+			},
+			"meta": { "$ref": "#/definitions/emptyObject" }
+		}
+	}
+}
