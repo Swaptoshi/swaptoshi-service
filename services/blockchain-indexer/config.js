@@ -222,6 +222,7 @@ config.invokeAllowedMethods = process.env.INVOKE_ALLOWED_METHODS
 			'token_getInitializationFees',
 			'interoperability_getMinimumMessageFee',
 			'txpool_getTransactionsFromPool',
+			'dex',
 	  ];
 
 module.exports = config;
