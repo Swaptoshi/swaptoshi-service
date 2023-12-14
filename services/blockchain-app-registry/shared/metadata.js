@@ -231,10 +231,10 @@ const getBlockchainAppsMetadata = async params => {
 			if ((await isMainchain()) && knownMainchainIDs.includes(appMeta.chainID)) {
 				appMeta.status = APP_STATUS.ACTIVATED;
 			} else {
-				const [blockchainApp] = (
-					await requestIndexer('blockchain.apps', { chainID: appMeta.chainID })
-				).data;
-				appMeta.status = blockchainApp ? blockchainApp.status : APP_STATUS.DEFAULT;
+				const blockchainApp = await requestIndexer('blockchain.apps', {
+					chainID: appMeta.chainID,
+				});
+				appMeta.status = blockchainApp ? blockchainApp[0].data.status : APP_STATUS.DEFAULT;
 			}
 
 			return appMeta;
