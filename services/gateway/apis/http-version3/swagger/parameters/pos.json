@@ -1,0 +1,36 @@
+{
+	"validatorStatus": {
+		"name": "status",
+		"in": "query",
+		"description": "Query validators by status (can be expressed as CSV).",
+		"type": "string",
+		"minLength": 1
+	},
+	"validatorName": {
+		"name": "name",
+		"in": "query",
+		"description": "Query validators by their registered name.",
+		"type": "string",
+		"minLength": 1
+	},
+	"accountName": {
+		"name": "name",
+		"in": "query",
+		"description": "Query account by the registered name.",
+		"type": "string",
+		"minLength": 1
+	},
+	"validatorNameCsv": {
+		"name": "name",
+		"in": "query",
+		"description": "Query validators by their registered name (can be expressed as CSV).",
+		"type": "string",
+		"minLength": 1
+	},
+	"isLocked": {
+		"name": "isLocked",
+		"in": "query",
+		"description": "Query pending unlocks filtered by lock status.",
+		"type": "boolean"
+	}
+}

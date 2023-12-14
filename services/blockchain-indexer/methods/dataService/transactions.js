@@ -1,0 +1,83 @@
+/*
+ * LiskHQ/lisk-service
+ * Copyright © 2022 Lisk Foundation
+ *
+ * See the LICENSE file at the top-level directory of this distribution
+ * for licensing information.
+ *
+ * Unless otherwise agreed in a custom licensing agreement with the Lisk Foundation,
+ * no part of this software, including this file, may be copied, modified,
+ * propagated, or distributed except according to the terms contained in the
+ * LICENSE file.
+ *
+ * Removal or modification of this copyright notice is prohibited.
+ *
+ */
+
+const {
+	getTransactions,
+	getPendingTransactions,
+	postTransactions,
+	getSchemas,
+	dryRunTransactions,
+	estimateTransactionFees,
+} = require('./controllers/transactions');
+
+module.exports = [
+	{
+		name: 'transactions',
+		controller: getTransactions,
+		params: {
+			transactionID: { optional: true, type: 'string' },
+			moduleCommand: { optional: true, type: 'string' },
+			address: { optional: true, type: 'string' },
+			senderAddress: { optional: true, type: 'string' },
+			recipientAddress: { optional: true, type: 'string' },
+			receivingChainID: { optional: true, type: 'string' },
+			timestamp: { optional: true, type: 'string' },
+			nonce: { optional: true, type: 'string' },
+			blockID: { optional: true, type: 'string' },
+			height: { optional: true, type: 'string' },
+			search: { optional: true, type: 'string' },
+			limit: { optional: true, type: 'number' },
+			offset: { optional: true, type: 'number' },
+			executionStatus: { optional: true, type: 'string' },
+			sort: { optional: true, type: 'string' },
+			order: { optional: true, type: 'string' },
+		},
+	},
+	{
+		name: 'transactions.pending',
+		controller: getPendingTransactions,
+		params: {},
+	},
+	{
+		name: 'transactions.post',
+		controller: postTransactions,
+		params: {
+			transaction: { optional: false, type: 'string' },
+		},
+	},
+	{
+		name: 'schemas',
+		controller: getSchemas,
+		params: {},
+	},
+	{
+		name: 'transactions.dryrun',
+		controller: dryRunTransactions,
+		params: {
+			transaction: { optional: false, type: 'any' },
+			skipVerify: { optional: true, type: 'boolean', default: false },
+			skipDecode: { optional: true, type: 'boolean', default: false },
+			strict: { optional: true, type: 'boolean', default: false },
+		},
+	},
+	{
+		name: 'transactions.estimate-fees',
+		controller: estimateTransactionFees,
+		params: {
+			transaction: { optional: false, type: 'object' },
+		},
+	},
+];

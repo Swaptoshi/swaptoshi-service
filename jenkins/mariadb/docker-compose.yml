@@ -1,0 +1,25 @@
+# Base file, do not modifiy.
+# Make changes in docker-compose.override.yml instead.
+# See https://docs.docker.com/compose/extends/#example-use-case
+version: '3.3'
+services:
+  mariadb:
+    image: mariadb:10
+    command: mysqld --max_connections=500
+    volumes:
+      - ../../docker/mariadb/primary/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - db-data:/var/lib/mysql
+      - ./mysql-healthcheck.sh:/healthcheck.sh
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: lisk
+      MARIADB_USER: lisk
+      MARIADB_PASSWORD: password
+    ports:
+      - '127.0.0.1:3306:3306'
+    healthcheck:
+      test: ['CMD', 'bash', '/healthcheck.sh']
+
+volumes:
+  db-data:

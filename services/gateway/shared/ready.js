@@ -1,0 +1,74 @@
+/*
+ * LiskHQ/lisk-service
+ * Copyright © 2021 Lisk Foundation
+ *
+ * See the LICENSE file at the top-level directory of this distribution
+ * for licensing information.
+ *
+ * Unless otherwise agreed in a custom licensing agreement with the Lisk Foundation,
+ * no part of this software, including this file, may be copied, modified,
+ * propagated, or distributed except according to the terms contained in the
+ * LICENSE file.
+ *
+ * Removal or modification of this copyright notice is prohibited.
+ *
+ */
+const {
+	Errors: { MoleculerError, ServiceNotFoundError },
+} = require('moleculer');
+const { Logger } = require('lisk-service-framework');
+
+const BluebirdPromise = require('bluebird');
+
+const { getAppContext } = require('./appContext');
+const config = require('../config');
+
+const logger = Logger();
+
+const currentSvcStatus = {
+	indexer: false,
+	connector: false,
+	fees: false,
+	market: false,
+	'app-registry': false,
+	statistics: false,
+};
+
+const updateSvcStatus = async () => {
+	await BluebirdPromise.map(Object.keys(currentSvcStatus), async microservice => {
+		const broker = (await getAppContext()).getBroker();
+		currentSvcStatus[microservice] = await broker
+			.call(`${microservice}.status`)
+			.then(res => res.isReady)
+			.catch(err => {
+				if (err instanceof ServiceNotFoundError) {
+					logger.warn(err);
+				} else {
+					logger.error(err);
+				}
+				return false;
+			});
+	});
+};
+
+const getReady = () => {
+	try {
+		const includeSvcForReadiness = {};
+		Object.entries(currentSvcStatus).forEach(([service, isReady]) => {
+			if (isReady) includeSvcForReadiness[service] = isReady;
+			else if (config.brokerDependencies.includes(service)) throw new MoleculerError();
+		});
+		return { services: includeSvcForReadiness };
+	} catch (_) {
+		logger.error(`Current service status:\n${JSON.stringify(currentSvcStatus, null, '\t')}`);
+		throw new MoleculerError('Service Unavailable', 503, 'SERVICES_NOT_READY');
+	}
+};
+
+const getIndexStatus = async () => currentSvcStatus.indexer;
+
+module.exports = {
+	getReady,
+	updateSvcStatus,
+	getIndexStatus,
+};

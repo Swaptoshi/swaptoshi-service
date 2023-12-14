@@ -1,0 +1,135 @@
+/*
+ * LiskHQ/lisk-service
+ * Copyright © 2020 Lisk Foundation
+ *
+ * See the LICENSE file at the top-level directory of this distribution
+ * for licensing information.
+ *
+ * Unless otherwise agreed in a custom licensing agreement with the Lisk Foundation,
+ * no part of this software, including this file, may be copied, modified,
+ * propagated, or distributed except according to the terms contained in the
+ * LICENSE file.
+ *
+ * Removal or modification of this copyright notice is prohibited.
+ *
+ */
+const packageJson = require('./package.json');
+
+const config = {
+	api: {},
+	log: {
+		name: packageJson.name,
+		version: packageJson.version,
+	},
+};
+
+/**
+ * Gateway socket configuration
+ */
+config.port = process.env.PORT || 9901;
+config.host = process.env.HOST || '0.0.0.0';
+
+/**
+ * Inter-service message broker
+ */
+config.transporter = process.env.SERVICE_BROKER || 'redis://lisk:password@127.0.0.1:6379/0';
+config.brokerTimeout = Number(process.env.SERVICE_BROKER_TIMEOUT) || 10; // in seconds
+config.volatileRedis =
+	process.env.SERVICE_GATEWAY_REDIS_VOLATILE || 'redis://lisk:password@127.0.0.1:6379/5';
+
+/**
+ * Compatibility
+ */
+config.jsonRpcStrictMode = process.env.JSON_RPC_STRICT_MODE || 'false';
+
+config.rateLimit = {};
+config.rateLimit.enable = String(process.env.HTTP_RATE_LIMIT_ENABLE).toLowerCase() === 'true';
+config.rateLimit.window = Number(process.env.HTTP_RATE_LIMIT_WINDOW) || 10; // in seconds
+// Max number of requests during window
+config.rateLimit.connectionLimit = Number(process.env.HTTP_RATE_LIMIT_CONNECTIONS) || 200;
+config.rateLimit.enableXForwardedFor = Boolean(
+	String(process.env.HTTP_RATE_LIMIT_ENABLE_X_FORWARDED_FOR).toLowerCase() === 'true',
+);
+config.rateLimit.numKnownProxies = Number(process.env.HTTP_RATE_LIMIT_NUM_KNOWN_PROXIES) || 0;
+
+/**
+ * LOGGING
+ *
+ * log.level   - TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK
+ * log.console - Plain JavaScript console.log() output (true/false)
+ * log.stdout  - Writes directly to stdout (true/false)
+ * log.file    - outputs to a file (ie. ./logs/app.log)
+ * log.gelf    - Writes to GELF-compatible socket (ie. 127.0.0.1:12201/udp)
+ */
+config.log.level = process.env.SERVICE_LOG_LEVEL || 'info';
+config.log.console = process.env.SERVICE_LOG_CONSOLE || 'false';
+config.log.stdout = process.env.SERVICE_LOG_STDOUT || 'true';
+config.log.gelf = process.env.SERVICE_LOG_GELF || 'false';
+config.log.file = process.env.SERVICE_LOG_FILE || 'false';
+config.log.docker_host = process.env.DOCKER_HOST || 'local';
+config.debug = process.env.SERVICE_LOG_LEVEL === 'debug';
+
+/**
+ * API enablement
+ */
+config.api.http = process.env.ENABLE_HTTP_API || 'http-status,http-version3,http-exports';
+config.api.ws = process.env.ENABLE_WS_API || 'blockchain,rpc-v3';
+
+/**
+ * API versions
+ */
+config.api.versions = {
+	'/api/v3': ['http-version3', 'http-exports'],
+};
+
+/**
+ * API timeout
+ */
+config.api.isReverseProxyPresent = Boolean(
+	String(process.env.ENABLE_REVERSE_PROXY_TIMEOUT_SETTINGS).toLowerCase() === 'true',
+);
+config.api.httpKeepAliveTimeout = Number(process.env.HTTP_KEEP_ALIVE_TIMEOUT) || 65000;
+config.api.httpHeadersTimeout = Number(process.env.HTTP_HEADERS_TIMEOUT) || 66000;
+
+/**
+ * HTTP API response caching support
+ */
+config.api.httpCacheControlDirectives = String(
+	process.env.HTTP_CACHE_CONTROL_DIRECTIVES || 'public, max-age=10',
+);
+config.api.enableHttpCacheControl =
+	String(process.env.ENABLE_HTTP_CACHE_CONTROL).toLowerCase() === 'true';
+
+// configuration for websocket rate limit
+config.websocket = {
+	enableRateLimit: String(process.env.WS_RATE_LIMIT_ENABLE).toLowerCase() === 'true',
+	rateLimit: {
+		points: Number(process.env.WS_RATE_LIMIT_CONNECTIONS) || 5,
+		duration: Number(process.env.WS_RATE_LIMIT_DURATION) || 1, // in seconds
+	},
+};
+
+// Gateway RPC cache settings
+config.rpcCache = {
+	ttl: 5, // in seconds
+	enable: String(process.env.ENABLE_REQUEST_CACHING).toLowerCase() !== 'false',
+};
+
+const DEFAULT_DEPENDENCIES = 'indexer,connector';
+const { GATEWAY_DEPENDENCIES } = process.env;
+
+config.brokerDependencies = DEFAULT_DEPENDENCIES.concat(',', GATEWAY_DEPENDENCIES || '').split(',');
+
+config.job = {
+	// Interval takes priority over schedule and must be greater than 0 to be valid
+	updateReadinessStatus: {
+		interval: Number(process.env.JOB_INTERVAL_UPDATE_READINESS_STATUS) || 0,
+		schedule: process.env.JOB_SCHEDULE_UPDATE_READINESS_STATUS || '* * * * *',
+	},
+};
+
+config.cors = {
+	allowedOrigin: process.env.CORS_ALLOWED_ORIGIN ? process.env.CORS_ALLOWED_ORIGIN.split(',') : '*',
+};
+
+module.exports = config;

@@ -1,0 +1,86 @@
+/*
+ * LiskHQ/lisk-service
+ * Copyright © 2022 Lisk Foundation
+ *
+ * See the LICENSE file at the top-level directory of this distribution
+ * for licensing information.
+ *
+ * Unless otherwise agreed in a custom licensing agreement with the Lisk Foundation,
+ * no part of this software, including this file, may be copied, modified,
+ * propagated, or distributed except according to the terms contained in the
+ * LICENSE file.
+ *
+ * Removal or modification of this copyright notice is prohibited.
+ *
+ */
+const packageJson = require('./package.json');
+
+const config = {
+	endpoints: {},
+	jobs: {},
+	log: {
+		name: packageJson.name,
+		version: packageJson.version,
+	},
+};
+
+/**
+ * Inter-service message broker
+ */
+config.transporter = process.env.SERVICE_BROKER || 'redis://lisk:password@127.0.0.1:6379/0';
+config.brokerTimeout = Number(process.env.SERVICE_BROKER_TIMEOUT) || 10; // in seconds
+
+/**
+ * External endpoints
+ */
+config.endpoints.messageQueue =
+	process.env.SERVICE_MESSAGE_QUEUE_REDIS || 'redis://lisk:password@127.0.0.1:6379/4';
+
+/**
+ * LOGGING
+ *
+ * log.level   - TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK
+ * log.console - Plain JavaScript console.log() output (true/false)
+ * log.stdout  - Writes directly to stdout (true/false)
+ * log.file    - outputs to a file (ie. ./logs/app.log)
+ * log.gelf    - Writes to GELF-compatible socket (ie. 127.0.0.1:12201/udp)
+ */
+config.log.level = process.env.SERVICE_LOG_LEVEL || 'info';
+config.log.console = process.env.SERVICE_LOG_CONSOLE || 'false';
+config.log.stdout = process.env.SERVICE_LOG_STDOUT || 'true';
+config.log.gelf = process.env.SERVICE_LOG_GELF || 'false';
+config.log.file = process.env.SERVICE_LOG_FILE || 'false';
+config.log.docker_host = process.env.DOCKER_HOST || 'local';
+config.debug = process.env.SERVICE_LOG_LEVEL === 'debug';
+
+/**
+ * Message queue options
+ */
+config.queue = {
+	defaultJobOptions: {
+		attempts: 5,
+		timeout: 5 * 60 * 1000, // millisecs
+		removeOnComplete: true,
+		removeOnFail: true,
+		stackTraceLimit: 0,
+	},
+
+	// Inter-microservice message queues
+	account: { name: 'Account' },
+	block: { name: 'Block' },
+	event: { name: 'Event' },
+};
+
+config.job = {
+	progressRefreshInterval: 30 * 1000, // millisecs
+
+	// Interval takes priority over schedule and must be greater than 0 to be valid
+	indexMissingBlocks: {
+		interval: Number(process.env.JOB_INTERVAL_INDEX_MISSING_BLOCKS) || 0,
+		schedule: process.env.JOB_SCHEDULE_INDEX_MISSING_BLOCKS || '*/5 * * * *',
+		skipThreshold: Number(process.env.INDEX_MISSING_BLOCKS_SKIP_THRESHOLD) || 1000,
+		maxBlocksToSchedule: Number(process.env.INDEX_MISSING_BLOCKS_MAX_SCHEDULE) || 25000,
+	},
+};
+
+module.exports = config;
