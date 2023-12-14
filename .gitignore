@@ -85,3 +85,6 @@ docker/graylog/data*
 
 # Test coverage files
 .coverage
+
+# sparklines
+sparklines
