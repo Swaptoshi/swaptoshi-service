@@ -72,7 +72,7 @@ const mapObject = (rootObj, definition, subObj = rootObj) =>
 				const tempObj = mapObject(rootObj, innerDef, rootObj);
 				if (validate(tempObj)) acc[key] = [tempObj];
 			}
-		} else if (typeof definition[key] === 'object' && rootObj[key] !== null) {
+		} else if (typeof definition[key] === 'object' && rootObj && rootObj[key] !== null) {
 			const tempObj = mapObject(rootObj, definition[key], subObj[key]);
 			if (isObjectWithValues(tempObj)) acc[key] = tempObj;
 		}
