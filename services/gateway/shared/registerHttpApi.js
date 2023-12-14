@@ -160,7 +160,7 @@ const buildAPIConfig = (
 		}
 
 		// Set response headers and return excel or CSV data if filename available
-		if (data.data && data.meta && data.meta.filename) {
+		if (data && data.data && data.meta && data.meta.filename) {
 			res.setHeader('Content-Disposition', `attachment; filename="${data.meta.filename}"`);
 			if (data.meta.filename.endsWith('.xlsx') || data.meta.filename.endsWith('.xls')) {
 				res.setHeader('Content-Type', 'application/vnd.ms-excel');
@@ -172,7 +172,7 @@ const buildAPIConfig = (
 			return res;
 		}
 
-		if (data.data && data.status) {
+		if (data && data.data && data.status) {
 			if (data.status === 'SERVICE_UNAVAILABLE') ctx.meta.$responseHeaders = { 'Retry-After': 30 };
 			if (data.status === 'INVALID_PARAMS') data.status = 'BAD_REQUEST';
 
