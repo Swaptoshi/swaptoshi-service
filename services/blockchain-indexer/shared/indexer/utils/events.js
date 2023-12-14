@@ -148,7 +148,7 @@ const parseSingleEvent = (events, module, event, topic) => {
 		t =>
 			t.module === module &&
 			t.name === event &&
-			(topic !== undefined ? t.topics.includes(topic) : true),
+			(topic !== undefined ? t.topics.includes(EVENT_TOPIC_PREFIX.TX_ID.concat(topic)) : true),
 	);
 	return singleEvent;
 };
@@ -158,7 +158,7 @@ const parseEvents = (events, module, event, topic) => {
 		t =>
 			t.module === module &&
 			t.name === event &&
-			(topic !== undefined ? t.topics.includes(topic) : true),
+			(topic !== undefined ? t.topics.includes(EVENT_TOPIC_PREFIX.TX_ID.concat(topic)) : true),
 	);
 	return eventItem;
 };
