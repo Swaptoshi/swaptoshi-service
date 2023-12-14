@@ -118,7 +118,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
           token1 AS nextNode,
           fee AS totalFee,
           1 AS depth,
-          token0 || fee || token1 AS path
+          CONCAT(token0, feeHex, token1) AS path
         FROM
           ${poolTableSchema.tableName}
         WHERE
@@ -131,7 +131,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
           t.token1 AS nextNode,
           sp.totalFee + t.fee AS totalFee,
           sp.depth + 1 AS depth,
-          sp.path || t.fee || t.token1 AS path
+          CONCAT(sp.path, t.feeHex, t.token1) AS path
         FROM
           ${poolTableSchema.tableName} t
         JOIN
