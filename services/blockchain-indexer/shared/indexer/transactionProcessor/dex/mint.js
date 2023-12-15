@@ -93,7 +93,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		},
 	});
 	nftStorageUploadQueue.add({
-		data: Buffer.from(JSON.stringify(metadata, null, 0), 'utf8').toString('hex'),
+		data: Buffer.from(JSON.stringify(metadata.data, null, 0), 'utf8').toString('hex'),
 	});
 
 	await positionTable.upsert(
@@ -101,9 +101,9 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tokenId: increaseLiquidityEvent.data.tokenId,
 			collectionId: decodeNFTId(increaseLiquidityEvent.data.tokenId).collectionId,
 			owner: mintEvent.data.recipientAddress,
-			name: metadata.name,
-			description: metadata.description,
-			image: metadata.image,
+			name: metadata.data.name,
+			description: metadata.data.description,
+			image: metadata.data.image,
 			tickUpper: mintEvent.data.tickUpper,
 			tickLower: mintEvent.data.tickLower,
 			liquidity: Number(increaseLiquidityEvent.data.liquidity),

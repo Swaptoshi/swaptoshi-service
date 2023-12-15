@@ -70,9 +70,9 @@ const getFactoryStatistics = async () => {
 
 	const query = `
 		SELECT
-			COUNT(tf.tokenID) AS tokenCreated,
-			SUM(tf.supply * lp.current) AS totalMarketCap,
-			SUM(tf.supply * lp.current * ${lskusdprice.current || 0}) AS totalMarketCapUSD
+			COALESCE(COUNT(tf.tokenID), 0) AS tokenCreated,
+			COALESCE(SUM(tf.supply * lp.current), 0) AS totalMarketCap,
+			COALESCE(SUM(tf.supply * lp.current * ${lskusdprice.current || 0}), 0) AS totalMarketCapUSD
 		FROM
 			token_factory AS tf
 		JOIN
@@ -95,10 +95,13 @@ const getTokenFactories = async params => {
 
 	const tokenFactoryTable = await getTokenFactoryTable();
 	const lskusdprice = await getLSKUSDLastPrice();
-	const tokenIdsString = params.tokenIds
-		.split(',')
-		.map(tokenId => `'${tokenId}'`)
-		.join(',');
+	const tokenIdsString = Array.isArray(params.tokenIds)
+		? params.tokenIds
+				.split(',')
+				.map(tokenId => `'${tokenId}'`)
+				.join(',')
+		: [];
+	const searchQuery = tokenIdsString.length > 0 ? `AND tf.tokenID IN (${tokenIdsString})` : '';
 
 	const limitClause = params.limit !== undefined ? `LIMIT ${params.limit}` : '';
 	const offsetClause = params.offset !== undefined ? `OFFSET ${params.offset}` : '';
@@ -117,7 +120,7 @@ const getTokenFactories = async params => {
 		JOIN
 			last_price AS lp ON tf.tokenID = lp.tokenId
 		WHERE
-			tf.tokenID IN (${tokenIdsString})
+			1 = 1 ${searchQuery}
 		${limitClause}
 		${offsetClause};
 	`;
@@ -142,17 +145,35 @@ const getTokenFactoriesMeta = async params => {
 	};
 
 	const tokenFactoryTable = await getTokenFactoryTable();
-	const factories = await tokenFactoryTable
-		.find({
-			whereIn: [
-				{
-					property: 'tokenID',
-					values: params.tokenIds.split(','),
-				},
-			],
-			offset: params.offset,
-			limit: params.limit,
-		})
+
+	const tokenIdsString = Array.isArray(params.tokenIds)
+		? params.tokenIds
+				.split(',')
+				.map(tokenId => `'${tokenId}'`)
+				.join(',')
+		: [];
+	const searchQuery = tokenIdsString.length > 0 ? `AND tf.tokenID IN (${tokenIdsString})` : '';
+
+	const limitClause = params.limit !== undefined ? `LIMIT ${params.limit}` : '';
+	const offsetClause = params.offset !== undefined ? `OFFSET ${params.offset}` : '';
+
+	const query = `
+		SELECT
+			*
+		FROM
+			token_factory AS tf
+		WHERE
+			1 = 1 ${searchQuery}
+		${limitClause}
+		${offsetClause};
+	`;
+
+	const factoryData = parseQueryResult(await tokenFactoryTable.rawQuery(query));
+	const registryData = await requestAppRegistry('blockchain.apps.meta.tokens', {
+		tokenID: params.tokenIds,
+	});
+
+	const factories = factoryData
 		.map(f => ({
 			chainID: nodeInfo.chainID,
 			chainName: 'Swaptoshi',
@@ -180,20 +201,12 @@ const getTokenFactoriesMeta = async params => {
 				svg: '',
 			},
 		}))
-		.concat(
-			params.registry
-				? (
-						await requestAppRegistry('blockchain.apps.meta.tokens', {
-							tokenID: params.tokenIds,
-						})
-				  ).data
-				: [],
-		);
+		.concat(params.registry ? registryData.data : []);
 
 	response.data = factories;
 	response.meta = {
 		count: factories.length,
-		offset: params.offset,
+		offset: params.offset || 0,
 		total: await tokenFactoryTable.count(),
 	};
 	return response;

@@ -96,7 +96,7 @@ const getPositionValue = async params => {
 	const { index } = decodeNFTId(params.tokenId);
 	const query = `
         SELECT 
-            pool.poolAddress,
+            pool.poolAddress
         FROM position pos
             LEFT JOIN pool ON pool.inverted = false AND pool.collectionId = pos.collectionId
         WHERE
@@ -110,7 +110,7 @@ const getPositionValue = async params => {
 			poolAddress: cryptography.address
 				.getAddressFromLisk32Address(position.poolAddress)
 				.toString('hex'),
-			tokenId: index,
+			tokenId: index.toString(),
 		},
 	});
 
@@ -119,7 +119,7 @@ const getPositionValue = async params => {
 		meta: {},
 	};
 
-	response.data = value;
+	response.data = value.data;
 	response.meta = {};
 	return response;
 };
@@ -129,9 +129,9 @@ const getPositionMetadata = async params => {
 
 	const query = `
         SELECT 
-            pos.name,
-            pos.description,
-            pos.image
+			COALESCE(pos.name, '') AS name,
+            COALESCE(pos.description, '') AS description,
+            COALESCE(pos.image, '') AS image
         FROM position pos
 		WHERE pos.tokenId = '${params.tokenId}'
 		LIMIT 1;`;
@@ -143,7 +143,7 @@ const getPositionMetadata = async params => {
 
 	const metadata = parseQueryResult(await positionTable.rawQuery(query));
 
-	response.data = metadata;
+	response.data = metadata[0];
 	response.meta = {};
 	return response;
 };

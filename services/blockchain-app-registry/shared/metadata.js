@@ -334,14 +334,15 @@ const getBlockchainAppsTokenMetadata = async params => {
 		uniqueChainList,
 		async tokenMeta => {
 			const chainID = tokenMeta.tokenID.substring(0, LENGTH_CHAIN_ID);
-			const [{ appDirName }] = await applicationMetadataTable.find(
+			const [metadata] = await applicationMetadataTable.find(
 				{ network: tokenMeta.network, chainID },
 				['appDirName'],
 			);
+			if (!metadata) return;
 
 			const parsedTokenMeta = await readMetadataFromClonedRepo(
 				tokenMeta.network,
-				appDirName,
+				metadata.appDirName,
 				config.FILENAME.NATIVETOKENS_JSON,
 			);
 			parsedTokenMeta.tokens.forEach(token => {

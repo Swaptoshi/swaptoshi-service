@@ -24,11 +24,13 @@ const getDEXStatisticSummary = async params => {
 
 	const query = `
         SELECT
-            SUM(vol.volume * vol.priceUSD) AS totalVolumeUSD,
-            SUM(vol.feeGrowth * vol.priceUSD) AS totalFeeGrowthUSD,
-            SUM(vol.swapCount) AS swapCount,
-            (SELECT COUNT(DISTINCT poolAddress) FROM pool) AS totalPoolCount,
-            SUM(vl.amount * vol.priceUSD) AS totalTvlUSD
+            COALESCE(SUM(vol.volume * vol.priceUSD), 0) AS totalVolumeUSD,
+            COALESCE(SUM(vol.feeGrowth * vol.priceUSD), 0) AS totalFeeGrowthUSD,
+            COALESCE(SUM(vol.swapCount), 0) AS swapCount,
+            COALESCE((SELECT COUNT(DISTINCT poolAddress) FROM pool WHERE 1 = 1 ${
+							start ? `AND created >= ${start}` : ''
+						} ${end ? `AND created <= ${end}` : ''}), 0) AS totalPoolCount,
+            COALESCE(SUM(vl.amount * vol.priceUSD), 0) AS totalTvlUSD
         FROM
             registered_dex_token rdt
         LEFT JOIN (

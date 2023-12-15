@@ -6,6 +6,7 @@ module.exports = {
 		token1: { type: 'string' },
 		fee: { type: 'integer' },
 		inverted: { type: 'boolean' },
+		created: { type: 'integer' },
 		poolAddress: { type: 'string' },
 		collectionId: { type: 'string' },
 		feeHex: { type: 'string' },
@@ -17,6 +18,7 @@ module.exports = {
 	indexes: {
 		poolAddress: { type: 'key' },
 		collectionId: { type: 'key' },
+		created: { type: 'key' },
 		token0: { type: 'key' },
 		token1: { type: 'key' },
 		fee: { type: 'key' },

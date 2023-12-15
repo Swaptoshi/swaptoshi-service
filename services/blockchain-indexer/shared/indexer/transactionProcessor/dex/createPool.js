@@ -41,7 +41,7 @@ const dexTokenTableSchema = require('../../../database/schema/registeredDexToken
 const { decodePriceSqrt } = require('../../utils/priceFormatter');
 const { parseSingleEvent, parseEvents } = require('../../utils/events');
 const { decodePoolAddress, computePoolId } = require('../../utils/poolAddress');
-const { getTokenFactories } = require('../../../dataService/tokenFactory');
+const { getTokenFactoriesMeta } = require('../../../dataService/tokenFactory');
 
 const getPoolTable = () =>
 	getTableInstance(poolTableSchema.tableName, poolTableSchema, MYSQL_ENDPOINT);
@@ -71,7 +71,10 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			let logo = null;
 
 			try {
-				const tokenMetadata = await getTokenFactories({ tokenIds: event.data.tokenId });
+				const tokenMetadata = await getTokenFactoriesMeta({
+					tokenIds: event.data.tokenId,
+					registry: true,
+				});
 				if (tokenMetadata.data.length > 0) logo = tokenMetadata.data[0].logo.png;
 			} catch (err) {
 				logger.debug(`Error retrieving tokenMetadata: ${err.message}`);
@@ -122,6 +125,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			token1: poolCreatedEventData.data.token1,
 			fee: Number(poolCreatedEventData.data.fee),
 			inverted: false,
+			created: blockHeader.timestamp,
 			poolAddress: poolCreatedEventData.data.poolAddress,
 			collectionId: computePoolId(poolCreatedEventData.data.poolAddress),
 			feeHex: feeHex.toString('hex'),
@@ -143,6 +147,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			token1: poolCreatedEventData.data.token0,
 			fee: Number(poolCreatedEventData.data.fee),
 			inverted: true,
+			created: blockHeader.timestamp,
 			poolAddress: poolCreatedEventData.data.poolAddress,
 			collectionId: computePoolId(poolCreatedEventData.data.poolAddress),
 			feeHex: feeHex.toString('hex'),

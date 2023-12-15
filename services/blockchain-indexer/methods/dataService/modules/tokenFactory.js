@@ -19,7 +19,7 @@ module.exports = [
 		name: 'factory.token.meta',
 		controller: getTokenFactoriesMeta,
 		params: {
-			tokenIds: { optional: false, type: 'string' },
+			tokenIds: { optional: true, type: 'string' },
 			registry: { optional: true, type: 'boolean' },
 			offset: { optional: true, type: 'number' },
 			limit: { optional: true, type: 'number' },
@@ -29,7 +29,7 @@ module.exports = [
 		name: 'factory.token',
 		controller: getTokenFactories,
 		params: {
-			tokenIds: { optional: false, type: 'string' },
+			tokenIds: { optional: true, type: 'string' },
 			offset: { optional: true, type: 'number' },
 			limit: { optional: true, type: 'number' },
 		},

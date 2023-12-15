@@ -8,7 +8,7 @@ module.exports = {
 	rpcMethod: 'get.factory.token',
 	tags: ['TokenFactory'],
 	params: {
-		tokenIds: { optional: false, type: 'string' },
+		tokenIds: { optional: true, type: 'string' },
 		offset: { optional: true, type: 'number' },
 		limit: { optional: true, type: 'number' },
 	},

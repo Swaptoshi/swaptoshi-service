@@ -52,7 +52,7 @@ const getTickPrice = async params => {
 		ORDER BY time DESC 
 		${limit ? `LIMIT ${limit}` : ''}
 		${offset ? `OFFSET ${offset}` : ''}
-	) AS table
+	) AS price
 	ORDER BY time ASC;`;
 
 	const response = {
@@ -100,7 +100,7 @@ const getOhlcPrice = async params => {
 		ORDER BY time DESC 
 		${limit ? `LIMIT ${limit}` : ''}
 		${offset ? `OFFSET ${offset}` : ''}
-	) AS table
+	) AS ohlc
 	ORDER BY time ASC;`;
 
 	const response = {
