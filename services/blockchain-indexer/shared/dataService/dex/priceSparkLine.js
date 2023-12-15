@@ -8,6 +8,7 @@ const {
 
 const config = require('../../../config');
 const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickPrice');
+const { parseQueryResult } = require('../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -51,7 +52,7 @@ const generateSparklineBuffer = async (base, quote, interval, limit) => {
     `;
 
 	const tickPriceTable = await getTickPriceTable(pair);
-	const prices = await tickPriceTable.rawQuery(query);
+	const prices = parseQueryResult(await tickPriceTable.rawQuery(query));
 	const data = prices.map(t => t.value);
 
 	const canvasRenderService = new ChartJSNodeCanvas({

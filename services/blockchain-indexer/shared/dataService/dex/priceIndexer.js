@@ -95,9 +95,8 @@ const indexTokenTickPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 	const value = await getPrice(baseTokenId, quoteTokenId, dbTrx);
 	if (value !== 0) {
 		await tickPriceTable.upsert({ time, value }, dbTrx);
+		logger.info(`Updated tick price at ${time} for pair ${pair.toUpperCase()}`);
 	}
-
-	logger.info(`Updated tick price at ${time} for pair ${pair.toUpperCase()}`);
 };
 
 const indexTokenOhlcPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) => {

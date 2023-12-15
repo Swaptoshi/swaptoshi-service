@@ -67,7 +67,7 @@ const getDEXStatisticSummary = async params => {
 	const summary = await registeredDexTokenTable.rawQuery(query);
 
 	// eslint-disable-next-line prefer-destructuring
-	response.data = summary[0];
+	response.data = summary[0][0];
 	response.meta = {};
 	return response;
 };

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const {
 	DB: {
 		MySQL: { getTableInstance },
@@ -10,6 +11,7 @@ const positionTableSchema = require('../../../database/schema/position');
 const config = require('../../../../config');
 const { invokeEndpoint } = require('../../invoke');
 const { decodeNFTId } = require('../../../indexer/utils/poolAddress');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -77,7 +79,7 @@ const getPositions = async params => {
 		meta: {},
 	};
 
-	const ticks = await positionTable.rawQuery(query);
+	const ticks = parseQueryResult(await positionTable.rawQuery(query));
 
 	response.data = ticks;
 	response.meta = {
@@ -100,13 +102,16 @@ const getPositionValue = async params => {
         WHERE
             pos.tokenId = '${params.tokenId}'
         LIMIT 1;`;
-	const [position] = await positionTable.rawQuery(query);
+	const [position] = parseQueryResult(await positionTable.rawQuery(query));
 
-	const value = await invokeEndpoint('dex_getPosition', {
-		poolAddress: cryptography.address
-			.getAddressFromLisk32Address(position.poolAddress)
-			.toString('hex'),
-		tokenId: index,
+	const value = await invokeEndpoint({
+		endpoint: 'dex_getPosition',
+		params: {
+			poolAddress: cryptography.address
+				.getAddressFromLisk32Address(position.poolAddress)
+				.toString('hex'),
+			tokenId: index,
+		},
 	});
 
 	const response = {
@@ -136,7 +141,7 @@ const getPositionMetadata = async params => {
 		meta: {},
 	};
 
-	const metadata = await positionTable.rawQuery(query);
+	const metadata = parseQueryResult(await positionTable.rawQuery(query));
 
 	response.data = metadata;
 	response.meta = {};

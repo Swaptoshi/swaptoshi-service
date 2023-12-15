@@ -7,6 +7,7 @@ const {
 const poolTableSchema = require('../../../database/schema/pool');
 const config = require('../../../../config');
 const { getLSKUSDLastPrice } = require('../lskPrices');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -155,7 +156,7 @@ const getPools = async params => {
 		meta: {},
 	};
 
-	const pools = await poolTable.rawQuery(query);
+	const pools = parseQueryResult(await poolTable.rawQuery(query));
 
 	response.data = pools;
 	response.meta = {

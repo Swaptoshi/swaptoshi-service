@@ -16,6 +16,7 @@ const { requestAppRegistry, requestConnector } = require('../../utils/request');
 const { factoryMetadataSchema } = require('./schema');
 const { nftStorageUploadQueue } = require('../nft.storage');
 const { getLSKUSDLastPrice } = require('../dex');
+const { parseQueryResult } = require('../../utils/query');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
@@ -78,7 +79,7 @@ const getFactoryStatistics = async () => {
 			last_price AS lp ON tf.tokenID = lp.tokenId;
 	`;
 
-	const marketCap = await tokenFactoryTable.rawQuery(query);
+	const marketCap = parseQueryResult(await tokenFactoryTable.rawQuery(query));
 
 	// eslint-disable-next-line prefer-destructuring
 	response.data = marketCap[0];
@@ -121,7 +122,7 @@ const getTokenFactories = async params => {
 		${offsetClause};
 	`;
 
-	const factories = await tokenFactoryTable.rawQuery(query);
+	const factories = parseQueryResult(await tokenFactoryTable.rawQuery(query));
 
 	response.data = factories;
 	response.meta = {

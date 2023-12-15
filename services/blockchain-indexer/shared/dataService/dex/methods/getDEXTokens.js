@@ -8,6 +8,7 @@ const dexTokenTableSchema = require('../../../database/schema/registeredDexToken
 
 const config = require('../../../../config');
 const { getLSKUSDLastPrice } = require('../lskPrices');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -164,7 +165,7 @@ const getDEXTokens = async params => {
 		meta: {},
 	};
 
-	const tokens = await registeredDexTokenTable.rawQuery(query);
+	const tokens = parseQueryResult(await registeredDexTokenTable.rawQuery(query));
 
 	response.data = tokens;
 	response.meta = {

@@ -17,6 +17,7 @@ const { intervalToSecond, normalizeBlockTime } = require('./timestamp');
 const { getLSKTokenID } = require('../business/interoperability/blockchainApps');
 const { getLSKUSDPrice } = require('./lskPrices');
 const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickPrice');
+const { parseQueryResult } = require('../../utils/query');
 
 const getPoolTable = () =>
 	getTableInstance(poolTableSchema.tableName, poolTableSchema, MYSQL_ENDPOINT);
@@ -61,12 +62,14 @@ const getLastPriceFromTickPriceTable = async (pair, timestamp, timeframe) => {
 	if (!Object.keys(intervalToSecond).includes(timeframe)) throw new Error('invalid timeframe');
 	const tickTable = await getTickPriceTable(pair);
 
-	let price = await tickTable.rawQuery(
-		lastPriceQuery(pair, timestamp - intervalToSecond[timeframe]),
+	let price = parseQueryResult(
+		await tickTable.rawQuery(lastPriceQuery(pair, timestamp - intervalToSecond[timeframe])),
 	);
 	if (price.length === 0)
-		price = await tickTable.rawQuery(
-			nearestLastPriceQuery(pair, timestamp - intervalToSecond[timeframe]),
+		price = parseQueryResult(
+			await tickTable.rawQuery(
+				nearestLastPriceQuery(pair, timestamp - intervalToSecond[timeframe]),
+			),
 		);
 	if (price.length !== 0) return price[0].value;
 	return 0;
@@ -99,7 +102,7 @@ const getWeightedPrice = async (token0, token1, dbTrx) => {
       WHERE
         token0 = '${token0}'
         AND token1 = '${token1}'`;
-	const pool = await poolTable.rawQuery(query, dbTrx);
+	const pool = parseQueryResult(await poolTable.rawQuery(query, dbTrx));
 	if (pool.length === 0) return 0;
 	return pool[0].weightedPrice || 0;
 };
@@ -149,7 +152,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
       ORDER BY
         totalFee
       LIMIT ${limit}`;
-	const route = await poolTable.rawQuery(query, dbTrx);
+	const route = parseQueryResult(await poolTable.rawQuery(query, dbTrx));
 	return route;
 };
 
@@ -199,7 +202,7 @@ const transformTickToOhlc = async (pair, timeframe, from, to, dbTrx) => {
     GROUP BY open_time) m
     JOIN tick_${pair} t1 ON t1.time = min_time
     JOIN tick_${pair} t2 ON t2.time = max_time`;
-	const ohlc = await ohlcPriceTable.rawQuery(query, dbTrx);
+	const ohlc = parseQueryResult(await ohlcPriceTable.rawQuery(query, dbTrx));
 	return ohlc;
 };
 

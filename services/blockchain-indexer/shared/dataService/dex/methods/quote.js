@@ -9,6 +9,7 @@ const { invokeEndpoint } = require('../../invoke');
 const { getPrice, getRoute } = require('../priceQuoter');
 
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -31,11 +32,15 @@ const quoteSwapMethod = async params => {
 	let { path } = params;
 
 	if (params.base && params.quote) {
-		const [baseToken] = await tokenTable.rawQuery(
-			`SELECT tokenId FROM registered_dex_token t WHERE tokenId LIKE '%${params.base}%' OR symbol LIKE '%${params.base}%' LIMIT 1`,
+		const [baseToken] = parseQueryResult(
+			await tokenTable.rawQuery(
+				`SELECT tokenId FROM registered_dex_token t WHERE tokenId LIKE '%${params.base}%' OR symbol LIKE '%${params.base}%' LIMIT 1`,
+			),
 		);
-		const [quoteToken] = await tokenTable.rawQuery(
-			`SELECT tokenId FROM registered_dex_token t WHERE tokenId LIKE '%${params.quote}%' OR symbol LIKE '%${params.quote}%' LIMIT 1`,
+		const [quoteToken] = parseQueryResult(
+			await tokenTable.rawQuery(
+				`SELECT tokenId FROM registered_dex_token t WHERE tokenId LIKE '%${params.quote}%' OR symbol LIKE '%${params.quote}%' LIMIT 1`,
+			),
 		);
 		if (baseToken && quoteToken) {
 			[path] = await getRoute(baseToken.tokenId, quoteToken.tokenId, params.recursion || 5);
@@ -45,15 +50,21 @@ const quoteSwapMethod = async params => {
 	if (!path) throw new Error('path not available');
 
 	if (params.amountIn) {
-		quote = await invokeEndpoint('dex_quoteExactInput', {
-			path,
-			amountIn: params.amountIn,
+		quote = await invokeEndpoint({
+			endpoint: 'dex_quoteExactInput',
+			params: {
+				path,
+				amountIn: params.amountIn,
+			},
 		});
 		response.data.amount = quote.data.amountOut;
 	} else if (params.amountOut) {
-		quote = await invokeEndpoint('dex_quoteExactOutput', {
-			path,
-			amountOut: params.amountOut,
+		quote = await invokeEndpoint({
+			endpoint: 'dex_quoteExactOutput',
+			params: {
+				path,
+				amountOut: params.amountOut,
+			},
 		});
 		response.data.amount = quote.data.amountIn;
 	}

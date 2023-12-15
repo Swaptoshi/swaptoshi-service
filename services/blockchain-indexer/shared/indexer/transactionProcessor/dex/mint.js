@@ -84,9 +84,12 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const positionTable = await getPositionTable();
 
 	const { index: tokenIndex } = decodeNFTId(increaseLiquidityEvent.data.tokenId);
-	const metadata = await invokeEndpoint('dex_getMetadata', {
-		poolAddress,
-		tokenId: tokenIndex.toString(),
+	const metadata = await invokeEndpoint({
+		endpoint: 'dex_getMetadata',
+		params: {
+			poolAddress: computePoolAddress(poolKey).toString('hex'),
+			tokenId: tokenIndex.toString(),
+		},
 	});
 	nftStorageUploadQueue.add({
 		data: Buffer.from(JSON.stringify(metadata, null, 0), 'utf8').toString('hex'),

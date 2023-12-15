@@ -7,6 +7,7 @@ const {
 const tickTableSchema = require('../../../database/schema/tick');
 
 const config = require('../../../../config');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -25,7 +26,7 @@ const getPoolTicks = async params => {
 		meta: {},
 	};
 
-	const ticks = await tickTable.rawQuery(query);
+	const ticks = parseQueryResult(await tickTable.rawQuery(query));
 
 	response.data = ticks;
 	response.meta = {};

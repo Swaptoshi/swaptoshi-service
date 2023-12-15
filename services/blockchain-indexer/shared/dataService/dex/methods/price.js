@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const {
 	DB: {
 		MySQL: { getTableInstance },
@@ -9,6 +10,7 @@ const { getTickPriceTableSchema } = require('../../../database/dynamic-schema/ti
 const config = require('../../../../config');
 const { getOhlcTableSchema } = require('../../../database/dynamic-schema/ohlc');
 const { intervalToSecond } = require('../timestamp');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -58,7 +60,7 @@ const getTickPrice = async params => {
 		meta: {},
 	};
 
-	const ticks = await tickTable.rawQuery(query);
+	const ticks = parseQueryResult(await tickTable.rawQuery(query));
 
 	response.data = ticks;
 	response.meta = {
@@ -106,7 +108,7 @@ const getOhlcPrice = async params => {
 		meta: {},
 	};
 
-	const ohlc = await ohlcTable.rawQuery(query);
+	const ohlc = parseQueryResult(await ohlcTable.rawQuery(query));
 
 	response.data = ohlc;
 	response.meta = {
