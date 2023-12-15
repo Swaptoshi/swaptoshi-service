@@ -74,7 +74,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 				const tokenMetadata = await getTokenFactories({ tokenIds: event.data.tokenId });
 				if (tokenMetadata.data.length > 0) logo = tokenMetadata.data[0].logo.png;
 			} catch (err) {
-				logger.error(`Error retrieving tokenMetadata: ${err.message}`);
+				logger.debug(`Error retrieving tokenMetadata: ${err.message}`);
 			}
 
 			await tokenTable.upsert(

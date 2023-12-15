@@ -64,7 +64,7 @@ const updateLastPrice = async (baseTokenId, pair, time, dbTrx) => {
 		await lastPriceTable.upsert({ tokenId: baseTokenId, ...lastPrice }, dbTrx);
 		logger.info(`Updated last price at ${time} for pair ${pair.toUpperCase()}`);
 	} else {
-		logger.info(`No last price update at ${time} for pair ${pair.toUpperCase()}`);
+		logger.debug(`No last price update at ${time} for pair ${pair.toUpperCase()}`);
 	}
 };
 
@@ -124,7 +124,7 @@ const indexTokenOhlcPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 
 				logger.info(`Updated ohlc price at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
 			} else {
-				logger.info(`No ohlc price update at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
+				logger.debug(`No ohlc price update at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
 			}
 		},
 		{ concurrency: OHLC_TIMEFRAMES.length },
@@ -175,7 +175,7 @@ const indexLSDKUSDOhlcPrice = async job => {
 
 				logger.info(`Updated ohlc price at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
 			} else {
-				logger.info(`No ohlc price update at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
+				logger.debug(`No ohlc price update at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
 			}
 		},
 		{ concurrency: OHLC_TIMEFRAMES.length },
@@ -220,79 +220,6 @@ const indexPreviousLSKUSDOhlcPrice = async job => {
 		},
 		{ concurrency: INDEX_TOKEN_CONCURRENCY },
 	);
-};
-
-const indexPreviousLSKUSDTickPriceQueue = Queue(
-	config.endpoints.cache,
-	config.queue.indexPreviousLSKUSDTickPrice.name,
-	indexPreviousLSKUSDTickPrice,
-	config.queue.indexPreviousLSKUSDTickPrice.concurrency,
-);
-
-const indexPreviousLSKUSDOhlcPriceQueue = Queue(
-	config.endpoints.cache,
-	config.queue.indexPreviousLSKUSDOhlcPrice.name,
-	indexPreviousLSKUSDOhlcPrice,
-	config.queue.indexPreviousLSKUSDOhlcPrice.concurrency,
-);
-
-const indexCurrentLSKUSDPriceQueue = Queue(
-	config.endpoints.cache,
-	config.queue.indexCurrentLSKUSDPrice.name,
-	indexCurrentLSKUSDPrice,
-	config.queue.indexCurrentLSKUSDPrice.concurrency,
-);
-
-// eslint-disable-next-line no-unused-vars
-const addPriceIndex = async (block, dbTrx) => {
-	const tokenTable = await getDEXTokenTable();
-	const lskTokenId = await getLSKTokenID();
-	const registeredDexTokens = await tokenTable.find();
-
-	await BluebirdPromise.map(
-		registeredDexTokens,
-		async token => {
-			if (token !== lskTokenId) {
-				await indexTokenPrice(block.timestamp, token.tokenId, lskTokenId, dbTrx);
-			}
-		},
-		{ concurrency: INDEX_TOKEN_CONCURRENCY },
-	);
-
-	indexCurrentLSKUSDPriceQueue.add({ timestamp: block.timestamp });
-
-	const time = normalizeBlockTime(block.timestamp, LAST_PRICE_INTERVAL);
-	await updateLastPrice(lskTokenId, 'lskusd', time, dbTrx);
-};
-
-const addGenesisPriceIndex = async (block, dbTrx) => {
-	const currentTimestamp = Math.floor(Date.now() / 1000);
-	const blockTimestamp = block.timestamp;
-
-	logger.info(`Start indexing LSKUSD price from ${blockTimestamp} to ${currentTimestamp}`);
-
-	for (
-		let i = blockTimestamp;
-		i < currentTimestamp;
-		i += intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
-	) {
-		const tickFrom = normalizeBlockTime(i, TICK_TIMEFRAME);
-		const tickTo =
-			tickFrom + intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
-		indexPreviousLSKUSDTickPriceQueue.add({ from: tickFrom, to: tickTo, dbTrx });
-	}
-
-	OHLC_TIMEFRAMES.forEach(timeframe => {
-		for (
-			let i = blockTimestamp;
-			i < currentTimestamp;
-			i += intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
-		) {
-			const ohlcFrom = normalizeBlockTime(i, timeframe);
-			const ohlcTo = ohlcFrom + intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
-			indexPreviousLSKUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
-		}
-	});
 };
 
 const deleteTickPriceIndex = async (token, block, dbTrx) => {
@@ -345,6 +272,79 @@ const deleteOhlcPriceIndex = async (token, block, dbTrx) => {
 		},
 		{ concurrency: OHLC_TIMEFRAMES.length },
 	);
+};
+
+const indexPreviousLSKUSDTickPriceQueue = Queue(
+	config.endpoints.cache,
+	config.queue.indexPreviousLSKUSDTickPrice.name,
+	indexPreviousLSKUSDTickPrice,
+	config.queue.indexPreviousLSKUSDTickPrice.concurrency,
+);
+
+const indexPreviousLSKUSDOhlcPriceQueue = Queue(
+	config.endpoints.cache,
+	config.queue.indexPreviousLSKUSDOhlcPrice.name,
+	indexPreviousLSKUSDOhlcPrice,
+	config.queue.indexPreviousLSKUSDOhlcPrice.concurrency,
+);
+
+const indexCurrentLSKUSDPriceQueue = Queue(
+	config.endpoints.cache,
+	config.queue.indexCurrentLSKUSDPrice.name,
+	indexCurrentLSKUSDPrice,
+	config.queue.indexCurrentLSKUSDPrice.concurrency,
+);
+
+// eslint-disable-next-line no-unused-vars
+const addPriceIndex = async (block, dbTrx) => {
+	const tokenTable = await getDEXTokenTable();
+	const lskTokenId = await getLSKTokenID();
+	const registeredDexTokens = await tokenTable.find();
+
+	await BluebirdPromise.map(
+		registeredDexTokens,
+		async token => {
+			if (token.tokenId !== lskTokenId) {
+				await indexTokenPrice(block.timestamp, token.tokenId, lskTokenId, dbTrx);
+			}
+		},
+		{ concurrency: INDEX_TOKEN_CONCURRENCY },
+	);
+
+	indexCurrentLSKUSDPriceQueue.add({ timestamp: block.timestamp });
+
+	const time = normalizeBlockTime(block.timestamp, LAST_PRICE_INTERVAL);
+	await updateLastPrice(lskTokenId, 'lskusd', time, dbTrx);
+};
+
+const addGenesisPriceIndex = async (block, dbTrx) => {
+	const currentTimestamp = Math.floor(Date.now() / 1000);
+	const blockTimestamp = block.timestamp;
+
+	logger.info(`Start indexing LSKUSD price from ${blockTimestamp} to ${currentTimestamp}`);
+
+	for (
+		let i = blockTimestamp;
+		i < currentTimestamp;
+		i += intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
+	) {
+		const tickFrom = normalizeBlockTime(i, TICK_TIMEFRAME);
+		const tickTo =
+			tickFrom + intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
+		indexPreviousLSKUSDTickPriceQueue.add({ from: tickFrom, to: tickTo, dbTrx });
+	}
+
+	OHLC_TIMEFRAMES.forEach(timeframe => {
+		for (
+			let i = blockTimestamp;
+			i < currentTimestamp;
+			i += intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
+		) {
+			const ohlcFrom = normalizeBlockTime(i, timeframe);
+			const ohlcTo = ohlcFrom + intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
+			indexPreviousLSKUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
+		}
+	});
 };
 
 const deletePriceIndex = async (block, dbTrx) => {

@@ -44,6 +44,7 @@ const { getLisk32AddressFromPublicKey } = require('../../../utils/account');
 const { decodePoolAddress } = require('../../utils/poolAddress');
 const { getLisk32AddressFromHexAddress } = require('../../../dataService/utils/account');
 const { indexAccountAddress } = require('../../accountIndex');
+const { syncPoolData } = require('../../utils/dexSync');
 
 const getPositionTable = () =>
 	getTableInstance(positionTableSchema.tableName, positionTableSchema, MYSQL_ENDPOINT);
@@ -152,6 +153,9 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	logger.trace(`Updating index for the account with address ${poolAddress} asynchronously.`);
 	indexAccountAddress(poolAddress);
 
+	logger.trace(`Syncing pool: ${poolAddress}.`);
+	await syncPoolData(poolAddress);
+
 	Promise.resolve({ blockHeader, tx });
 };
 
@@ -247,6 +251,9 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	logger.trace(`Updating index for the account with address ${poolAddress} asynchronously.`);
 	indexAccountAddress(poolAddress);
+
+	logger.trace(`Syncing pool: ${poolAddress}.`);
+	await syncPoolData(poolAddress);
 
 	Promise.resolve({ blockHeader, tx });
 };
