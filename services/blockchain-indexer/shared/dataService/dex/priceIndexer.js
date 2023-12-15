@@ -118,7 +118,7 @@ const indexTokenOhlcPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 			const ohlc = await transformTickToOhlc(pair, timeframe, previousTime, time, dbTrx);
 			if (ohlc.length > 0) {
 				await ohlcPriceTable.upsert(
-					{ time, open: ohlc.open, high: ohlc.high, low: ohlc.low, close: ohlc.close },
+					{ time, open: ohlc[0].open, high: ohlc[0].high, low: ohlc[0].low, close: ohlc[0].close },
 					dbTrx,
 				);
 
