@@ -36,8 +36,8 @@ const getDEXStatisticSummary = async params => {
                 t.tokenId,
                 p.poolAddress,
                 COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount,
-                SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) AS volume,
-                SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) AS feeGrowth,
+                SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / (10 * t.decimal) AS volume,
+                SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / (10 * t.decimal) AS feeGrowth,
                 COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
 		lskusdprice.current || 0
 	}, 0) AS priceUSD
@@ -54,10 +54,11 @@ const getDEXStatisticSummary = async params => {
         ) AS vol ON rdt.tokenId = vol.tokenId
         LEFT JOIN (
             SELECT
-                tokenId,
+                tvl.tokenId,
                 poolAddress,
-                SUM(amount) as amount
+                SUM(amount) / (10 * t.decimal) as amount
             FROM tvl
+            LEFT JOIN registered_dex_token t ON t.tokenId = tvl.tokenId
             WHERE
                 1 = 1 ${start ? `AND time >= ${start}` : ''} ${end ? `AND time <= ${end}` : ''}
             GROUP BY

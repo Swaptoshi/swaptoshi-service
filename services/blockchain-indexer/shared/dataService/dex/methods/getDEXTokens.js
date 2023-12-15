@@ -122,8 +122,8 @@ const getDEXTokens = async params => {
 							v.height, 
 							v.index, 
 							COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
-							SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) AS volume, 
-							SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) AS feeGrowth, 
+							SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / (10 * t.decimal) AS volume, 
+							SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / (10 * t.decimal) AS feeGrowth, 
 							COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
 			lskusdprice.current
 		}, 0) AS priceUSD 
@@ -142,10 +142,11 @@ const getDEXTokens = async params => {
 					LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID 
 					LEFT JOIN (
 						SELECT 
-							tokenId, 
-							SUM(amount) as amount 
+							tvl.tokenId, 
+							SUM(amount) / (10 * t.decimal) as amount 
 						FROM 
 							tvl 
+						LEFT JOIN registered_dex_token t ON t.tokenId = tvl.tokenId
 						WHERE 
                             1 = 1 ${start ? `AND time >= ${start}` : ''} ${
 			end ? `AND time <= ${end}` : ''
