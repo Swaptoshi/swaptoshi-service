@@ -131,10 +131,10 @@ const indexTokenOhlcPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 	);
 };
 
-const indexTokenPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) => {
-	await indexTokenTickPrice(timestamp, baseTokenId, quoteTokenId, dbTrx);
-	await indexTokenOhlcPrice(timestamp, baseTokenId, quoteTokenId, dbTrx);
-	await indexTokenLastPrice(timestamp, baseTokenId, quoteTokenId, dbTrx);
+const indexTokenPrice = async (timestamp, baseTokenId, quoteTokenId) => {
+	await indexTokenTickPrice(timestamp, baseTokenId, quoteTokenId);
+	await indexTokenOhlcPrice(timestamp, baseTokenId, quoteTokenId);
+	await indexTokenLastPrice(timestamp, baseTokenId, quoteTokenId);
 };
 
 /** @param {{timestamp: number}} job */
