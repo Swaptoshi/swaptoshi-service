@@ -322,7 +322,7 @@
 			"price": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of base/quote token",
+				"description": "current price, denominated in token0/token1",
 				"example": 1.132
 			},
 			"feeGrowth0": {
@@ -720,7 +720,7 @@
 			"value": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of base/quote token",
+				"description": "current price of this token denominated in LSK",
 				"example": 1.132
 			}
 		}

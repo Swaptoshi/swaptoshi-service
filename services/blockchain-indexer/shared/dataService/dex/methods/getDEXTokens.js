@@ -9,6 +9,7 @@ const dexTokenTableSchema = require('../../../database/schema/registeredDexToken
 const config = require('../../../../config');
 const { getLSKUSDLastPrice } = require('../lskPrices');
 const { parseQueryResult } = require('../../../utils/query');
+const { getLSKTokenID } = require('../../business/interoperability/blockchainApps');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -50,6 +51,7 @@ const getDEXTokens = async params => {
 				`;
 	} else {
 		const lskusdprice = await getLSKUSDLastPrice();
+		const lskTokenId = await getLSKTokenID();
 		const changeWindow = params.changeWindow || '24h';
 		const { start, end } = params;
 
@@ -106,7 +108,7 @@ const getDEXTokens = async params => {
 					COUNT(pool.poolAddress) AS poolCount, 
 					vl.amount AS totalTvl, 
 					vl.amount * vol.priceUSD AS totalTvlUSD, 
-					COALESCE(lp.current, 0) AS price, 
+					COALESCE(CASE WHEN rdt.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
 					vol.priceUSD AS priceUSD, 
 					COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
 					COALESCE(((lp.current * ${lskusdprice.current || 0}) - (lp.${changeWindow} * ${
@@ -122,7 +124,9 @@ const getDEXTokens = async params => {
 							COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
 							SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) AS volume, 
 							SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) AS feeGrowth, 
-							COALESCE(lp.current * ${lskusdprice.current}, 0) AS priceUSD 
+							COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
+			lskusdprice.current
+		}, 0) AS priceUSD 
 						FROM 
 							registered_dex_token t 
 							JOIN pool p ON p.inverted = false 
