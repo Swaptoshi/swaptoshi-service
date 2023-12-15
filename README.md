@@ -1,14 +1,13 @@
 ![Logo](./docs/assets/banner_service.png)
 
-# Lisk Service
+# Swaptoshi Service
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/liskHQ/lisk-service)
-![GitHub repo size](https://img.shields.io/github/repo-size/liskhq/lisk-service)
-[![DeepScan grade](https://deepscan.io/api/teams/6759/projects/8870/branches/113510/badge/grade.svg)](https://deepscan.io/dashboard/#view=project&tid=6759&pid=14719&bid=279961)
-![GitHub issues](https://img.shields.io/github/issues-raw/liskhq/lisk-service)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/liskhq/lisk-service)
-[![Code coverage](https://codecov.io/gh/LiskHQ/lisk-service/branch/development/graph/badge.svg?token=987H7T2C3K)](https://codecov.io/gh/LiskHQ/lisk-service)
+![GitHub repo size](https://img.shields.io/github/repo-size/swaptoshi/swaptoshi-service)
+
+**Swaptoshi Service is created based on [Lisk Service v0.7.2](https://github.com/LiskHQ/lisk-service/tree/v0.7.2) and adapted to the Swaptoshi Blockchain.**
+
+---
 
 Lisk Service is a web application middleware that allows interaction with various blockchain networks based on the Lisk protocol.
 
@@ -178,7 +177,7 @@ https://github.com/LiskHQ/lisk-service/graphs/contributors
 
 ## License
 
-Copyright 2016-2024 Lisk Foundation
+Copyright 2024 Swaptoshi Labs
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
