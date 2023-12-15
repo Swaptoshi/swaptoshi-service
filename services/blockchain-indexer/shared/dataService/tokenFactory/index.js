@@ -113,8 +113,8 @@ const getTokenFactories = async params => {
 			tf.supply,
 			lp.current AS price,
 			lp.current * ${lskusdprice.current || 0} AS priceUSD,
-			(tf.supply * lp.current) / (10 * tf.decimal) AS marketCap,
-			(tf.supply * lp.current * ${lskusdprice.current || 0}) / (10 * tf.decimal) AS marketCapUSD
+			(tf.supply * lp.current) / POWER(10, tf.decimal) AS marketCap,
+			(tf.supply * lp.current * ${lskusdprice.current || 0}) / POWER(10, tf.decimal) AS marketCapUSD
 		FROM
 			token_factory AS tf
 		JOIN
