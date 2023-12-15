@@ -160,13 +160,13 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 			logger.debug(`Updated ${token0.symbol}/${token1.symbol} pool price to: ${updatedPrice}`);
 			logger.debug(`Updated ${token0.symbol}/${token1.symbol} pool tick to: ${event.data.tick}`);
 
-			const token0Price = await getPrice(poolKey.token0, lskTokenId, dbTrx);
+			const token0Price = await getPrice(poolKey.token0, lskTokenId);
 			await lastPriceTable.update({
 				where: { tokenId: poolKey.token0 },
 				updates: { current: token0Price },
 			});
 
-			const token1Price = await getPrice(poolKey.token1, lskTokenId, dbTrx);
+			const token1Price = await getPrice(poolKey.token1, lskTokenId);
 			await lastPriceTable.update({
 				where: { tokenId: poolKey.token1 },
 				updates: { current: token1Price },
@@ -299,13 +299,13 @@ const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 				`Reverted ${token0.symbol}/${token1.symbol} pool tick to: ${event.data.tickBefore}`,
 			);
 
-			const token0Price = await getPrice(poolKey.token0, lskTokenId, dbTrx);
+			const token0Price = await getPrice(poolKey.token0, lskTokenId);
 			await lastPriceTable.update({
 				where: { tokenId: poolKey.token0 },
 				updates: { current: token0Price },
 			});
 
-			const token1Price = await getPrice(poolKey.token1, lskTokenId, dbTrx);
+			const token1Price = await getPrice(poolKey.token1, lskTokenId);
 			await lastPriceTable.update({
 				where: { tokenId: poolKey.token1 },
 				updates: { current: token1Price },

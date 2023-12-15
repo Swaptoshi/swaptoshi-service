@@ -158,6 +158,8 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
 
 const getPrice = async (base, quote, dbTrx) => {
 	let price = 1;
+	if (base === quote) return price;
+
 	const _quote = quote === usdTokenId ? await getLSKTokenID() : quote;
 
 	const route = await getRoute(base, _quote, MAX_RECURSION, 1, dbTrx);
