@@ -112,7 +112,7 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 		[EVENT_NAME_COLLECT]: ['transactionID', 'poolAddress', 'recipientAddress'],
 		[EVENT_NAME_DEX_BURN]: ['transactionID', 'poolAddress', 'senderAddress'],
 		[EVENT_NAME_COLLECT_PROTOCOL]: ['transactionID', 'poolAddress', 'treasuryAddress'],
-		[EVENT_NAME_SWAP]: ['transactionID', 'poolAddress', 'senderAddress', 'token0ID', 'token1ID'],
+		[EVENT_NAME_SWAP]: ['transactionID', 'poolAddress', 'senderAddress'],
 		[EVENT_NAME_FLASH]: ['transactionID', 'poolAddress', 'recipientAddress'],
 		[EVENT_NAME_INCREASE_LIQUIDITY]: ['transactionID', 'poolAddress', 'senderAddress'],
 		[EVENT_NAME_DECREASE_LIQUIDITY]: ['transactionID', 'poolAddress', 'senderAddress'],
