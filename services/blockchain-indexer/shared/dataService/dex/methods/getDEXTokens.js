@@ -120,7 +120,7 @@ const getDEXTokens = async params => {
 							v.height, 
 							v.index, 
 							COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
-							SUM(CASE WHEN p.token0 = t.tokenId THEN v.amount0 ELSE v.amount1 END) AS volume, 
+							SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) AS volume, 
 							SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) AS feeGrowth, 
 							COALESCE(lp.current * ${lskusdprice.current}, 0) AS priceUSD 
 						FROM 
