@@ -442,7 +442,6 @@ const indexBlock = async job => {
 				: `Error occurred while indexing block at height ${failedBlockInfo.height}. Will retry.`,
 		);
 		logger.debug(error.stack);
-		console.log(error.stack);
 		throw error;
 	}
 };
