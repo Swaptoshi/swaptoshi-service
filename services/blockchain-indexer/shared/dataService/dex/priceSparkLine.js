@@ -25,11 +25,11 @@ const generateSparklineBuffer = async (base, quote, interval, limit) => {
 	if (typeof interval !== 'number') throw new Error('invalid interval');
 	if (typeof limit !== 'number') throw new Error('invalid limit');
 
-	const pair = `${base.toLowerCase()}${
-		quote.toLowerCase() === 'usd' ? 'lsk' : quote.toLowerCase()
-	}`;
+	const includeConversion = base.toLowerCase() !== 'lsk' && quote.toLowerCase() === 'usd';
+
+	const pair = `${base.toLowerCase()}${includeConversion ? 'lsk' : quote.toLowerCase()}`;
 	const joinQuery = `${
-		quote.toLowerCase() === 'usd' ? 'LEFT JOIN tick_lskusd AS quote ON base.time = quote.time' : ''
+		includeConversion ? 'LEFT JOIN tick_lskusd AS quote ON base.time = quote.time' : ''
 	}`;
 	const limitQuery = limit === -1 ? '' : `LIMIT ${limit}`;
 
@@ -38,7 +38,7 @@ const generateSparklineBuffer = async (base, quote, interval, limit) => {
             FROM (
                 SELECT
                     base.time,
-                    base.value * ${quote.toLowerCase() === 'usd' ? 'quote.value' : '1'} AS value
+                    base.value * ${includeConversion ? 'quote.value' : '1'} AS value
                 FROM
                     tick_${pair} AS base
                     ${joinQuery}
@@ -68,7 +68,7 @@ const generateSparklineBuffer = async (base, quote, interval, limit) => {
 			datasets: [
 				{
 					data,
-					borderColor: data[0] <= data[data.length] ? '#60BE89' : '#D65263',
+					borderColor: data[0] <= data[data.length - 1] ? '#60BE89' : '#D65263',
 					borderWidth: 2,
 					pointRadius: 0,
 				},
