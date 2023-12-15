@@ -8,6 +8,7 @@ const dexTokenTableSchema = require('../../../database/schema/registeredDexToken
 
 const config = require('../../../../config');
 const { getLSKUSDLastPrice } = require('../lskPrices');
+const { parseQueryResult } = require('../../../utils/query');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -64,10 +65,10 @@ const getDEXStatisticSummary = async params => {
 		meta: {},
 	};
 
-	const summary = await registeredDexTokenTable.rawQuery(query);
+	const summary = parseQueryResult(await registeredDexTokenTable.rawQuery(query));
 
 	// eslint-disable-next-line prefer-destructuring
-	response.data = summary[0][0];
+	response.data = summary[0];
 	response.meta = {};
 	return response;
 };

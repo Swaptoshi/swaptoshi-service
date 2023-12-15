@@ -10,9 +10,10 @@ const config = require('../../../config');
 
 const lastPriceTableSchema = require('../../database/schema/lastPrice');
 const { getLSKTokenID } = require('../business/interoperability/blockchainApps');
+const { intervalToSecond } = require('./timestamp');
 
 const LSKUSD_LAST_PRICE_CACHE_KEY = 'lskusd_last_price';
-const LAST_PRICE_TTL = config.dex.lastPriceInterval;
+const LAST_PRICE_TTL = intervalToSecond[config.dex.lastPriceInterval];
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
 const redis = new Redis(config.endpoints.cache);
