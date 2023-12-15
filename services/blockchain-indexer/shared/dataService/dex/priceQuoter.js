@@ -186,10 +186,10 @@ const transformTickToOhlc = async (pair, timeframe, from, to, dbTrx) => {
 	const second = intervalToSecond[timeframe];
 	const query = `
     SELECT 
-      t1.value AS open,
-      m.high,
-      m.low,
-      t2.value as close,
+      COALESCE(t1.value, 0) AS open,
+      COALESCE(m.high, 0) AS high,
+      COALESCE(m.low, 0) AS low,
+      COALESCE(t2.value, 0) as close,
       open_time * ${second} as open_time
     FROM (
       SELECT MIN(time) AS min_time,
