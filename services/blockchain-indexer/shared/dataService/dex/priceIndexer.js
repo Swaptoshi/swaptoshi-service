@@ -167,10 +167,10 @@ const indexLSDKUSDOhlcPrice = async job => {
 			if (ohlc.length > 0) {
 				await ohlcPriceTable.upsert({
 					time,
-					open: ohlc.open,
-					high: ohlc.high,
-					low: ohlc.low,
-					close: ohlc.close,
+					open: ohlc[0].open,
+					high: ohlc[0].high,
+					low: ohlc[0].low,
+					close: ohlc[0].close,
 				});
 
 				logger.info(`Updated ohlc price at ${time} for pair ${pair.toUpperCase()} ${timeframe}`);
