@@ -31,21 +31,24 @@ const getDEXTokens = async params => {
 		const searchCondition =
 			searchTerm !== ''
 				? `WHERE
-					tokenName LIKE '%${searchTerm}%' OR
-					tokenId LIKE '%${searchTerm}%' OR
-					symbol LIKE '%${searchTerm}%'`
+					v.tokenName LIKE '%${searchTerm}%' OR
+					v.tokenId LIKE '%${searchTerm}%' OR
+					v.symbol LIKE '%${searchTerm}%'`
 				: '';
 
 		query = `
-				SELECT 
-					COALESCE(tm.tokenID, tf.tokenID) AS tokenId,
-					COALESCE(rdt.symbol, tf.symbol) AS symbol,
-					COALESCE(tm.tokenName, tf.tokenName) AS tokenName,
-					COALESCE(rdt.logo, tf.logoPng) AS logo,
-					COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`
-				FROM registered_dex_token AS rdt
-				LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID
-				LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID
+				SELECT *
+				FROM (
+					SELECT 
+						COALESCE(tm.tokenID, tf.tokenID) AS tokenId,
+						COALESCE(rdt.symbol, tf.symbol) AS symbol,
+						COALESCE(tm.tokenName, tf.tokenName) AS tokenName,
+						COALESCE(rdt.logo, tf.logoPng) AS logo,
+						COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`
+					FROM registered_dex_token AS rdt
+					LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID
+					LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID
+				) AS v
 				${searchCondition}
 				${limitQuery} ${offsetQuery};
 				`;
