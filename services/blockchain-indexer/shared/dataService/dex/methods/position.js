@@ -60,8 +60,12 @@ const getPositions = async params => {
 	const query = `
         SELECT 
             pool.poolAddress,
-            pool.token0,
-            pool.token1,
+			pool.tick AS poolTick,
+			pool.fee,
+			t0.symbol AS token0Symbol,
+			t0.logo AS token0Logo,
+			t1.symbol AS token1Symbol,
+			t1.logo AS token1Logo,
             pos.tokenId,
             pos.owner,
             pos.collectionId,
@@ -70,6 +74,8 @@ const getPositions = async params => {
             pos.liquidity
         FROM position pos
             LEFT JOIN pool ON pool.inverted = false AND pool.collectionId = pos.collectionId
+			LEFT JOIN registered_dex_token t0 ON t0.tokenId = pool.token0
+			LEFT JOIN registered_dex_token t1 ON t1.tokenId = pool.token1
         ${searchCondition}
 		ORDER BY ${sortBy} ${sortOrder}
         ${limitQuery} ${offsetQuery};`;

@@ -490,8 +490,14 @@
 		"type": "object",
 		"required": [
 			"poolAddress",
+			"poolTick",
+			"fee",
 			"token0",
+			"token0Symbol",
+			"token0Logo",
 			"token1",
+			"token1Symbol",
+			"token1Logo",
 			"tokenId",
 			"owner",
 			"collectionId",
@@ -505,15 +511,48 @@
 				"description": "pool address in lisk32 format",
 				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
+			"poolTick": {
+				"type": "integer",
+				"format": "int32",
+				"minimum": -887272,
+				"maximum": 887272,
+				"description": "current pool tick",
+				"example": 7272
+			},
+			"fee": {
+				"type": "integer",
+				"description": "pool fee in in hundredths of a bips, ex: 3000 is 0.3%",
+				"example": 3000
+			},
 			"token0": {
 				"type": "string",
 				"description": "token0 id",
 				"example": "0053575400000000"
 			},
+			"token0Symbol": {
+				"type": "string",
+				"description": "token0 symbol",
+				"example": "SWT"
+			},
+			"token0Logo": {
+				"type": "string",
+				"description": "token0 logo URL",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
+			},
 			"token1": {
 				"type": "string",
 				"description": "token1 id",
 				"example": "0053575400000000"
+			},
+			"token1Symbol": {
+				"type": "string",
+				"description": "token1 symbol",
+				"example": "SWT"
+			},
+			"token1Logo": {
+				"type": "string",
+				"description": "token1 logo URL",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
 			},
 			"tokenId": {
 				"type": "string",
