@@ -91,6 +91,7 @@
 	"DexTokens": {
 		"type": "object",
 		"required": [
+			"rank",
 			"tokenId",
 			"symbol",
 			"tokenName",
@@ -110,6 +111,11 @@
 			"priceChangeUSD"
 		],
 		"properties": {
+			"rank": {
+				"type": "integer",
+				"description": "token rank based on TVL USD",
+				"example": 1
+			},
 			"tokenId": {
 				"type": "string",
 				"description": "token ID",

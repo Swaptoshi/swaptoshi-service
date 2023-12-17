@@ -1,4 +1,5 @@
 module.exports = {
+	rank: '=,number',
 	tokenId: '=,string',
 	symbol: '=,string',
 	tokenName: '=,string',

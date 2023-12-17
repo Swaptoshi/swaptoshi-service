@@ -40,7 +40,7 @@ module.exports = {
 				'priceChange',
 				'priceChangeUSD',
 			],
-			default: 'volumeUSD',
+			default: 'totalTvlUSD',
 		},
 		sortOrder: { optional: true, type: 'string', enum: ['asc', 'desc'], default: 'desc' },
 	},

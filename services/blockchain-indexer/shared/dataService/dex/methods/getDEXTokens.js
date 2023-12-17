@@ -61,9 +61,9 @@ const getDEXTokens = async params => {
 		const searchCondition =
 			searchTerm !== ''
 				? `WHERE 
-					v.tokenName LIKE '%token%' 
-					OR v.tokenId LIKE '%token%' 
-					OR v.symbol LIKE '%token%'`
+					v.tokenName LIKE '%${searchTerm}%' 
+					OR v.tokenId LIKE '%${searchTerm}%' 
+					OR v.symbol LIKE '%${searchTerm}%'`
 				: '';
 
 		const sortBy =
@@ -88,81 +88,100 @@ const getDEXTokens = async params => {
 				'priceChangeUSD',
 			].includes(params.sortBy)
 				? `v.${params.sortBy}`
-				: 'v.volumeUSD';
+				: 'v.totalTvlUSD';
 
 		const sortOrder = params.sortOrder === 'asc' ? 'ASC' : 'DESC';
 
 		query = `
 			SELECT 
-				* 
+				*
 			FROM 
 				(
-				SELECT 
-					rdt.tokenId, 
-					COALESCE(rdt.symbol, tf.symbol) AS symbol, 
-					COALESCE(tm.tokenName, tf.tokenName) AS tokenName, 
-					COALESCE(rdt.logo, tf.logoPng) AS logo, 
-					COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`, 
-					vol.volume AS volume, 
-					vol.volume * vol.priceUSD AS volumeUSD, 
-					vol.feeGrowth AS feeGrowth, 
-					vol.feeGrowth * vol.priceUSD AS feeGrowthUSD, 
-					vol.swapCount AS swapCount, 
-					COUNT(pool.poolAddress) AS poolCount, 
-					vl.amount AS totalTvl, 
-					vl.amount * vol.priceUSD AS totalTvlUSD, 
-					COALESCE(CASE WHEN rdt.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
-					vol.priceUSD AS priceUSD, 
-					COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
-					CASE WHEN rdt.tokenId = '${lskTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
+					SELECT 
+						ROW_NUMBER() OVER (ORDER BY totalTvlUSD DESC) AS rank,
+						tokenId,
+						symbol,
+						tokenName,
+						logo,
+						\`decimal\`,
+						volume,
+						volumeUSD,
+						feeGrowth,
+						feeGrowthUSD,
+						swapCount,
+						poolCount,
+						totalTvl,
+						totalTvlUSD,
+						price,
+						priceUSD,
+						priceChange,
+						priceChangeUSD
+					FROM (
+						SELECT 
+							rdt.tokenId, 
+							COALESCE(rdt.symbol, tf.symbol) AS symbol, 
+							COALESCE(tm.tokenName, tf.tokenName) AS tokenName, 
+							COALESCE(rdt.logo, tf.logoPng) AS logo, 
+							COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`, 
+							vol.volume AS volume, 
+							vol.volume * vol.priceUSD AS volumeUSD, 
+							vol.feeGrowth AS feeGrowth, 
+							vol.feeGrowth * vol.priceUSD AS feeGrowthUSD, 
+							vol.swapCount AS swapCount, 
+							COUNT(pool.poolAddress) AS poolCount, 
+							vl.amount AS totalTvl, 
+							vl.amount * vol.priceUSD AS totalTvlUSD, 
+							COALESCE(CASE WHEN rdt.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
+							vol.priceUSD AS priceUSD, 
+							COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
+							CASE WHEN rdt.tokenId = '${lskTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
 			lskusdprice.current || 0
 		}) - (lp.${changeWindow} * ${lskusdprice[changeWindow] || 0})) / (lp.${changeWindow} * ${
 			lskusdprice[changeWindow] || 0
 		}) * 100, 0) END AS priceChangeUSD 
-				FROM 
-					registered_dex_token rdt 
-					LEFT JOIN (
-						SELECT 
-							t.tokenId, 
-							v.height, 
-							v.index, 
-							COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
-							SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / POWER(10, t.decimal) AS volume, 
-							SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth, 
-							COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
+						FROM 
+							registered_dex_token rdt 
+							LEFT JOIN (
+								SELECT 
+									t.tokenId, 
+									v.height, 
+									v.index, 
+									COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
+									SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / POWER(10, t.decimal) AS volume, 
+									SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth, 
+									COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
 			lskusdprice.current
 		}, 0) AS priceUSD 
-						FROM 
-							registered_dex_token t 
-							JOIN pool p ON p.inverted = false 
-							AND (t.tokenId = p.token0 OR t.tokenId = p.token1) 
-							LEFT JOIN volume v ON p.poolAddress = v.poolAddress 
-							LEFT JOIN last_price lp ON t.tokenId = lp.tokenId 
-						WHERE 
-							1 = 1 ${start ? `AND v.time >= ${start}` : ''} ${end ? `AND v.time <= ${end}` : ''}
+								FROM 
+									registered_dex_token t 
+									JOIN pool p ON p.inverted = false 
+									AND (t.tokenId = p.token0 OR t.tokenId = p.token1) 
+									LEFT JOIN volume v ON p.poolAddress = v.poolAddress 
+									LEFT JOIN last_price lp ON t.tokenId = lp.tokenId 
+								WHERE 
+									1 = 1 ${start ? `AND v.time >= ${start}` : ''} ${end ? `AND v.time <= ${end}` : ''}
+								GROUP BY 
+									t.tokenId
+							) AS vol ON rdt.tokenId = vol.tokenId 
+							LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID 
+							LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID 
+							LEFT JOIN (
+								SELECT 
+									tvl.tokenId, 
+									SUM(amount) / POWER(10, t.decimal) as amount 
+								FROM 
+									tvl 
+								LEFT JOIN registered_dex_token t ON t.tokenId = tvl.tokenId
+								WHERE 
+									1 = 1 ${start ? `AND time >= ${start}` : ''} ${end ? `AND time <= ${end}` : ''}
+								GROUP BY 
+									tokenId
+								) AS vl ON vl.tokenId = rdt.tokenId 
+							LEFT JOIN last_price lp ON rdt.tokenId = lp.tokenId 
+							LEFT JOIN pool ON pool.token0 = rdt.tokenId 
 						GROUP BY 
-							t.tokenId
-					) AS vol ON rdt.tokenId = vol.tokenId 
-					LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID 
-					LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID 
-					LEFT JOIN (
-						SELECT 
-							tvl.tokenId, 
-							SUM(amount) / POWER(10, t.decimal) as amount 
-						FROM 
-							tvl 
-						LEFT JOIN registered_dex_token t ON t.tokenId = tvl.tokenId
-						WHERE 
-                            1 = 1 ${start ? `AND time >= ${start}` : ''} ${
-			end ? `AND time <= ${end}` : ''
-		}
-						GROUP BY 
-							tokenId
-						) AS vl ON vl.tokenId = rdt.tokenId 
-					LEFT JOIN last_price lp ON rdt.tokenId = lp.tokenId 
-					LEFT JOIN pool ON pool.token0 = rdt.tokenId 
-				GROUP BY 
-					rdt.tokenId
+							rdt.tokenId
+					) vv
 				) v 
 			${searchCondition}
 			ORDER BY 
