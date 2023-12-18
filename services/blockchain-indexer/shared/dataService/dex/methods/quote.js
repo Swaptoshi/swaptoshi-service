@@ -43,13 +43,7 @@ const quoteSwapMethod = async params => {
 			),
 		);
 		if (baseToken && quoteToken) {
-			let route;
-			if (params.amountIn) {
-				route = await getRoute(baseToken.tokenId, quoteToken.tokenId, params.recursion || 5);
-			}
-			if (params.amountOut) {
-				route = await getRoute(quoteToken.tokenId, baseToken.tokenId, params.recursion || 5);
-			}
+			const route = await getRoute(baseToken.tokenId, quoteToken.tokenId, params.recursion || 5);
 			if (route.length > 0) path = route[0].path;
 		}
 	}
