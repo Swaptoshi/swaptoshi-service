@@ -24,14 +24,7 @@ const intervalToSecond = {
 };
 
 const normalizeBlockTime = (blockTime, interval) => {
-	const second =
-		intervalToSecond[interval] !== undefined
-			? typeof interval === 'string'
-				? intervalToSecond[interval]
-				: typeof interval === 'number'
-				? interval
-				: 1
-			: 1;
+	const second = intervalToSecond[interval] !== undefined ? intervalToSecond[interval] : 1;
 	return blockTime - (blockTime % second);
 };
 
