@@ -70,6 +70,7 @@ const quoteSwapMethod = async params => {
 		response.data.amount = quote.data.amountIn;
 	}
 
+	response.data.path = path;
 	response.data.sqrtPriceX96AfterList = quote.data.sqrtPriceX96AfterList;
 	response.data.initializedTicksCrossedList = quote.data.initializedTicksCrossedList;
 	return response;

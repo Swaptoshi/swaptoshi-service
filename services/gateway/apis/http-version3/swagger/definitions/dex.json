@@ -1,8 +1,13 @@
 {
 	"QuoteSwap": {
 		"type": "object",
-		"required": ["amount", "sqrtPriceX96AfterList", "initializedTicksCrossedList"],
+		"required": ["path", "amount", "sqrtPriceX96AfterList", "initializedTicksCrossedList"],
 		"properties": {
+			"path": {
+				"type": "string",
+				"description": "swap path",
+				"example": "0400000000000000000bb80453575400000000"
+			},
 			"amount": {
 				"type": "string",
 				"description": "result of the quote swap execution",
