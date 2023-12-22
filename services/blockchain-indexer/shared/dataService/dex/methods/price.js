@@ -29,44 +29,56 @@ const getOhlcPriceTable = (pair, timeframe) =>
 	);
 
 const getTickPrice = async params => {
-	let quote = params.quote.toLowerCase() !== 'lsk' ? 'usd' : 'lsk';
-	if (params.base === 'lsk') quote = 'usd';
-	const pair = `${params.base}${quote}`;
 	const { start, end } = params;
+
+	const includeConversion =
+		params.base.toLowerCase() !== 'lsk' && params.quote.toLowerCase() === 'usd';
+	const pair = `${params.base.toLowerCase()}${
+		includeConversion ? 'lsk' : params.quote.toLowerCase()
+	}`;
+
 	const offset = params.offset || 0;
 	const limit = params.limit || 100;
-	const tickTable = await getTickPriceTable(pair);
+
+	const joinQuery = `${
+		includeConversion ? 'LEFT JOIN tick_lskusd AS quote ON base.time = quote.time' : ''
+	}`;
 
 	const query = `
-    SELECT *
-	FROM (
-		SELECT 
-			tick1.time, 
-			tick1.value * ${quote === 'usd' ? 'tick2.value' : '1'} AS value 
-		FROM 
-			${getTickPriceTableSchema(pair).tableName} AS tick1 
-		${quote === 'usd' ? 'JOIN tick_lskusd AS tick2 ON tick1.time = tick2.time' : ''} 
-		WHERE 1 = 1 
-			${start ? `AND tick1.time >= ${start}` : ''} 
-			${end ? `AND tick1.time <= ${end}` : ''} 
-		ORDER BY time DESC 
-		${limit ? `LIMIT ${limit}` : ''}
-		${offset ? `OFFSET ${offset}` : ''}
-	) AS price
-	ORDER BY time ASC;`;
+            SELECT *
+            FROM (
+                SELECT
+                    base.time,
+                    base.value * ${includeConversion ? 'quote.value' : '1'} AS value
+                FROM
+                    tick_${pair} AS base
+                    ${joinQuery}
+                WHERE
+					1 = 1
+                    ${params.interval ? `AND MOD(base.time, ${params.interval}) = 0` : ''}
+					${start ? `AND base.time >= ${start}` : ''} 
+					${end ? `AND base.time <= ${end}` : ''} 
+                ORDER BY
+                    base.time DESC
+				${limit ? `LIMIT ${limit}` : ''}
+				${offset ? `OFFSET ${offset}` : ''}
+                ) AS latest_entries
+            ORDER BY time ASC;
+    `;
 
+	const tickPriceTable = await getTickPriceTable(pair);
 	const response = {
 		data: {},
 		meta: {},
 	};
 
-	const ticks = parseQueryResult(await tickTable.rawQuery(query));
+	const ticks = parseQueryResult(await tickPriceTable.rawQuery(query));
 
 	response.data = ticks;
 	response.meta = {
 		count: ticks.length,
 		offset,
-		total: await tickTable.count(),
+		total: await tickPriceTable.count(),
 	};
 	return response;
 };

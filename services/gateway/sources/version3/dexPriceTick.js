@@ -10,6 +10,7 @@ module.exports = {
 		end: '=,number',
 		offset: '=,number',
 		limit: '=,number',
+		interval: '=,number',
 	},
 	definition: {
 		data: ['data', dexPriceTick],

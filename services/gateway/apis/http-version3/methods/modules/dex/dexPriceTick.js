@@ -14,6 +14,7 @@ module.exports = {
 		end: { optional: true, type: 'number' },
 		offset: { optional: true, type: 'number' },
 		limit: { optional: true, type: 'number' },
+		interval: { optional: true, type: 'number' },
 	},
 	get schema() {
 		const schema = {};

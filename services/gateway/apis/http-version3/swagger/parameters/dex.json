@@ -137,5 +137,12 @@
 		"in": "query",
 		"description": "timeframe to query candlestick price data",
 		"type": "string"
+	},
+	"interval": {
+		"name": "interval",
+		"in": "query",
+		"description": "interval to query price tick",
+		"type": "integer",
+		"format": "int32"
 	}
 }
