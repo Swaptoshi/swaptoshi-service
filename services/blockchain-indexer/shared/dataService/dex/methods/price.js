@@ -84,10 +84,13 @@ const getTickPrice = async params => {
 };
 
 const getOhlcPrice = async params => {
-	let quote = params.quote.toLowerCase() !== 'lsk' ? 'usd' : 'lsk';
-	if (params.base === 'lsk') quote = 'usd';
-	const pair = `${params.base}${quote}`;
 	const { start, end, timeframe } = params;
+
+	const includeConversion =
+		params.base.toLowerCase() !== 'lsk' && params.quote.toLowerCase() === 'usd';
+	const pair = `${params.base.toLowerCase()}${
+		includeConversion ? 'lsk' : params.quote.toLowerCase()
+	}`;
 
 	if (intervalToSecond[timeframe] === undefined) throw new Error('invalid timeframe');
 	const offset = params.offset || 0;
@@ -99,13 +102,13 @@ const getOhlcPrice = async params => {
 	FROM (
 		SELECT 
 			ohlc1.time, 
-			ohlc1.open * ${quote === 'usd' ? 'ohlc2.open' : '1'} AS open,
-			ohlc1.high * ${quote === 'usd' ? 'ohlc2.high' : '1'} AS high,
-			ohlc1.low * ${quote === 'usd' ? 'ohlc2.low' : '1'} AS low,
-			ohlc1.close * ${quote === 'usd' ? 'ohlc2.close' : '1'} AS close
+			ohlc1.open * ${includeConversion ? 'ohlc2.open' : '1'} AS open,
+			ohlc1.high * ${includeConversion ? 'ohlc2.high' : '1'} AS high,
+			ohlc1.low * ${includeConversion ? 'ohlc2.low' : '1'} AS low,
+			ohlc1.close * ${includeConversion ? 'ohlc2.close' : '1'} AS close
 		FROM 
 			${getOhlcTableSchema(pair, timeframe).tableName} AS ohlc1 
-		${quote === 'usd' ? `JOIN ohlc_lskusd_${timeframe} AS ohlc2 ON ohlc1.time = ohlc2.time` : ''} 
+			${includeConversion ? `JOIN ohlc_lskusd_${timeframe} AS ohlc2 ON ohlc1.time = ohlc2.time` : ''} 
 		WHERE 1 = 1 
 			${start ? `AND ohlc1.time >= ${start}` : ''} 
 			${end ? `AND ohlc1.time <= ${end}` : ''} 
