@@ -105,8 +105,6 @@ const getPools = async params => {
 						SUM(amount) / POWER(10, t.decimal) as amount
 					FROM tvl
 					LEFT JOIN registered_dex_token t ON t.tokenId = tvl.tokenId
-					WHERE
-						1 = 1 ${start ? `AND time >= ${start}` : ''} ${end ? `AND time <= ${end}` : ''}
 					GROUP BY tokenId
 				)
 			SELECT
