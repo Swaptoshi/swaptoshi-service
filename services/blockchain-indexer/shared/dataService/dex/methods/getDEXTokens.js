@@ -88,7 +88,7 @@ const getDEXTokens = async params => {
 				'priceChangeUSD',
 			].includes(params.sortBy)
 				? `v.${params.sortBy}`
-				: 'v.totalTvlUSD';
+				: 'v.volumeUSD';
 
 		const sortOrder = params.sortOrder === 'asc' ? 'ASC' : 'DESC';
 
@@ -98,7 +98,7 @@ const getDEXTokens = async params => {
 			FROM 
 				(
 					SELECT 
-						ROW_NUMBER() OVER (ORDER BY totalTvlUSD DESC) AS rank,
+						ROW_NUMBER() OVER (ORDER BY volumeUSD DESC) AS rank,
 						tokenId,
 						symbol,
 						tokenName,
