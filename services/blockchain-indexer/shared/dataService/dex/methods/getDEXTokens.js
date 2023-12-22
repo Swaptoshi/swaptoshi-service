@@ -104,11 +104,11 @@ const getDEXTokens = async params => {
 						tokenName,
 						logo,
 						\`decimal\`,
-						volume,
-						volumeUSD,
-						feeGrowth,
-						feeGrowthUSD,
-						swapCount,
+						COALESCE(volume, 0) AS volume,
+						COALESCE(volumeUSD, 0) AS volumeUSD,
+						COALESCE(feeGrowth, 0) AS feeGrowth,
+						COALESCE(feeGrowthUSD, 0) AS feeGrowthUSD,
+						COALESCE(swapCount, 0) AS swapCount,
 						poolCount,
 						totalTvl,
 						totalTvlUSD,
@@ -124,15 +124,15 @@ const getDEXTokens = async params => {
 							COALESCE(rdt.logo, tf.logoPng) AS logo, 
 							COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`, 
 							vol.volume AS volume, 
-							vol.volume * vol.priceUSD AS volumeUSD, 
+							vol.volume * pr.priceUSD AS volumeUSD, 
 							vol.feeGrowth AS feeGrowth, 
-							vol.feeGrowth * vol.priceUSD AS feeGrowthUSD, 
+							vol.feeGrowth * pr.priceUSD AS feeGrowthUSD, 
 							vol.swapCount AS swapCount, 
 							COUNT(pool.poolAddress) AS poolCount, 
 							COALESCE(vl.amount, 0) AS totalTvl, 
-							COALESCE(vl.amount * vol.priceUSD, 0) AS totalTvlUSD, 
+							COALESCE(vl.amount * pr.priceUSD, 0) AS totalTvlUSD, 
 							COALESCE(CASE WHEN rdt.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
-							vol.priceUSD AS priceUSD, 
+							pr.priceUSD AS priceUSD, 
 							COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
 							CASE WHEN rdt.tokenId = '${lskTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
 			lskusdprice.current || 0
@@ -142,22 +142,28 @@ const getDEXTokens = async params => {
 						FROM 
 							registered_dex_token rdt 
 							LEFT JOIN (
+								SELECT
+									t.tokenId,
+									COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
+			lskusdprice.current
+		}, 0) AS priceUSD
+								FROM
+									registered_dex_token t
+									LEFT JOIN last_price lp ON t.tokenId = lp.tokenId
+							) AS pr ON rdt.tokenId = pr.tokenId
+							LEFT JOIN (
 								SELECT 
 									t.tokenId, 
 									v.height, 
 									v.index, 
 									COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount, 
 									SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / POWER(10, t.decimal) AS volume, 
-									SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth, 
-									COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
-			lskusdprice.current
-		}, 0) AS priceUSD 
+									SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth
 								FROM 
 									registered_dex_token t 
 									JOIN pool p ON p.inverted = false 
 									AND (t.tokenId = p.token0 OR t.tokenId = p.token1) 
 									LEFT JOIN volume v ON p.poolAddress = v.poolAddress 
-									LEFT JOIN last_price lp ON t.tokenId = lp.tokenId 
 								WHERE 
 									1 = 1 ${start ? `AND v.time >= ${start}` : ''} ${end ? `AND v.time <= ${end}` : ''}
 								GROUP BY 
