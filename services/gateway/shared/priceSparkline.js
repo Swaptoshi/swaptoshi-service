@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const BluebirdPromise = require('bluebird');
 const { requestIndexer } = require('./appContext');
+const { intervalToSecond } = require('./utils');
 
 const logger = Logger();
 
@@ -12,6 +13,7 @@ const updatePriceSparkline = async arrayParam => {
 	if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
 
 	const registeredDexTokens = await requestIndexer('dex.tokens.compact', { limit: -1 });
+	const now = Math.floor(Date.now() / 1000);
 
 	await BluebirdPromise.map(
 		registeredDexTokens.data,
@@ -25,6 +27,7 @@ const updatePriceSparkline = async arrayParam => {
 							quote: 'lsk',
 							interval: param.interval,
 							limit: param.limit,
+							start: now - intervalToSecond[param.label],
 						});
 
 						fs.writeFileSync(
@@ -39,6 +42,7 @@ const updatePriceSparkline = async arrayParam => {
 						quote: 'usd',
 						interval: param.interval,
 						limit: param.limit,
+						start: now - intervalToSecond[param.label],
 					});
 
 					fs.writeFileSync(

@@ -135,9 +135,9 @@ const getDEXTokens = async params => {
 							pr.priceUSD AS priceUSD, 
 							COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
 							CASE WHEN rdt.tokenId = '${lskTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
-			lskusdprice.current || 0
-		}) - (lp.${changeWindow} * ${lskusdprice[changeWindow] || 0})) / (lp.${changeWindow} * ${
-			lskusdprice[changeWindow] || 0
+			lskusdprice.current || 1
+		}) - (lp.${changeWindow} * ${lskusdprice[changeWindow] || 1})) / (lp.${changeWindow} * ${
+			lskusdprice[changeWindow] || 1
 		}) * 100, 0) END AS priceChangeUSD 
 						FROM 
 							registered_dex_token rdt 
