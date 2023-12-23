@@ -11,6 +11,7 @@ module.exports = {
 	params: {
 		transaction: { optional: false, type: 'string', altSwaggerKey: 'factoryCreateTransaction' },
 		metadata: { optional: false, type: 'string' },
+		logo: { optional: false, type: 'string' },
 	},
 	get schema() {
 		const postTransactionSchema = {};

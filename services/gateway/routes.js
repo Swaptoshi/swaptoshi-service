@@ -32,8 +32,8 @@ const defaultConfig = {
 	mappingPolicy: 'restrict',
 
 	bodyParsers: {
-		json: true,
-		urlencoded: { extended: true },
+		json: { limit: config.api.maxRequestSize },
+		urlencoded: { extended: true, limit: config.api.maxRequestSize },
 	},
 };
 

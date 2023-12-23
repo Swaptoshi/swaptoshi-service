@@ -6,6 +6,7 @@ module.exports = {
 	params: {
 		transaction: '=,string',
 		metadata: '=,string',
+		logo: '=,string',
 	},
 	definition: {
 		data: tokenFactoryCreate,

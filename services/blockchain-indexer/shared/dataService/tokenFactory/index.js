@@ -6,6 +6,7 @@ const {
 	},
 } = require('lisk-service-framework');
 const { codec } = require('@liskhq/lisk-codec');
+const IPFSHash = require('ipfs-only-hash');
 
 const config = require('../../../config');
 
@@ -14,6 +15,7 @@ const MYSQL_ENDPOINT = config.endpoints.mysql;
 const tokenFactoryTableSchema = require('../../database/schema/token_factory');
 const { requestAppRegistry, requestConnector } = require('../../utils/request');
 const { factoryMetadataSchema } = require('./schema');
+const { nftStorageUploadQueue } = require('../nft.storage');
 const { getLSKUSDLastPrice } = require('../dex');
 const { parseQueryResult } = require('../../utils/query');
 
@@ -41,9 +43,18 @@ const createTokenFactory = async params => {
 	const tokenFactoryTable = await getTokenFactoryTable();
 	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
 
+	nftStorageUploadQueue.add({ data: Buffer.from(params.logo, 'base64').toString('hex') });
+	const logoCID = await IPFSHash.of(Buffer.from(params.logo, 'base64'), {
+		cidVersion: 1,
+		rawLeaves: true,
+	});
+	const logoPng = `https://${logoCID}.ipfs.nftstorage.link/`;
+	response.data.logoCid = logoCID;
+
 	await tokenFactoryTable.upsert({
 		transactionId: transactionPost.transactionId,
 		...metadata,
+		logoPng,
 	});
 
 	return response;

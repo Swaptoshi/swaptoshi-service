@@ -82,6 +82,8 @@ config.api.versions = {
 	'/api/v3': ['http-version3', 'http-exports'],
 };
 
+config.api.maxRequestSize = process.env.MAX_REQUEST_SIZE || '1MB';
+
 /**
  * API timeout
  */

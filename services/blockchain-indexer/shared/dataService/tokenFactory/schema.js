@@ -22,10 +22,6 @@ const factoryMetadataSchema = {
 			dataType: 'string',
 			fieldNumber: 5,
 		},
-		logoPng: {
-			dataType: 'string',
-			fieldNumber: 6,
-		},
 	},
 };
 

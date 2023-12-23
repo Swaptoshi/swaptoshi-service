@@ -11,7 +11,7 @@ const NFT_STORAGE_API_KEY = config.nftStorage.apiKey;
 const nftStorageUpload = async job => {
 	if (NFT_STORAGE_API_KEY) {
 		const res = await NFTStorage.getInstance().storeBlob(
-			new Blob([Buffer.from(job.data, 'hex').toString('utf8')]),
+			new Blob([Buffer.from(job.data.data, 'hex')]),
 		);
 		logger.info(`uploaded to nft.storage: ${res.toString()}`);
 	} else {
