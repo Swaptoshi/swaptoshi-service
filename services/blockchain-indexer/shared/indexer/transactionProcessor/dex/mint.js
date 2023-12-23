@@ -100,7 +100,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		{
 			tokenId: increaseLiquidityEvent.data.tokenId,
 			collectionId: decodeNFTId(increaseLiquidityEvent.data.tokenId).collectionId,
-			owner: mintEvent.data.recipientAddress,
+			owner: increaseLiquidityEvent.data.ownerAddress,
 			name: metadata.data.name,
 			description: metadata.data.description,
 			image: metadata.data.image,
