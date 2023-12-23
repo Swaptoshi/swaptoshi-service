@@ -12,7 +12,6 @@ module.exports = [
 		params: {
 			transaction: { optional: false, type: 'string' },
 			metadata: { optional: false, type: 'string' },
-			logo: { optional: false, type: 'string' },
 		},
 	},
 	{

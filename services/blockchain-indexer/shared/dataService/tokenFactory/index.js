@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
 const {
 	DB: {
@@ -5,7 +6,6 @@ const {
 	},
 } = require('lisk-service-framework');
 const { codec } = require('@liskhq/lisk-codec');
-const IPFSHash = require('ipfs-only-hash');
 
 const config = require('../../../config');
 
@@ -14,7 +14,6 @@ const MYSQL_ENDPOINT = config.endpoints.mysql;
 const tokenFactoryTableSchema = require('../../database/schema/token_factory');
 const { requestAppRegistry, requestConnector } = require('../../utils/request');
 const { factoryMetadataSchema } = require('./schema');
-const { nftStorageUploadQueue } = require('../nft.storage');
 const { getLSKUSDLastPrice } = require('../dex');
 const { parseQueryResult } = require('../../utils/query');
 
@@ -42,18 +41,9 @@ const createTokenFactory = async params => {
 	const tokenFactoryTable = await getTokenFactoryTable();
 	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
 
-	nftStorageUploadQueue.add({ data: params.logo });
-	const logoCID = await IPFSHash.of(Buffer.from(params.logo, 'hex'), {
-		cidVersion: 1,
-		rawLeaves: true,
-	});
-	const logoPng = `https://${logoCID}.ipfs.nftstorage.link/`;
-	response.data.logoCid = logoCID;
-
 	await tokenFactoryTable.upsert({
 		transactionId: transactionPost.transactionId,
 		...metadata,
-		logoPng,
 	});
 
 	return response;
@@ -95,12 +85,13 @@ const getTokenFactories = async params => {
 
 	const tokenFactoryTable = await getTokenFactoryTable();
 	const lskusdprice = await getLSKUSDLastPrice();
-	const tokenIdsString = Array.isArray(params.tokenIds)
+	const tokenIdsString = params.tokenIds
 		? params.tokenIds
 				.split(',')
 				.map(tokenId => `'${tokenId}'`)
 				.join(',')
-		: [];
+		: '';
+
 	const searchQuery = tokenIdsString.length > 0 ? `AND tf.tokenID IN (${tokenIdsString})` : '';
 
 	const limitClause = params.limit !== undefined ? `LIMIT ${params.limit}` : '';
@@ -146,12 +137,13 @@ const getTokenFactoriesMeta = async params => {
 
 	const tokenFactoryTable = await getTokenFactoryTable();
 
-	const tokenIdsString = Array.isArray(params.tokenIds)
+	const tokenIdsString = params.tokenIds
 		? params.tokenIds
 				.split(',')
 				.map(tokenId => `'${tokenId}'`)
 				.join(',')
-		: [];
+		: '';
+
 	const searchQuery = tokenIdsString.length > 0 ? `AND tf.tokenID IN (${tokenIdsString})` : '';
 
 	const limitClause = params.limit !== undefined ? `LIMIT ${params.limit}` : '';
@@ -176,28 +168,35 @@ const getTokenFactoriesMeta = async params => {
 	const factories = factoryData
 		.map(f => ({
 			chainID: nodeInfo.chainID,
-			chainName: 'Swaptoshi',
+			chainName: 'swaptoshi_mainnet',
 			tokenID: f.tokenID,
-			tokenName: f.tokenName,
-			networkType: 'mainnet',
-			description: f.description,
+			tokenName: f.tokenName || '',
+			networkType:
+				f.tokenID.slice(0, 2) === '00'
+					? 'mainnet'
+					: f.tokenID.slice(0, 2) === '01'
+					? 'testnet'
+					: f.tokenID.slice(0, 2) === '04'
+					? 'devnet'
+					: 'unknown',
+			description: f.description || '',
 			denomUnits: [
 				{
-					denom: f.baseDenom.toLowerCase(),
+					denom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
 					decimals: 0,
-					aliases: [f.baseDenom.charAt(0).toUpperCase() + f.baseDenom.slice(1)],
+					aliases: f.baseDenom ? [f.baseDenom.charAt(0).toUpperCase() + f.baseDenom.slice(1)] : [],
 				},
 				{
-					denom: f.symbol.toLowerCase(),
-					decimals: f.decimal,
-					aliases: [f.tokenName.charAt(0).toUpperCase() + f.tokenName.slice(1)],
+					denom: f.symbol ? f.symbol.toLowerCase() : '',
+					decimals: f.decimal || 0,
+					aliases: f.tokenName ? [f.tokenName.charAt(0).toUpperCase() + f.tokenName.slice(1)] : [],
 				},
 			],
-			symbol: f.symbol.toUpperCase(),
-			displayDenom: f.symbol.toLowerCase(),
-			baseDenom: f.baseDenom.toLowerCase(),
+			symbol: f.symbol ? f.symbol.toUpperCase() : '',
+			displayDenom: f.symbol ? f.symbol.toLowerCase() : '',
+			baseDenom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
 			logo: {
-				png: f.logoPng,
+				png: f.logoPng ? f.logoPng : '',
 				svg: '',
 			},
 		}))

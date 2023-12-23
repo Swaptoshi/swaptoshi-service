@@ -11,12 +11,6 @@
 		"description": "tokenFactory:create off-chain metadata",
 		"type": "string"
 	},
-	"logo": {
-		"name": "logo",
-		"in": "query",
-		"description": "tokenFactory:create logo image in hex string",
-		"type": "string"
-	},
 	"tokenIds": {
 		"name": "tokenIds",
 		"in": "query",
