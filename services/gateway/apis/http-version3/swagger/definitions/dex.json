@@ -500,9 +500,11 @@
 			"token0",
 			"token0Symbol",
 			"token0Logo",
+			"token0Decimal",
 			"token1",
 			"token1Symbol",
 			"token1Logo",
+			"token1Decimal",
 			"tokenId",
 			"owner",
 			"collectionId",
@@ -544,6 +546,11 @@
 				"description": "token0 logo URL",
 				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
 			},
+			"token0Decimal": {
+				"type": "number",
+				"description": "token0 decimal",
+				"example": 8
+			},
 			"token1": {
 				"type": "string",
 				"description": "token1 id",
@@ -558,6 +565,11 @@
 				"type": "string",
 				"description": "token1 logo URL",
 				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
+			},
+			"token1Decimal": {
+				"type": "number",
+				"description": "token1 decimal",
+				"example": 8
 			},
 			"tokenId": {
 				"type": "string",
