@@ -47,7 +47,7 @@ const getDEXTokens = async params => {
 						COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`
 					FROM registered_dex_token AS rdt
 					LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID
-					LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID
+					LEFT JOIN token_factory AS tf ON rdt.tokenId = tf.tokenID
 				) AS v
 				${searchCondition}
 				${limitQuery} ${offsetQuery};
@@ -170,7 +170,7 @@ const getDEXTokens = async params => {
 									t.tokenId
 							) AS vol ON rdt.tokenId = vol.tokenId 
 							LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID 
-							LEFT JOIN token_factory AS tf ON tm.tokenID = tf.tokenID 
+							LEFT JOIN token_factory AS tf ON rdt.tokenId = tf.tokenID 
 							LEFT JOIN (
 								SELECT 
 									tvl.tokenId, 
