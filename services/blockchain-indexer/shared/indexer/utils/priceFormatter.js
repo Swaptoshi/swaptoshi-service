@@ -9,9 +9,14 @@ const TEN = new BigNumber(10);
 const FIVE_SIG_FIGS_POW = new Decimal(10).pow(5);
 const Q128 = BigInt(0x100000000000000000000000000000000);
 
-function decodePriceSqrt(sqrtRatioX96, decimalsToken0 = 8, decimalsToken1 = 8, inverse = false) {
-	const ratioNum = ((parseInt(sqrtRatioX96.toString(), 10) / 2 ** 96) ** 2).toPrecision(5);
-	let ratio = new Decimal(ratioNum.toString());
+function decodePriceSqrt(
+	sqrtRatioX96,
+	decimalsToken0 = 8,
+	decimalsToken1 = 8,
+	inverse = false,
+	disableFiveSigPrevision = false,
+) {
+	let ratio = new Decimal(sqrtRatioX96).div(2 ** 96).pow(2);
 
 	if (decimalsToken1 < decimalsToken0) {
 		ratio = ratio.mul(TEN.pow(decimalsToken0 - decimalsToken1).toString());
@@ -23,11 +28,11 @@ function decodePriceSqrt(sqrtRatioX96, decimalsToken0 = 8, decimalsToken1 = 8, i
 		ratio = ratio.pow(-1);
 	}
 
-	if (ratio.lessThan(FIVE_SIG_FIGS_POW)) {
-		return parseFloat(ratio.toPrecision(5));
+	if (!disableFiveSigPrevision && ratio.lessThan(FIVE_SIG_FIGS_POW)) {
+		return ratio.toPrecision(5);
 	}
 
-	return parseFloat(ratio.toString());
+	return ratio.toString();
 }
 
 function encodePriceSqrt(reserve1, reserve0) {
@@ -47,7 +52,13 @@ function decodeFeeGrowth(feeGrowthX128, liquidity) {
 	return ((BigInt(feeGrowthX128) * BigInt(liquidity)) / Q128).toString();
 }
 
+function inversePriceSqrt(sqrtRatioX96, decimalsToken0 = 8, decimalsToken1 = 8) {
+	const price = decodePriceSqrt(sqrtRatioX96, decimalsToken0, decimalsToken1, true, true);
+	return encodePriceSqrt(price, 1);
+}
+
 module.exports = {
+	inversePriceSqrt,
 	decodeFeeGrowth,
 	decodePriceSqrt,
 	encodeFeeGrowth,

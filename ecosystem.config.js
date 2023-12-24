@@ -90,8 +90,8 @@ module.exports = {
 				// SERVICE_LOG_GELF: false,
 				// SERVICE_LOG_FILE: false,
 				// DOCKER_HOST: 'local',
-				// GITHUB_APP_REGISTRY_REPO: 'https://github.com/LiskHQ/app-registry',
-				// GITHUB_APP_REGISTRY_REPO_BRANCH: 'main',
+				GITHUB_APP_REGISTRY_REPO: 'https://github.com/swaptoshi/app-registry',
+				GITHUB_APP_REGISTRY_REPO_BRANCH: 'development',
 				// JOB_INTERVAL_DELETE_NON_METADATA_FILES: 0,
 				// JOB_SCHEDULE_DELETE_NON_METADATA_FILES: '0 0 * * *',
 				// JOB_INTERVAL_UPDATE_METADATA: 0,
@@ -203,7 +203,8 @@ module.exports = {
 				// DEX_LAST_PRICE_UPDATE_INTERVAL: '5m',
 				// DEX_PRICE_INDEXING_TICK_TIMEFRAME: 300,
 				// DEX_PRICE_INDEXING_OHLC_TIMEFRAMES: '1h,4h,1d,1w,1M',
-				// NFT_STORAGE_API_KEY: '',
+				NFT_STORAGE_API_KEY:
+					'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDgwOTREMzY5MmViNjVGZWFlYjlBNjVlNkREYUQ3MEEzRDM2NUZjZUEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1MTY4NTAwNjg0MSwibmFtZSI6ImVuZXZ0aS1hbHBoYW5ldCJ9.cvmV2p2Us66OYpbU8oTiUIXSq2_gmDUdOqYp-Vvr8cA',
 			},
 		},
 		{
