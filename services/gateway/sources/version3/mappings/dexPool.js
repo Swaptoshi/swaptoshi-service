@@ -1,7 +1,13 @@
 module.exports = {
 	poolAddress: '=,string',
 	token0: '=,string',
+	token0Decimal: '=,number',
+	token0Symbol: '=,string',
+	token0Logo: '=,string',
 	token1: '=,string',
+	token1Decimal: '=,number',
+	token1Symbol: '=,string',
+	token1Logo: '=,string',
 	fee: '=,number',
 	liquidity: '=,number',
 	price: '=,number',

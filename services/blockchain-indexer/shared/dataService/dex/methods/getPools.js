@@ -79,6 +79,9 @@ const getPools = async params => {
 			WITH token_volume AS (
 					SELECT
 						t.tokenId,
+						t.symbol,
+						t.decimal,
+						t.logo,
 						v.height,
 						v.index,
 						COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount,
@@ -110,7 +113,13 @@ const getPools = async params => {
 			SELECT
 				pool.poolAddress,
 				token0,
+				vol0.decimal AS token0Decimal,
+				vol0.symbol AS token0Symbol,
+				vol0.logo AS token0Logo,
 				token1,
+				vol1.decimal AS token1Decimal,
+				vol1.symbol AS token1Symbol,
+				vol1.logo AS token1Logo,
 				fee,
 				liquidity,
 				pool.price,

@@ -280,7 +280,13 @@
 		"required": [
 			"poolAddress",
 			"token0",
+			"token0Decimal",
+			"token0Symbol",
+			"token0Logo",
 			"token1",
+			"token1Decimal",
+			"token1Symbol",
+			"token1Logo",
 			"fee",
 			"liquidity",
 			"price",
@@ -315,10 +321,40 @@
 				"description": "token0 id",
 				"example": "0053575400000000"
 			},
+			"token0Decimal": {
+				"type": "number",
+				"description": "token0 decimal",
+				"example": 8
+			},
+			"token0Symbol": {
+				"type": "string",
+				"description": "token0 symbol",
+				"example": "SWT"
+			},
+			"token0Logo": {
+				"type": "string",
+				"description": "token0 logo URL",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
+			},
 			"token1": {
 				"type": "string",
 				"description": "token1 id",
 				"example": "0053575400000000"
+			},
+			"token1Decimal": {
+				"type": "number",
+				"description": "token1 decimal",
+				"example": 8
+			},
+			"token1Symbol": {
+				"type": "string",
+				"description": "token1 symbol",
+				"example": "SWT"
+			},
+			"token1Logo": {
+				"type": "string",
+				"description": "token1 logo URL",
+				"example": "https://raw.githubusercontent.com/Swaptoshi/app-registry/main/mainnet/Swaptoshi/images/tokens/swaptoshi.png"
 			},
 			"fee": {
 				"type": "integer",
