@@ -31,6 +31,7 @@
 	},
 	"dependencies": {
 		"bluebird": "^3.7.2",
+		"ccxt": "^4.2.9",
 		"joi": "^17.4.0",
 		"lisk-service-framework": "https://github.com/LiskHQ/lisk-service/raw/5cb6fc8e9b9798595d1a4652b9148afcbfaaed1f/framework/dist/lisk-service-framework-1.6.11.tgz",
 		"moment": "^2.29.4",

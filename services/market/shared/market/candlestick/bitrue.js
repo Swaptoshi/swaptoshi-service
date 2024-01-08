@@ -1,12 +1,12 @@
 /* eslint-disable import/no-unresolved */
 const ccxt = require('ccxt');
 
-const binance = new ccxt.binance();
+const bitrue = new ccxt.bitrue();
 
-const getCandleStickBinance = async params => {
+const getCandleStickBitrue = async params => {
 	let { symbol } = params;
 	if (symbol === 'LSKUSD') symbol = 'LSKUSDT';
-	let data = await binance.fetchOHLCV(symbol, params.interval, Number(params.start) * 1000, 720);
+	let data = await bitrue.fetchOHLCV(symbol, params.interval, Number(params.start) * 1000, 720);
 	data = data.map(t => ({
 		start: Math.floor(t[0] / 1000),
 		open: t[1],
@@ -19,5 +19,5 @@ const getCandleStickBinance = async params => {
 };
 
 module.exports = {
-	getCandleStickBinance,
+	getCandleStickBitrue,
 };
