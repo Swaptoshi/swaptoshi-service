@@ -21,7 +21,7 @@ const { getPrice, transformTickToOhlc, getLastPrice } = require('./priceQuoter')
 const logger = Logger();
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
-const MAX_PREVIOUS_LSKUSD_INDEX_BATCH = 1000;
+const MAX_PREVIOUS_LSKUSD_INDEX_BATCH = 720;
 
 const INDEX_TOKEN_CONCURRENCY = config.dex.indexTokenConcurrency;
 const LAST_PRICE_INTERVAL = config.dex.lastPriceInterval;
