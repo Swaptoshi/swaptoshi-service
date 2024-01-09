@@ -1,4 +1,6 @@
 module.exports = {
 	tick: '=,number',
-	liquidityNet: '=,number',
+	price0: '=,string',
+	price1: '=,string',
+	liquidity: '=,number',
 };

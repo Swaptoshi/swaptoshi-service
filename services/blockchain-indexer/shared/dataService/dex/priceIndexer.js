@@ -17,6 +17,7 @@ const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickP
 const { getOhlcTableSchema } = require('../../database/dynamic-schema/ohlc');
 const { getLSKUSDPriceAtTimestamp, getLSKUSDCandles } = require('./lskPrices');
 const { getPrice, transformTickToOhlc, getLastPrice } = require('./priceQuoter');
+const { initializeTickTable } = require('./tickIndexer');
 
 const logger = Logger();
 
@@ -345,6 +346,8 @@ const addGenesisPriceIndex = async (block, dbTrx) => {
 			indexPreviousLSKUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
 		}
 	});
+
+	await initializeTickTable(dbTrx);
 };
 
 const deletePriceIndex = async (block, dbTrx) => {

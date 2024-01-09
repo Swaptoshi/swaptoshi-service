@@ -5,6 +5,10 @@ module.exports = {
 	method: 'indexer.dex.pools.tick',
 	params: {
 		poolAddress: '=,string',
+		tickLower: '=,number',
+		tickUpper: '=,number',
+		interval: '=,number',
+		sortBy: '=,string',
 	},
 	definition: {
 		data: ['data', dexPoolTick],

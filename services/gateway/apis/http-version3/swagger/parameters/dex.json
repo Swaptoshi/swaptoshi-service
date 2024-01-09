@@ -144,5 +144,26 @@
 		"description": "interval to query price tick",
 		"type": "integer",
 		"format": "int32"
+	},
+	"tickLower": {
+		"name": "tickLower",
+		"in": "query",
+		"description": "tick lower to query pool liquidity",
+		"type": "integer",
+		"format": "int32"
+	},
+	"tickUpper": {
+		"name": "tickLower",
+		"in": "query",
+		"description": "tick lower to query pool liquidity",
+		"type": "integer",
+		"format": "int32"
+	},
+	"dexPoolTickInterval": {
+		"name": "interval",
+		"in": "query",
+		"description": "interval to query pool liquidity",
+		"type": "integer",
+		"format": "int32"
 	}
 }

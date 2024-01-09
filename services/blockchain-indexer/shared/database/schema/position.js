@@ -9,7 +9,9 @@ module.exports = {
 		description: { type: 'text' },
 		image: { type: 'text' },
 		tickUpper: { type: 'integer' },
+		priceUpper: { type: 'decimal', precision: 8, scale: 4 },
 		tickLower: { type: 'integer' },
+		priceLower: { type: 'decimal', precision: 8, scale: 4 },
 		liquidity: { type: 'decimal', precision: 40, scale: 0 },
 	},
 	indexes: {

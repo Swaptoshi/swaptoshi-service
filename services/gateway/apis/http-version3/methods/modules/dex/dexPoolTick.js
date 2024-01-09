@@ -8,7 +8,16 @@ module.exports = {
 	rpcMethod: 'get.dex.pool.tick',
 	tags: ['DEX'],
 	params: {
-		poolAddress: { optional: true, type: 'string' },
+		poolAddress: { optional: false, type: 'string' },
+		tickLower: { optional: false, type: 'number' },
+		tickUpper: { optional: false, type: 'number' },
+		interval: { optional: true, type: 'number', altSwaggerKey: 'dexPoolTickInterval' },
+		sortBy: {
+			optional: true,
+			type: 'string',
+			enum: ['price0', 'price1'],
+			default: 'price0',
+		},
 	},
 	get schema() {
 		const schema = {};

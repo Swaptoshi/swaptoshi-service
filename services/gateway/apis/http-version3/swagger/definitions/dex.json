@@ -494,7 +494,7 @@
 	},
 	"DexPoolTick": {
 		"type": "object",
-		"required": ["tick", "liquidityNet"],
+		"required": ["tick", "price0", "price1", "liquidity"],
 		"properties": {
 			"tick": {
 				"type": "integer",
@@ -504,9 +504,19 @@
 				"description": "current pool tick",
 				"example": 887272
 			},
-			"liquidityNet": {
+			"price0": {
+				"type": "string",
+				"description": "tick representation in price",
+				"example": "0.0000000000000000000000000000000000000029390"
+			},
+			"price1": {
+				"type": "string",
+				"description": "tick representation in price, inverted",
+				"example": "340256786698763699520000000000000000000"
+			},
+			"liquidity": {
 				"type": "number",
-				"description": "liquitidy net on corresponding tick",
+				"description": "liquitidy on corresponding tick",
 				"example": 500000000000000
 			}
 		}
@@ -545,7 +555,9 @@
 			"owner",
 			"collectionId",
 			"tickLower",
+			"priceLower",
 			"tickUpper",
+			"priceUpper",
 			"liquidity"
 		],
 		"properties": {
@@ -630,6 +642,12 @@
 				"description": "lower tick of this liquidity position",
 				"example": -887272
 			},
+			"priceLower": {
+				"type": "number",
+				"format": "float",
+				"description": "lower tick of this liquidity position, represented in price format",
+				"example": 1.132
+			},
 			"tickUpper": {
 				"type": "integer",
 				"format": "int32",
@@ -637,6 +655,12 @@
 				"maximum": 887272,
 				"description": "upper tick of this liquidity position",
 				"example": 887272
+			},
+			"priceUpper": {
+				"type": "number",
+				"format": "float",
+				"description": "upper tick of this liquidity position, represented in price format",
+				"example": 1.132
 			},
 			"liquidity": {
 				"type": "number",

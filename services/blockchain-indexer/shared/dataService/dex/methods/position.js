@@ -39,7 +39,9 @@ const getPositions = async params => {
 			'owner',
 			'collectionId',
 			'tickLower',
+			'priceLower',
 			'tickUpper',
+			'priceUpper',
 			'liquidity',
 		].includes(params.sortBy)
 			? ['poolAddress', 'token0', 'token1'].includes(params.sortBy)
@@ -72,7 +74,9 @@ const getPositions = async params => {
             pos.owner,
             pos.collectionId,
             pos.tickLower,
+			pos.priceLower,
             pos.tickUpper,
+			pos.priceUpper,
             pos.liquidity
         FROM position pos
             LEFT JOIN pool ON pool.inverted = false AND pool.collectionId = pos.collectionId

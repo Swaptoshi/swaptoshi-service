@@ -37,7 +37,6 @@ const logger = Logger();
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
 const positionTableSchema = require('../../../database/schema/position');
 const tvlTableSchema = require('../../../database/schema/tvl');
-const tickTableSchema = require('../../../database/schema/tick');
 const { parseSingleEvent } = require('../../utils/events');
 const { getLisk32AddressFromPublicKey } = require('../../../utils/account');
 const { computePoolAddress, getPoolKey, decodeNFTId } = require('../../utils/poolAddress');
@@ -46,6 +45,12 @@ const { indexAccountAddress } = require('../../accountIndex');
 const { nftStorageUploadQueue } = require('../../../dataService/nft.storage');
 const { invokeEndpoint } = require('../../../dataService/business/invoke');
 const { syncPoolData } = require('../../utils/dexSync');
+const {
+	initializePoolTickTable,
+	increasePoolTickLiquidity,
+	decreasePoolTickLiquidity,
+} = require('../../../dataService/dex/tickIndexer');
+const { getPriceAtTick } = require('../../utils/tickFormatter');
 
 const getPositionTable = () =>
 	getTableInstance(positionTableSchema.tableName, positionTableSchema, MYSQL_ENDPOINT);
@@ -55,9 +60,6 @@ const getTVLTable = () =>
 
 const getDEXTokenTable = () =>
 	getTableInstance(dexTokenTableSchema.tableName, dexTokenTableSchema, MYSQL_ENDPOINT);
-
-const getTickTable = () =>
-	getTableInstance(tickTableSchema.tableName, tickTableSchema, MYSQL_ENDPOINT);
 
 // Declare and export the following command specific constants
 const COMMAND_NAME = 'mint';
@@ -105,7 +107,9 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			description: metadata.data.description,
 			image: metadata.data.image,
 			tickUpper: mintEvent.data.tickUpper,
+			priceUpper: getPriceAtTick(mintEvent.data.tickUpper),
 			tickLower: mintEvent.data.tickLower,
+			priceLower: getPriceAtTick(mintEvent.data.tickLower),
 			liquidity: Number(increaseLiquidityEvent.data.liquidity),
 		},
 		dbTrx,
@@ -150,23 +154,14 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		`Added new items to TVL index: ${increaseLiquidityEvent.data.amount1} ${token1.symbol}`,
 	);
 
-	const tickTable = await getTickTable();
-
-	await tickTable.upsert({
+	await initializePoolTickTable(poolAddress, dbTrx);
+	await increasePoolTickLiquidity(
 		poolAddress,
-		tick: Number(mintEvent.data.tickLower),
-		liquidityNet: Number(mintEvent.data.lowerLiquidityNet),
-	});
-
-	logger.debug(`Updated tickLower liquidity for tick: ${mintEvent.data.tickLower}`);
-
-	await tickTable.upsert({
-		poolAddress,
-		tick: Number(mintEvent.data.tickUpper),
-		liquidityNet: Number(mintEvent.data.upperLiquidityNet),
-	});
-
-	logger.debug(`Updated tickUpper liquidity for tick: ${mintEvent.data.tickUpper}`);
+		Number(mintEvent.data.tickLower),
+		Number(mintEvent.data.tickUpper),
+		Number(increaseLiquidityEvent.data.liquidity),
+		dbTrx,
+	);
 
 	logger.trace(`Updating index for the account with address ${senderAddress} asynchronously.`);
 	indexAccountAddress(senderAddress);
@@ -243,23 +238,13 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 		`Removed item from TVL index: ${increaseLiquidityEvent.data.amount1} ${token1.symbol}`,
 	);
 
-	const tickTable = await getTickTable();
-
-	await tickTable.upsert({
+	await decreasePoolTickLiquidity(
 		poolAddress,
-		tick: Number(mintEvent.data.tickLower),
-		liquidityNet: Number(mintEvent.data.lowerLiquidityNetBefore),
-	});
-
-	logger.debug(`Reverted tickLower liquidity for tick: ${mintEvent.data.tickLower}`);
-
-	await tickTable.upsert({
-		poolAddress,
-		tick: Number(mintEvent.data.tickUpper),
-		liquidityNet: Number(mintEvent.data.upperLiquidityNetBefore),
-	});
-
-	logger.debug(`Reverted tickUpper liquidity for tick: ${mintEvent.data.tickUpper}`);
+		Number(mintEvent.data.tickLower),
+		Number(mintEvent.data.tickUpper),
+		Number(increaseLiquidityEvent.data.liquidity),
+		dbTrx,
+	);
 
 	logger.trace(`Updating index for the account with address ${senderAddress} asynchronously.`);
 	indexAccountAddress(senderAddress);

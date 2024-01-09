@@ -14,6 +14,8 @@ module.exports = {
 	owner: '=,string',
 	collectionId: '=,string',
 	tickLower: '=,number',
+	priceLower: '=,number',
 	tickUpper: '=,number',
+	priceUpper: '=,number',
 	liquidity: '=,number',
 };
