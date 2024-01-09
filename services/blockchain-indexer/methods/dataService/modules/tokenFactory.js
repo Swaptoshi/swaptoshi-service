@@ -3,6 +3,7 @@ const {
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
+	isTokenAvailable,
 } = require('../controllers/tokenFactory');
 
 module.exports = [
@@ -38,5 +39,13 @@ module.exports = [
 		name: 'factory.statistics',
 		controller: getFactoryStatistics,
 		params: {},
+	},
+	{
+		name: 'factory.available',
+		controller: isTokenAvailable,
+		params: {
+			tokenName: { optional: false, type: 'string' },
+			symbol: { optional: false, type: 'string' },
+		},
 	},
 ];

@@ -65,9 +65,23 @@ const getFactoryStatistics = async params => {
 	return result;
 };
 
+const isTokenAvailable = async params => {
+	const result = {
+		data: {},
+		meta: {},
+	};
+
+	const response = await dataService.isTokenAvailable(params);
+	if (response.data) result.data = response.data;
+	if (response.meta) result.meta = response.meta;
+
+	return result;
+};
+
 module.exports = {
 	createTokenFactory,
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
+	isTokenAvailable,
 };

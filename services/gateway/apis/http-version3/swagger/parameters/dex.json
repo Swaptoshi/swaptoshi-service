@@ -165,5 +165,17 @@
 		"description": "interval to query pool liquidity",
 		"type": "integer",
 		"format": "int32"
+	},
+	"tokenName": {
+		"name": "tokenName",
+		"in": "query",
+		"description": "tokenName to check its availability",
+		"type": "string"
+	},
+	"symbol": {
+		"name": "symbol",
+		"in": "query",
+		"description": "symbol to check its availability",
+		"type": "string"
 	}
 }

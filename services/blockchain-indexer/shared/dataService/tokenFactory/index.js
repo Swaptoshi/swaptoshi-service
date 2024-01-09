@@ -13,6 +13,8 @@ const config = require('../../../config');
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
 const tokenFactoryTableSchema = require('../../database/schema/token_factory');
+const dexTokenTableSchema = require('../../database/schema/registeredDexToken');
+
 const { requestAppRegistry, requestConnector } = require('../../utils/request');
 const { factoryMetadataSchema } = require('./schema');
 const { nftStorageUploadQueue } = require('../nft.storage');
@@ -21,11 +23,60 @@ const { parseQueryResult } = require('../../utils/query');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
+const getDEXTokenTable = () =>
+	getTableInstance(dexTokenTableSchema.tableName, dexTokenTableSchema, MYSQL_ENDPOINT);
+
+const isTokenAvailable = async params => {
+	let available = true;
+
+	const response = {
+		data: {},
+		meta: {},
+	};
+
+	const tokenFactoryTable = await getTokenFactoryTable();
+	const registeredDexToken = await getDEXTokenTable();
+
+	const tokenNameExist =
+		(await tokenFactoryTable.find({ tokenName: params.tokenName, limit: 1 }, ['tokenName']))
+			.length > 0;
+
+	if (tokenNameExist) available = false;
+
+	const symbolExist =
+		(await tokenFactoryTable.find({ symbol: params.symbol.toUpperCase(), limit: 1 }, ['symbol']))
+			.length > 0;
+
+	if (symbolExist) available = false;
+
+	const registryData = await requestAppRegistry('blockchain.apps.meta.tokens', {
+		tokenName: params.tokenName,
+	});
+
+	if (registryData.data.length > 0) available = false;
+
+	const dexTokenExist =
+		(await registeredDexToken.find({ symbol: params.symbol.toUpperCase(), limit: 1 }, ['symbol']))
+			.length > 0;
+
+	if (dexTokenExist) available = false;
+
+	response.data.available = available;
+
+	return response;
+};
+
 const createTokenFactory = async params => {
 	const response = {
 		data: {},
 		meta: {},
 	};
+
+	const tokenFactoryTable = await getTokenFactoryTable();
+	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
+
+	const available = await isTokenAvailable(params);
+	if (!available.data.available) throw new Error('tokenName and/or symbol is not available');
 
 	const dryRunResult = await requestConnector('dryRunTransaction', {
 		transaction: params.transaction,
@@ -40,9 +91,6 @@ const createTokenFactory = async params => {
 	response.data.message = 'Transaction payload was successfully passed to the network node.';
 	response.data.transactionID = transactionPost.transactionId;
 
-	const tokenFactoryTable = await getTokenFactoryTable();
-	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
-
 	nftStorageUploadQueue.add({ data: Buffer.from(params.logo, 'base64').toString('hex') });
 	const logoCID = await IPFSHash.of(Buffer.from(params.logo, 'base64'), {
 		cidVersion: 1,
@@ -54,6 +102,7 @@ const createTokenFactory = async params => {
 	await tokenFactoryTable.upsert({
 		transactionId: transactionPost.transactionId,
 		...metadata,
+		symbol: metadata.symbol.toUpperCase(),
 		logoPng,
 	});
 
@@ -179,7 +228,7 @@ const getTokenFactoriesMeta = async params => {
 	const factories = factoryData
 		.map(f => ({
 			chainID: nodeInfo.chainID,
-			chainName: 'swaptoshi_mainnet',
+			chainName: 'swaptoshi_mainchain',
 			tokenID: f.tokenID,
 			tokenName: f.tokenName || '',
 			networkType:
@@ -227,4 +276,5 @@ module.exports = {
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
+	isTokenAvailable,
 };

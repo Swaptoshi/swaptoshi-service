@@ -914,6 +914,29 @@
 			}
 		}
 	},
+	"TokenFactoryAvailable": {
+		"type": "object",
+		"required": ["available"],
+		"properties": {
+			"available": {
+				"type": "boolean",
+				"description": "Whether specified tokenName and/or symbol is available on the off-chain registry",
+				"example": true
+			}
+		}
+	},
+	"TokenFactoryAvailableWithEnvelope": {
+		"type": "object",
+		"required": ["data", "meta"],
+		"properties": {
+			"data": {
+				"$ref": "#/definitions/TokenFactoryAvailable"
+			},
+			"meta": {
+				"$ref": "#/definitions/emptyObject"
+			}
+		}
+	},
 	"emptyObject": {
 		"type": "object",
 		"properties": {}

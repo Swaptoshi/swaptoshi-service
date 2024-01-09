@@ -143,6 +143,7 @@ const {
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
+	isTokenAvailable,
 } = require('./tokenFactory');
 const { nftStorageUpload } = require('./nft.storage');
 
@@ -181,6 +182,7 @@ module.exports = {
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
+	isTokenAvailable,
 
 	// NFT.storage
 	nftStorageUpload,
