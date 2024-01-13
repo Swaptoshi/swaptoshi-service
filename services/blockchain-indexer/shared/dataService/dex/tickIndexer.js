@@ -15,7 +15,7 @@ const { getPoolTickTableSchema } = require('../../database/dynamic-schema/poolTi
 const { getTicksJson } = require('../../database/database-data/ticks');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
-const INITIALIZATION_CONCURRENCY = 16;
+const INITIALIZATION_CONCURRENCY = 8;
 const MIN_TICK = -887272;
 const MAX_TICK = 887272;
 
