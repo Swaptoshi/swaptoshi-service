@@ -46,7 +46,6 @@ const { nftStorageUploadQueue } = require('../../../dataService/nft.storage');
 const { invokeEndpoint } = require('../../../dataService/business/invoke');
 const { syncPoolData } = require('../../utils/dexSync');
 const {
-	initializePoolTickTable,
 	increasePoolTickLiquidity,
 	decreasePoolTickLiquidity,
 } = require('../../../dataService/dex/tickIndexer');
@@ -154,7 +153,6 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		`Added new items to TVL index: ${increaseLiquidityEvent.data.amount1} ${token1.symbol}`,
 	);
 
-	await initializePoolTickTable(poolAddress, dbTrx);
 	await increasePoolTickLiquidity(
 		poolAddress,
 		Number(mintEvent.data.tickLower),

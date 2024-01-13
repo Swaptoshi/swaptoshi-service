@@ -42,6 +42,7 @@ const { decodePriceSqrt } = require('../../utils/priceFormatter');
 const { parseSingleEvent, parseEvents } = require('../../utils/events');
 const { decodePoolAddress, computePoolId } = require('../../utils/poolAddress');
 const { getTokenFactoriesMeta } = require('../../../dataService/tokenFactory');
+const { initializePoolTickTable } = require('../../../dataService/dex/tickIndexer');
 
 const getPoolTable = () =>
 	getTableInstance(poolTableSchema.tableName, poolTableSchema, MYSQL_ENDPOINT);
@@ -165,6 +166,8 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	logger.debug(`Added pool to index: ${poolCreatedEventData.data.poolAddress}`);
+
+	await initializePoolTickTable(poolCreatedEventData.data.poolAddress, dbTrx);
 
 	Promise.resolve({ blockHeader, tx });
 };
