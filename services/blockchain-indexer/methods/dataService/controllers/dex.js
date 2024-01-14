@@ -169,8 +169,7 @@ const getDEXStatisticSummary = async params => {
 	return res;
 };
 
-const generateSparklineBuffer = async params =>
-	dataService.generateSparklineBuffer(params.base, params.quote, params.interval, params.limit);
+const generateSparklineBuffer = async params => dataService.generateSparklineBuffer(params);
 
 module.exports = {
 	quoteSwap,

@@ -158,6 +158,8 @@ module.exports = [
 			quote: { optional: false, type: 'string' },
 			interval: { optional: false, type: 'number' },
 			limit: { optional: false, type: 'number' },
+			start: { optional: true, type: 'number' },
+			end: { optional: true, type: 'number' },
 		},
 	},
 ];

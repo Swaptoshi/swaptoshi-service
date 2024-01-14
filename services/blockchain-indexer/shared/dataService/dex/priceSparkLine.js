@@ -19,11 +19,13 @@ const getTickPriceTable = pair =>
 		MYSQL_ENDPOINT,
 	);
 
-const generateSparklineBuffer = async (base, quote, interval, limit) => {
+const generateSparklineBuffer = async ({ base, quote, interval, limit, start, end }) => {
 	if (typeof base !== 'string') throw new Error('invalid base');
 	if (typeof quote !== 'string') throw new Error('invalid quote');
 	if (typeof interval !== 'number') throw new Error('invalid interval');
 	if (typeof limit !== 'number') throw new Error('invalid limit');
+	if (start !== undefined && typeof start !== 'number') throw new Error('invalid start');
+	if (end !== undefined && typeof end !== 'number') throw new Error('invalid end');
 
 	const includeConversion = base.toLowerCase() !== 'lsk' && quote.toLowerCase() === 'usd';
 
@@ -44,6 +46,8 @@ const generateSparklineBuffer = async (base, quote, interval, limit) => {
                     ${joinQuery}
                 WHERE
                     MOD(base.time, ${interval}) = 0
+					${start ? `AND base.time >= ${start}` : ''} 
+					${end ? `AND base.time <= ${end}` : ''}
                 ORDER BY
                     base.time DESC
                 ${limitQuery}

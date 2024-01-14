@@ -28,6 +28,7 @@ const updatePriceSparkline = async arrayParam => {
 							interval: param.interval,
 							limit: param.limit,
 							start: now - intervalToSecond[param.label],
+							end: now,
 						});
 
 						fs.writeFileSync(
@@ -43,6 +44,7 @@ const updatePriceSparkline = async arrayParam => {
 						interval: param.interval,
 						limit: param.limit,
 						start: now - intervalToSecond[param.label],
+						end: now,
 					});
 
 					fs.writeFileSync(
