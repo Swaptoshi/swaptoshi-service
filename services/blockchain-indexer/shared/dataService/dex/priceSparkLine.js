@@ -72,7 +72,6 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 			datasets: [
 				{
 					data,
-					borderColor: data[0] <= data[data.length - 1] ? '#60BE89' : '#D65263',
 					borderWidth: 2,
 					pointRadius: 0,
 				},
@@ -92,7 +91,12 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 	};
 
 	const image = canvasRenderService.renderToBufferSync(configuration);
-	return image.toString('hex');
+
+	let svgString = image.toString();
+	svgString = svgString.replace(/stroke="rgb\(0%, 0%, 0%\)"/g, 'stroke="currentColor"');
+	svgString = svgString.replace(/stroke-opacity="[\d.]+" /g, '');
+
+	return Buffer.from(svgString).toString('hex');
 };
 
 module.exports = { generateSparklineBuffer };

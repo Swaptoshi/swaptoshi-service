@@ -151,7 +151,15 @@ tempApp.run().then(async () => {
 
 			assets: {
 				folder: './public',
-				options: {},
+				options: {
+					setHeaders: res => {
+						res.setHeader('Access-Control-Allow-Origin', config.cors.allowedOrigin);
+						res.setHeader(
+							'Access-Control-Allow-Headers',
+							'Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Max-Age',
+						);
+					},
+				},
 			},
 
 			onError(req, res, err) {
