@@ -177,5 +177,11 @@
 		"in": "query",
 		"description": "symbol to check its availability",
 		"type": "string"
+	},
+	"inverted": {
+		"name": "inverted",
+		"in": "query",
+		"description": "whether to query as normal (zeroForOne) or inverted (oneForZero)",
+		"type": "boolean"
 	}
 }

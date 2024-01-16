@@ -89,7 +89,7 @@ module.exports = [
 			tickLower: { optional: false, type: 'number' },
 			tickUpper: { optional: false, type: 'number' },
 			interval: { optional: true, type: 'number' },
-			sortBy: { optional: true, type: 'string' },
+			inverted: { optional: true, type: 'boolean' },
 		},
 	},
 	{

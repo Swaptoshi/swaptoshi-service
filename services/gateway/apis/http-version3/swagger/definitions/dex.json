@@ -494,7 +494,7 @@
 	},
 	"DexPoolTick": {
 		"type": "object",
-		"required": ["tick", "price0", "price1", "liquidity"],
+		"required": ["tick", "price", "liquidity"],
 		"properties": {
 			"tick": {
 				"type": "integer",
@@ -504,15 +504,10 @@
 				"description": "current pool tick",
 				"example": 887272
 			},
-			"price0": {
+			"price": {
 				"type": "string",
 				"description": "tick representation in price",
-				"example": "0.0000000000000000000000000000000000000029390"
-			},
-			"price1": {
-				"type": "string",
-				"description": "tick representation in price, inverted",
-				"example": "340256786698763699520000000000000000000"
+				"example": "29390"
 			},
 			"liquidity": {
 				"type": "number",

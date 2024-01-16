@@ -8,7 +8,7 @@ module.exports = {
 		tickLower: '=,number',
 		tickUpper: '=,number',
 		interval: '=,number',
-		sortBy: '=,string',
+		inverted: '=,boolean',
 	},
 	definition: {
 		data: ['data', dexPoolTick],

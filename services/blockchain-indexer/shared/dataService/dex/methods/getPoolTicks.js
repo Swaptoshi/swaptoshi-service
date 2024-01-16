@@ -22,16 +22,14 @@ const getPoolTicks = async params => {
 
 	const { poolAddress, tickLower, tickUpper, interval } = params;
 
-	const sortBy =
-		params.sortBy && ['price0', 'price1'].includes(params.sortBy)
-			? `ptp.${params.sortBy}`
-			: 'ptp.price0';
+	const sortBy = params.inverted ? 'DESC' : 'ASC';
+
+	const price = params.inverted ? 'ptp.price1' : 'ptp.price0';
 
 	const query = `
 		SELECT 
 			tp.tick,
-			ptp.price0,
-			ptp.price1,
+			${price} AS price,
 			tp.liquidity 
 		FROM 
 			tick_pool_${poolAddress} AS tp
@@ -42,7 +40,7 @@ const getPoolTicks = async params => {
 			tp.tick >= ${tickLower} 
 			AND tp.tick <= ${tickUpper} 
 			${interval ? `AND MOD(tp.tick, ${interval}) = 0` : ''} 
-		ORDER BY ${sortBy} ASC`;
+		ORDER BY tp.tick ${sortBy}`;
 
 	const response = {
 		data: {},

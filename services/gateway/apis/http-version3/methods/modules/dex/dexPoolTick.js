@@ -12,12 +12,7 @@ module.exports = {
 		tickLower: { optional: false, type: 'number' },
 		tickUpper: { optional: false, type: 'number' },
 		interval: { optional: true, type: 'number', altSwaggerKey: 'dexPoolTickInterval' },
-		sortBy: {
-			optional: true,
-			type: 'string',
-			enum: ['price0', 'price1'],
-			default: 'price0',
-		},
+		inverted: { optional: true, type: 'boolean' },
 	},
 	get schema() {
 		const schema = {};
