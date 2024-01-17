@@ -9,10 +9,6 @@ module.exports = {
 	tags: ['DEX'],
 	params: {
 		poolAddress: { optional: false, type: 'string' },
-		tickLower: { optional: false, type: 'number' },
-		tickUpper: { optional: false, type: 'number' },
-		interval: { optional: true, type: 'number', altSwaggerKey: 'dexPoolTickInterval' },
-		inverted: { optional: true, type: 'boolean' },
 	},
 	get schema() {
 		const schema = {};

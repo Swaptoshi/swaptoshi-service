@@ -138,6 +138,18 @@
 		"description": "timeframe to query candlestick price data",
 		"type": "string"
 	},
+	"tokenName": {
+		"name": "tokenName",
+		"in": "query",
+		"description": "tokenName to check its availability",
+		"type": "string"
+	},
+	"symbol": {
+		"name": "symbol",
+		"in": "query",
+		"description": "symbol to check its availability",
+		"type": "string"
+	},
 	"interval": {
 		"name": "interval",
 		"in": "query",
@@ -165,18 +177,6 @@
 		"description": "interval to query pool liquidity",
 		"type": "integer",
 		"format": "int32"
-	},
-	"tokenName": {
-		"name": "tokenName",
-		"in": "query",
-		"description": "tokenName to check its availability",
-		"type": "string"
-	},
-	"symbol": {
-		"name": "symbol",
-		"in": "query",
-		"description": "symbol to check its availability",
-		"type": "string"
 	},
 	"inverted": {
 		"name": "inverted",

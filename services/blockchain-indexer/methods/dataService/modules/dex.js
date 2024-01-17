@@ -86,10 +86,6 @@ module.exports = [
 		controller: getPoolTicks,
 		params: {
 			poolAddress: { optional: false, type: 'string' },
-			tickLower: { optional: false, type: 'number' },
-			tickUpper: { optional: false, type: 'number' },
-			interval: { optional: true, type: 'number' },
-			inverted: { optional: true, type: 'boolean' },
 		},
 	},
 	{

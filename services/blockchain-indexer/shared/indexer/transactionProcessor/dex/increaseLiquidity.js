@@ -36,6 +36,7 @@ const logger = Logger();
 
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
 const tvlTableSchema = require('../../../database/schema/tvl');
+const tickTableSchema = require('../../../database/schema/tick');
 const positionTableSchema = require('../../../database/schema/position');
 
 const { parseSingleEvent } = require('../../utils/events');
@@ -44,10 +45,6 @@ const { decodePoolAddress } = require('../../utils/poolAddress');
 const { getLisk32AddressFromHexAddress } = require('../../../dataService/utils/account');
 const { indexAccountAddress } = require('../../accountIndex');
 const { syncPoolData } = require('../../utils/dexSync');
-const {
-	increasePoolTickLiquidity,
-	decreasePoolTickLiquidity,
-} = require('../../../dataService/dex/tickIndexer');
 
 const getPositionTable = () =>
 	getTableInstance(positionTableSchema.tableName, positionTableSchema, MYSQL_ENDPOINT);
@@ -57,6 +54,9 @@ const getTVLTable = () =>
 
 const getDEXTokenTable = () =>
 	getTableInstance(dexTokenTableSchema.tableName, dexTokenTableSchema, MYSQL_ENDPOINT);
+
+const getTickTable = () =>
+	getTableInstance(tickTableSchema.tableName, tickTableSchema, MYSQL_ENDPOINT);
 
 // Declare and export the following command specific constants
 const COMMAND_NAME = 'increaseLiquidity';
@@ -119,13 +119,23 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		`Added new items to TVL index: ${increaseLiquidityEvent.data.amount1} ${token1.symbol}`,
 	);
 
-	await increasePoolTickLiquidity(
+	const tickTable = await getTickTable();
+
+	await tickTable.upsert({
 		poolAddress,
-		Number(mintEvent.data.tickLower),
-		Number(mintEvent.data.tickUpper),
-		Number(increaseLiquidityEvent.data.liquidity),
-		dbTrx,
-	);
+		tick: Number(mintEvent.data.tickLower),
+		liquidityNet: Number(mintEvent.data.lowerLiquidityNet),
+	});
+
+	logger.debug(`Updated tickLower liquidity for tick: ${mintEvent.data.tickLower}`);
+
+	await tickTable.upsert({
+		poolAddress,
+		tick: Number(mintEvent.data.tickUpper),
+		liquidityNet: Number(mintEvent.data.upperLiquidityNet),
+	});
+
+	logger.debug(`Updated tickUpper liquidity for tick: ${mintEvent.data.tickUpper}`);
 
 	await positionTable.increment(
 		{
@@ -208,13 +218,23 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 		`Removed items from TVL index: ${increaseLiquidityEvent.data.amount1} ${token1.symbol}`,
 	);
 
-	await decreasePoolTickLiquidity(
+	const tickTable = await getTickTable();
+
+	await tickTable.upsert({
 		poolAddress,
-		Number(mintEvent.data.tickLower),
-		Number(mintEvent.data.tickUpper),
-		Number(increaseLiquidityEvent.data.liquidity),
-		dbTrx,
-	);
+		tick: Number(mintEvent.data.tickLower),
+		liquidityNet: Number(mintEvent.data.lowerLiquidityNetBefore),
+	});
+
+	logger.debug(`Reverted tickLower liquidity for tick: ${mintEvent.data.tickLower}`);
+
+	await tickTable.upsert({
+		poolAddress,
+		tick: Number(mintEvent.data.tickUpper),
+		liquidityNet: Number(mintEvent.data.upperLiquidityNetBefore),
+	});
+
+	logger.debug(`Reverted tickUpper liquidity for tick: ${mintEvent.data.tickUpper}`);
 
 	await positionTable.decrement(
 		{

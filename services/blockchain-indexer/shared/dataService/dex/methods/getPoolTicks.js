@@ -4,50 +4,42 @@ const {
 	},
 } = require('lisk-service-framework');
 
+const tickTableSchema = require('../../../database/schema/tick');
+
 const config = require('../../../../config');
 const { parseQueryResult } = require('../../../utils/query');
-const { getPoolTickTableSchema } = require('../../../database/dynamic-schema/poolTick');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
-const getPoolTickTable = poolAddress =>
-	getTableInstance(
-		getPoolTickTableSchema(poolAddress).tableName,
-		getPoolTickTableSchema(poolAddress),
-		MYSQL_ENDPOINT,
-	);
+const getTickTable = () =>
+	getTableInstance(tickTableSchema.tableName, tickTableSchema, MYSQL_ENDPOINT);
 
 const getPoolTicks = async params => {
-	const poolTickTable = await getPoolTickTable();
+	const tickTable = await getTickTable();
 
-	const { poolAddress, tickLower, tickUpper, interval } = params;
-
-	const sortBy = params.inverted ? 'DESC' : 'ASC';
-
-	const price = params.inverted ? 'ptp.price1' : 'ptp.price0';
+	const { poolAddress } = params;
 
 	const query = `
 		SELECT 
-			tp.tick,
-			${price} AS price,
-			tp.liquidity 
+			t.tick,
+			ptp.price0,
+			ptp.price1, 
+			t.liquidityNet 
 		FROM 
-			tick_pool_${poolAddress} AS tp
-		LEFT JOIN 
-			pool_tick_price AS ptp 
-			ON tp.tick = ptp.tick 
+			tick AS t
+		LEFT JOIN
+			pool_tick_price AS ptp ON ptp.tick = t.tick
 		WHERE 
-			tp.tick >= ${tickLower} 
-			AND tp.tick <= ${tickUpper} 
-			${interval ? `AND MOD(tp.tick, ${interval}) = 0` : ''} 
-		ORDER BY tp.tick ${sortBy}`;
+			t.poolAddress = '${poolAddress}' 
+		ORDER BY 
+			t.tick ASC`;
 
 	const response = {
 		data: {},
 		meta: {},
 	};
 
-	const ticks = parseQueryResult(await poolTickTable.rawQuery(query));
+	const ticks = parseQueryResult(await tickTable.rawQuery(query));
 
 	response.data = ticks;
 	response.meta = {};
