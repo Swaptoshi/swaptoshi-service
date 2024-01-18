@@ -46,7 +46,6 @@ const { indexAccountAddress } = require('../../accountIndex');
 const { nftStorageUploadQueue } = require('../../../dataService/nft.storage');
 const { invokeEndpoint } = require('../../../dataService/business/invoke');
 const { syncPoolData } = require('../../utils/dexSync');
-const { getPriceAtTick } = require('../../utils/tickFormatter');
 
 const getPositionTable = () =>
 	getTableInstance(positionTableSchema.tableName, positionTableSchema, MYSQL_ENDPOINT);
@@ -106,9 +105,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			description: metadata.data.description,
 			image: metadata.data.image,
 			tickUpper: mintEvent.data.tickUpper,
-			priceUpper: getPriceAtTick(mintEvent.data.tickUpper),
 			tickLower: mintEvent.data.tickLower,
-			priceLower: getPriceAtTick(mintEvent.data.tickLower),
 			liquidity: Number(increaseLiquidityEvent.data.liquidity),
 		},
 		dbTrx,
