@@ -18,4 +18,5 @@ module.exports = {
 	tickUpper: '=,number',
 	priceUpper: '=,number',
 	liquidity: '=,number',
+	tokenURI: '=,string',
 };

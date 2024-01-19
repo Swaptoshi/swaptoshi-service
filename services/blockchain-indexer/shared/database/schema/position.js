@@ -11,6 +11,7 @@ module.exports = {
 		tickUpper: { type: 'integer' },
 		tickLower: { type: 'integer' },
 		liquidity: { type: 'decimal', precision: 40, scale: 0 },
+		tokenURI: { type: 'string' },
 	},
 	indexes: {
 		tokenId: { type: 'key' },

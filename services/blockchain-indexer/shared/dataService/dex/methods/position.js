@@ -77,7 +77,8 @@ const getPositions = async params => {
 			low.price0 AS priceLower,
             pos.tickUpper,
 			up.price0 AS priceUpper,
-            pos.liquidity
+            pos.liquidity,
+			pos.tokenURI
         FROM position pos
 			LEFT JOIN pool_tick_price AS up ON up.tick = pos.tickUpper
 			LEFT JOIN pool_tick_price AS low ON low.tick = pos.tickLower

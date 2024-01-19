@@ -558,7 +558,8 @@
 			"priceLower",
 			"tickUpper",
 			"priceUpper",
-			"liquidity"
+			"liquidity",
+			"tokenURI"
 		],
 		"properties": {
 			"poolAddress": {
@@ -666,6 +667,11 @@
 				"type": "number",
 				"description": "liquitidy of this position",
 				"example": 500000000000000
+			},
+			"tokenURI": {
+				"type": "string",
+				"description": "tokenURI metadata of this NFT position",
+				"example": "ipfs://bafkreifm5wbhjg2wt6rg5onwnux2nx5cprjdvk6ewofdtbfcmosxln3afe"
 			}
 		}
 	},

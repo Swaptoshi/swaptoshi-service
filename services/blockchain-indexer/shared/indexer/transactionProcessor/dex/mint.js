@@ -28,6 +28,7 @@ const {
 	MODULE_NAME_DEX,
 	EVENT_NAME_DEX_MINT,
 	EVENT_NAME_INCREASE_LIQUIDITY,
+	EVENT_NAME_TOKEN_URI_CREATED,
 } = require('../../../../../blockchain-connector/shared/sdk/constants/names');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
@@ -67,6 +68,12 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	if (tx.executionStatus !== TRANSACTION_STATUS.SUCCESSFUL) return;
 
 	const mintEvent = parseSingleEvent(events, MODULE_NAME_DEX, EVENT_NAME_DEX_MINT, tx.id);
+	const tokenUriCreatedEvent = parseSingleEvent(
+		events,
+		MODULE_NAME_DEX,
+		EVENT_NAME_TOKEN_URI_CREATED,
+		tx.id,
+	);
 
 	const increaseLiquidityEvent = parseSingleEvent(
 		events,
@@ -107,6 +114,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tickUpper: mintEvent.data.tickUpper,
 			tickLower: mintEvent.data.tickLower,
 			liquidity: Number(increaseLiquidityEvent.data.liquidity),
+			tokenURI: tokenUriCreatedEvent.data.tokenURI,
 		},
 		dbTrx,
 	);
