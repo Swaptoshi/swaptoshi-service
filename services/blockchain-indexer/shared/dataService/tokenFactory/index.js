@@ -75,7 +75,7 @@ const createTokenFactory = async params => {
 	const tokenFactoryTable = await getTokenFactoryTable();
 	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
 
-	const available = await isTokenAvailable(params);
+	const available = await isTokenAvailable(metadata);
 	if (!available.data.available) throw new Error('tokenName and/or symbol is not available');
 
 	const dryRunResult = await requestConnector('dryRunTransaction', {
