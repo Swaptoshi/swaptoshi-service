@@ -5,8 +5,8 @@ module.exports = {
 	method: 'indexer.factory.token',
 	params: {
 		tokenIds: '=,string',
-		offset: '=,string',
-		limit: '=,string',
+		offset: '=,number',
+		limit: '=,number',
 	},
 	definition: {
 		data: ['data', tokenFactoryToken],

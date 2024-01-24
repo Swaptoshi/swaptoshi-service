@@ -6,8 +6,8 @@ module.exports = {
 	params: {
 		tokenIds: '=,string',
 		registry: '=,boolean',
-		offset: '=,string',
-		limit: '=,string',
+		offset: '=,number',
+		limit: '=,number',
 	},
 	definition: {
 		data: ['data', tokenFactoryMeta],
