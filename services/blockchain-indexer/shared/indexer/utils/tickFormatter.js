@@ -1,10 +1,10 @@
 const { getTicksJson } = require('../../database/database-data/ticks');
 
-const getPriceAtTick = tick => {
+const getPriceAtTick = (tick, inverted) => {
 	const tickNum = Number(tick);
 	const data = getTicksJson().find(t => t.tick === tickNum);
 	if (data) {
-		return data.price0;
+		return inverted ? data.price1 : data.price0;
 	}
 	return undefined;
 };

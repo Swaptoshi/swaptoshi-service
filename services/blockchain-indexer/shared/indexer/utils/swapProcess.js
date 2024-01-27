@@ -44,10 +44,11 @@ const lastPriceTableSchema = require('../../database/schema/lastPrice');
 
 const { parseEvents } = require('./events');
 const { indexAccountAddress } = require('../accountIndex');
-const { decodeFeeGrowth, decodePriceSqrt } = require('./priceFormatter');
+const { decodeFeeGrowth } = require('./priceFormatter');
 const { decodePoolAddress } = require('./poolAddress');
 const { getPrice } = require('../../dataService/dex/priceQuoter');
 const { getLSKTokenID } = require('../../dataService/business/interoperability/blockchainApps');
+const { getPriceAtTick } = require('./tickFormatter');
 
 const getPoolTable = () =>
 	getTableInstance(poolTableSchema.tableName, poolTableSchema, MYSQL_ENDPOINT);
@@ -128,13 +129,8 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 				`Added new items to Volume index: ${event.data.amount0} ${token0.symbol} & ${event.data.amount1} ${token1.symbol} on pool ${event.topics[1]}`,
 			);
 
-			const updatedPrice = decodePriceSqrt(event.data.sqrtPriceX96, token0.decimal, token1.decimal);
-			const updatedPriceInverse = decodePriceSqrt(
-				event.data.sqrtPriceX96,
-				token1.decimal,
-				token0.decimal,
-				true,
-			);
+			const updatedPrice = getPriceAtTick(event.data.tick);
+			const updatedPriceInverse = getPriceAtTick(event.data.tick, true);
 			await poolTable.update({
 				where: {
 					token0: poolKey.token0,
@@ -261,18 +257,9 @@ const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 				`Removed items from Volume index: ${event.data.amount0} ${token0.symbol} & ${event.data.amount1} ${token1.symbol} on pool ${event.topics[1]}`,
 			);
 
-			const revertedPrice = decodePriceSqrt(
-				event.data.sqrtPriceX96Before,
-				token0.decimal,
-				token1.decimal,
-			);
+			const revertedPrice = getPriceAtTick(event.data.tickBefore);
+			const revertedPriceInverse = getPriceAtTick(event.data.tickBefore, true);
 
-			const revertedPriceInverse = decodePriceSqrt(
-				event.data.sqrtPriceX96Before,
-				token0.decimal,
-				token1.decimal,
-				true,
-			);
 			await poolTable.update({
 				where: {
 					token0: poolKey.token0,

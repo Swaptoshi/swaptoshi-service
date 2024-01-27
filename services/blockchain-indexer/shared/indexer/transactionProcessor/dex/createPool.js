@@ -38,10 +38,10 @@ const logger = Logger();
 
 const poolTableSchema = require('../../../database/schema/pool');
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
-const { decodePriceSqrt } = require('../../utils/priceFormatter');
 const { parseSingleEvent, parseEvents } = require('../../utils/events');
-const { decodePoolAddress, computePoolId } = require('../../utils/poolAddress');
+const { computePoolId } = require('../../utils/poolAddress');
 const { getTokenFactoriesMeta } = require('../../../dataService/tokenFactory');
+const { getPriceAtTick } = require('../../utils/tickFormatter');
 
 const getPoolTable = () =>
 	getTableInstance(poolTableSchema.tableName, poolTableSchema, MYSQL_ENDPOINT);
@@ -114,10 +114,6 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	const feeHex = Buffer.allocUnsafe(3);
 	feeHex.writeUIntBE(parseInt(poolCreatedEventData.data.fee, 10), 0, 3);
-	const poolKey = decodePoolAddress(poolCreatedEventData.data.poolAddress);
-
-	const [token0] = await tokenTable.find({ tokenId: poolKey.token0, limit: 1 }, ['decimal'], dbTrx);
-	const [token1] = await tokenTable.find({ tokenId: poolKey.token1, limit: 1 }, ['decimal'], dbTrx);
 
 	await poolTable.upsert(
 		{
@@ -132,11 +128,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tickSpacing: poolCreatedEventData.data.tickSpacing,
 			tick: poolInitializedEventData.data.tick,
 			liquidity: 0,
-			price: decodePriceSqrt(
-				poolInitializedEventData.data.sqrtPriceX96,
-				token0.decimal,
-				token1.decimal,
-			),
+			price: getPriceAtTick(poolInitializedEventData.data.tick),
 		},
 		dbTrx,
 	);
@@ -154,12 +146,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tickSpacing: poolCreatedEventData.data.tickSpacing,
 			tick: poolInitializedEventData.data.tick,
 			liquidity: 0,
-			price: decodePriceSqrt(
-				poolInitializedEventData.data.sqrtPriceX96,
-				token0.decimal,
-				token1.decimal,
-				true,
-			),
+			price: getPriceAtTick(poolInitializedEventData.data.tick, true),
 		},
 		dbTrx,
 	);
