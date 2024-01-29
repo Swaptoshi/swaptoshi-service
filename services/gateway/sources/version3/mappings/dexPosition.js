@@ -19,4 +19,5 @@ module.exports = {
 	priceUpper: '=,number',
 	liquidity: '=,number',
 	tokenURI: '=,string',
+	status: '=,number',
 };

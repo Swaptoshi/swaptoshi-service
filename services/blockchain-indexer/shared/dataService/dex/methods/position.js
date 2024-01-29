@@ -43,11 +43,15 @@ const getPositions = async params => {
 			'tickUpper',
 			'priceUpper',
 			'liquidity',
+			'status',
 		].includes(params.sortBy)
-			? ['poolAddress', 'token0', 'token1'].includes(params.sortBy)
+			? // eslint-disable-next-line no-nested-ternary
+			  ['poolAddress', 'token0', 'token1'].includes(params.sortBy)
 				? `pool.${params.sortBy}`
+				: ['status'].includes(params.sortBy)
+				? `status`
 				: `pos.${params.sortBy}`
-			: 'pos.tokenId';
+			: 'status';
 
 	const sortOrder = params.sortOrder === 'asc' ? 'ASC' : 'DESC';
 
@@ -80,7 +84,8 @@ const getPositions = async params => {
             pos.tickUpper,
 			up.price0 AS priceUpper,
             pos.liquidity,
-			pos.tokenURI
+			pos.tokenURI,
+			CASE WHEN pos.liquidity = 0 THEN 0 WHEN pos.tickLower < pool.tick AND pool.tick < pos.tickUpper THEN 2 ELSE 1 END AS status
         FROM position pos
 			LEFT JOIN pool_tick_price AS up ON up.tick = pos.tickUpper
 			LEFT JOIN pool_tick_price AS low ON low.tick = pos.tickLower
