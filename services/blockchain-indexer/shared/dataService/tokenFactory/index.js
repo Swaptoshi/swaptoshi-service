@@ -220,49 +220,57 @@ const getTokenFactoriesMeta = async params => {
 		${offsetClause};
 	`;
 
-	const factoryData = parseQueryResult(await tokenFactoryTable.rawQuery(query));
-	const registryData = await requestAppRegistry('blockchain.apps.meta.tokens', {
-		tokenID: params.tokenIds,
-	});
-
-	const factories = factoryData
-		.map(f => ({
-			chainID: nodeInfo.chainID,
-			chainName: 'swaptoshi_mainchain',
-			tokenID: f.tokenID,
-			tokenName: f.tokenName || '',
-			networkType:
-				f.tokenID.slice(0, 2) === '00'
-					? 'mainnet'
-					: f.tokenID.slice(0, 2) === '01'
-					? 'testnet'
-					: f.tokenID.slice(0, 2) === '04'
-					? 'devnet'
-					: 'unknown',
-			description: f.description || '',
-			denomUnits: [
-				{
-					denom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
-					decimals: 0,
-					aliases: f.baseDenom ? [f.baseDenom.charAt(0).toUpperCase() + f.baseDenom.slice(1)] : [],
-				},
-				{
-					denom: f.symbol ? f.symbol.toLowerCase() : '',
-					decimals: f.decimal || 0,
-					aliases: f.tokenName ? [f.tokenName.charAt(0).toUpperCase() + f.tokenName.slice(1)] : [],
-				},
-			],
-			symbol: f.symbol ? f.symbol.toUpperCase() : '',
-			displayDenom: f.symbol ? f.symbol.toLowerCase() : '',
-			baseDenom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
-			logo: {
-				png: f.logoPng ? f.logoPng : '',
-				svg: '',
+	const factoryData = parseQueryResult(await tokenFactoryTable.rawQuery(query)).map(f => ({
+		chainID: nodeInfo.chainID,
+		chainName: 'swaptoshi_mainchain',
+		tokenID: f.tokenID,
+		tokenName: f.tokenName || '',
+		networkType:
+			f.tokenID.slice(0, 2) === '00'
+				? 'mainnet'
+				: f.tokenID.slice(0, 2) === '01'
+				? 'testnet'
+				: f.tokenID.slice(0, 2) === '04'
+				? 'devnet'
+				: 'unknown',
+		description: f.description || '',
+		denomUnits: [
+			{
+				denom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
+				decimals: 0,
+				aliases: f.baseDenom ? [f.baseDenom.charAt(0).toUpperCase() + f.baseDenom.slice(1)] : [],
 			},
-		}))
-		.concat(params.registry ? registryData.data : []);
+			{
+				denom: f.symbol ? f.symbol.toLowerCase() : '',
+				decimals: f.decimal || 0,
+				aliases: f.tokenName ? [f.tokenName.charAt(0).toUpperCase() + f.tokenName.slice(1)] : [],
+			},
+		],
+		symbol: f.symbol ? f.symbol.toUpperCase() : '',
+		displayDenom: f.symbol ? f.symbol.toLowerCase() : '',
+		baseDenom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
+		logo: {
+			png: f.logoPng ? f.logoPng : '',
+			svg: '',
+		},
+	}));
+	const registryData = params.registry
+		? (
+				await requestAppRegistry('blockchain.apps.meta.tokens', {
+					tokenID: params.tokenIds,
+				})
+		  ).data
+		: [];
 
-	response.data = factories;
+	const factories = registryData.concat(factoryData);
+
+	const result = factories.reduce((accumulator, current) => {
+		const exists = accumulator.find(item => item.tokenID === current.tokenID);
+		if (!exists) accumulator = accumulator.concat(current);
+		return accumulator;
+	}, []);
+
+	response.data = result;
 	response.meta = {
 		count: factories.length,
 		offset: params.offset || 0,

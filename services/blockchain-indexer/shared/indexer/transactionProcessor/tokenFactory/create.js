@@ -33,6 +33,7 @@ const {
 	MODULE_NAME_TOKEN_FACTORY,
 	EVENT_NAME_TOKEN_FACTORY_CREATE,
 } = require('../../../../../blockchain-connector/shared/sdk/constants/names');
+const { requestAppRegistry } = require('../../../utils/request');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
@@ -51,16 +52,31 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	const tokenFactory = await getTokenFactoryTable();
+	const param = {
+		transactionId: tx.id,
+		tokenID: factoryCreatedEvent.data.tokenId,
+		owner: factoryCreatedEvent.data.ownerAddress,
+		supply: factoryCreatedEvent.data.amount,
+	};
 
-	await tokenFactory.upsert(
-		{
-			transactionId: tx.id,
-			tokenID: factoryCreatedEvent.data.tokenId,
-			owner: factoryCreatedEvent.data.ownerAddress,
-			supply: factoryCreatedEvent.data.amount,
-		},
-		dbTrx,
-	);
+	const registryData = await requestAppRegistry('blockchain.apps.meta.tokens', {
+		tokenID: factoryCreatedEvent.data.tokenId,
+	});
+
+	if (registryData.data.length > 0) {
+		param.tokenName = registryData.data[0].tokenName;
+		param.description = registryData.data[0].description;
+		param.baseDenom = registryData.data[0].baseDenom;
+		param.symbol = registryData.data[0].symbol;
+		param.logoPng = registryData.data[0].logo.png;
+
+		const decimal = registryData.data[0].denomUnits.find(
+			t => t.denom === registryData.data[0].displayDenom,
+		);
+		if (decimal !== undefined) param.decimal = decimal.decimals;
+	}
+
+	await tokenFactory.upsert(param, dbTrx);
 
 	logger.debug(`Added tokenId to index: ${factoryCreatedEvent.data.tokenId}`);
 
