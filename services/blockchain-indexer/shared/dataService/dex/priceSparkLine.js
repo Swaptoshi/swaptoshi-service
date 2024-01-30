@@ -98,6 +98,8 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 		'stroke:currentColor',
 	);
 	svgString = svgString.replace(/stroke-opacity:"?\d+(\.\d{1,32})?"?;/g, '');
+	svgString = svgString.replace(/width="(\d+)pt"/g, 'width="$1"');
+	svgString = svgString.replace(/height="(\d+)pt"/g, 'height="$1"');
 
 	return Buffer.from(svgString).toString('hex');
 };
