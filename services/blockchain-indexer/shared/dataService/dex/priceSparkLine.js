@@ -93,8 +93,11 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 	const image = canvasRenderService.renderToBufferSync(configuration);
 
 	let svgString = image.toString();
-	svgString = svgString.replace(/stroke="rgb\(0%, 0%, 0%\)"/g, 'stroke="currentColor"');
-	svgString = svgString.replace(/stroke-opacity="[\d.]+" /g, '');
+	svgString = svgString.replace(
+		/stroke:rgb\s*\(\s*0%\s*,\s*0%\s*,\s*0%\s*\)|stroke:rgb\s*\(0%,0%,0%\)/g,
+		'stroke="currentColor"',
+	);
+	svgString = svgString.replace(/stroke-opacity:\d+(\.\d{1,32})?;/g, '');
 
 	return Buffer.from(svgString).toString('hex');
 };
