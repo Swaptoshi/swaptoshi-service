@@ -95,7 +95,7 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 	let svgString = image.toString();
 	svgString = svgString.replace(
 		/stroke:rgb\s*\(\s*0%\s*,\s*0%\s*,\s*0%\s*\)|stroke:rgb\s*\(0%,0%,0%\)/g,
-		'stroke=currentColor',
+		'stroke:currentColor',
 	);
 	svgString = svgString.replace(/stroke-opacity:"?\d+(\.\d{1,32})?"?;/g, '');
 
