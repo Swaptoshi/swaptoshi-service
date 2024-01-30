@@ -158,6 +158,11 @@ tempApp.run().then(async () => {
 							'Access-Control-Allow-Headers',
 							'Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Max-Age',
 						);
+						res.setHeader('Pragma-directive', 'no-cache');
+						res.setHeader('Cache-directive', 'no-cache');
+						res.setHeader('Cache-control', 'no-cache');
+						res.setHeader('Pragma', 'no-cache');
+						res.setHeader('Expires', '0');
 					},
 				},
 			},
