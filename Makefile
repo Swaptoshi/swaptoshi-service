@@ -124,7 +124,18 @@ build-local:
 	cd ./services/template && yarn install --frozen-lockfile
 	cd ./tests && yarn install --frozen-lockfile
 
-clean: clean-local clean-images
+clean: clean-local clean-images clean-logs
+
+clean-logs:
+	cd ./services/blockchain-app-registry && rm -rf logs
+	cd ./services/blockchain-connector && rm -rf logs
+	cd ./services/blockchain-coordinator && rm -rf logs
+	cd ./services/blockchain-indexer && rm -rf logs
+	cd ./services/transaction-statistics && rm -rf logs
+	cd ./services/fee-estimator && rm -rf logs
+	cd ./services/market && rm -rf logs
+	cd ./services/gateway && rm -rf logs
+	cd ./services/export && rm -rf logs
 
 clean-local:
 	rm -rf node_modules
