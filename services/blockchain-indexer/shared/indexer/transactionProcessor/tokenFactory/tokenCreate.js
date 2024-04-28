@@ -31,14 +31,14 @@ const tokenFactoryTableSchema = require('../../../database/schema/token_factory'
 const { parseSingleEvent } = require('../../utils/events');
 const {
 	MODULE_NAME_TOKEN_FACTORY,
-	EVENT_NAME_TOKEN_FACTORY_CREATE,
+	EVENT_NAME_TOKEN_FACTORY_CREATED,
 } = require('../../../../../blockchain-connector/shared/sdk/constants/names');
 const { requestAppRegistry } = require('../../../utils/request');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
 // Declare and export the following command specific constants
-const COMMAND_NAME = 'create';
+const COMMAND_NAME = 'tokenCreate';
 
 // Implement the custom logic in the 'applyTransaction' method and export it
 const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
@@ -47,7 +47,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const factoryCreatedEvent = parseSingleEvent(
 		events,
 		MODULE_NAME_TOKEN_FACTORY,
-		EVENT_NAME_TOKEN_FACTORY_CREATE,
+		EVENT_NAME_TOKEN_FACTORY_CREATED,
 		tx.id,
 	);
 
@@ -91,7 +91,7 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const factoryCreatedEvent = parseSingleEvent(
 		events,
 		MODULE_NAME_TOKEN_FACTORY,
-		EVENT_NAME_TOKEN_FACTORY_CREATE,
+		EVENT_NAME_TOKEN_FACTORY_CREATED,
 		tx.id,
 	);
 

@@ -97,7 +97,7 @@ const {
 	MODULE_NAME_NFT,
 	EVENT_NAME_NFT_TRANSFER,
 	MODULE_NAME_TOKEN_FACTORY,
-	EVENT_NAME_TOKEN_FACTORY_CREATE,
+	EVENT_NAME_TOKEN_FACTORY_CREATED,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
@@ -125,7 +125,7 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 		[EVENT_NAME_NFT_TRANSFER]: ['transactionID', 'senderAddress', 'recipientAddress'],
 	},
 	[MODULE_NAME_TOKEN_FACTORY]: {
-		[EVENT_NAME_TOKEN_FACTORY_CREATE]: ['transactionID', 'senderAddress'],
+		[EVENT_NAME_TOKEN_FACTORY_CREATED]: ['transactionID', 'senderAddress'],
 	},
 	[MODULE_NAME_AUTH]: {
 		[EVENT_NAME_MULTISIGNATURE_REGISTERED]: ['transactionID', 'senderAddress'],

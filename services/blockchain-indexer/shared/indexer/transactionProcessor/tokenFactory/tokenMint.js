@@ -32,7 +32,7 @@ const tokenFactoryTableSchema = require('../../../database/schema/token_factory'
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
 // Declare and export the following command specific constants
-const COMMAND_NAME = 'mint';
+const COMMAND_NAME = 'tokenMint';
 
 // Implement the custom logic in the 'applyTransaction' method and export it
 const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
@@ -40,9 +40,16 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	const tokenFactory = await getTokenFactoryTable();
 
+	let increasedSupply = BigInt(0);
+
+	// eslint-disable-next-line no-restricted-syntax
+	for (const distribution of tx.params.distribution) {
+		increasedSupply += distribution.amount;
+	}
+
 	await tokenFactory.increment(
 		{
-			increment: { supply: BigInt(tx.params.amount) },
+			increment: { supply: increasedSupply },
 			where: { tokenID: tx.params.tokenId },
 		},
 		dbTrx,
