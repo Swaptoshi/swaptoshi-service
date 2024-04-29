@@ -42,10 +42,9 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	let increasedSupply = BigInt(0);
 
-	// eslint-disable-next-line no-restricted-syntax
-	for (const distribution of tx.params.distribution) {
-		increasedSupply += distribution.amount;
-	}
+	tx.params.distribution.forEach(distribution => {
+		increasedSupply += BigInt(distribution.amount);
+	});
 
 	await tokenFactory.increment(
 		{
@@ -67,9 +66,15 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	const tokenFactory = await getTokenFactoryTable();
 
+	let increasedSupply = BigInt(0);
+
+	tx.params.distribution.forEach(distribution => {
+		increasedSupply += BigInt(distribution.amount);
+	});
+
 	await tokenFactory.decrement(
 		{
-			decrement: { supply: BigInt(tx.params.amount) },
+			decrement: { supply: increasedSupply },
 			where: { tokenID: tx.params.tokenId },
 		},
 		dbTrx,
