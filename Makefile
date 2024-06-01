@@ -19,13 +19,13 @@ restart:
 	$(compose) restart
 
 backup-db:
-	$(compose) exec -T mysql-primary mysqldump --set-gtid-purged=OFF --no-create-db klayr -u root -ppassword > mysql_indexer_index.sql
+	$(compose) exec -T mysql-primary mysqldump --set-gtid-purged=OFF --no-create-db lisk -u root -ppassword > mysql_indexer_index.sql
 
 restore-db:
-	$(compose) exec -T mysql-primary mysql klayr -u root -ppassword < mysql_indexer_index.sql
+	$(compose) exec -T mysql-primary mysql lisk -u root -ppassword < mysql_indexer_index.sql
 
 flush-db:
-	echo "DROP DATABASE klayr; CREATE DATABASE klayr;" | $(compose) exec -T mysql-primary mysql -u root -ppassword
+	echo "DROP DATABASE lisk; CREATE DATABASE lisk;" | $(compose) exec -T mysql-primary mysql -u root -ppassword
 
 stop-%:
 	$(compose) stop $*
@@ -50,7 +50,7 @@ cli-%:
 	$(compose) exec $* /bin/sh
 
 mysql-%:
-	$(compose) exec mysql_$* mysql -u root -ppassword klayr
+	$(compose) exec mysql_$* mysql -u root -ppassword lisk
 
 redis-%:
 	$(compose) exec redis_$* redis-cli
