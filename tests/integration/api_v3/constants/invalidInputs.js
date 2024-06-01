@@ -16,9 +16,9 @@
 
 const invalidAddresses = [
 	'kly12345678901234567890123456789012345678901', // length exceeds 41 characters
-	'L1234567890123456789012345678901234567890', // starts with 'L' instead of 'lsk'
+	'L1234567890123456789012345678901234567890', // starts with 'L' instead of 'kly'
 	'kly1234567890123456789012345678901234567890', // length is 40, missing the last character
-	'kly12345678901234567890123456789012345678', // length is 38, missing the 'lsk' prefix
+	'kly12345678901234567890123456789012345678', // length is 38, missing the 'kly' prefix
 	'kly%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%',
 	'kly______________________________________',
 	'kly^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',

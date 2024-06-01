@@ -42,7 +42,7 @@
 			"owner": {
 				"type": "string",
 				"description": "factory owner which initiate token create transaction, in klayr32 format",
-				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+				"example": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"supply": {
 				"type": "number",
@@ -52,7 +52,7 @@
 			"price": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of the token, denominated in LSK",
+				"description": "current price of the token, denominated in KLY",
 				"example": 1.132
 			},
 			"priceUSD": {
@@ -63,7 +63,7 @@
 			},
 			"marketCap": {
 				"type": "number",
-				"description": "market cap obtained by price of token in LSK multiplied by supply",
+				"description": "market cap obtained by price of token in KLY multiplied by supply",
 				"example": 2377200000000000
 			},
 			"marketCapUSD": {
@@ -128,7 +128,7 @@
 			},
 			"description": {
 				"type": "string",
-				"example": "LSK is the utility token of Lisk"
+				"example": "KLY is the utility token of Lisk"
 			},
 			"denomUnits": {
 				"type": "array",
@@ -137,13 +137,13 @@
 					"properties": {
 						"denom": {
 							"type": "string",
-							"example": "lsk",
-							"description": "Supported denomination. Example: Beddows, LSK"
+							"example": "kly",
+							"description": "Supported denomination. Example: Beddows, KLY"
 						},
 						"decimals": {
 							"type": "integer",
 							"example": 8,
-							"description": "The exponent over base 10 by which the denomination is a factor of the baseDenom. Example: 8 for LSK (1 LSK = 10^8 Beddows)"
+							"description": "The exponent over base 10 by which the denomination is a factor of the baseDenom. Example: 8 for KLY (1 KLY = 10^8 Beddows)"
 						},
 						"aliases": {
 							"type": "array",
@@ -158,13 +158,13 @@
 			},
 			"symbol": {
 				"type": "string",
-				"example": "LSK",
-				"description": "The symbol for the token. Example: LSK"
+				"example": "KLY",
+				"description": "The symbol for the token. Example: KLY"
 			},
 			"displayDenom": {
 				"type": "string",
-				"example": "lsk",
-				"description": "The human friendly denomination unit of the token. Must be a 'denom' in denomUnits. Example: lsk"
+				"example": "kly",
+				"description": "The human friendly denomination unit of the token. Must be a 'denom' in denomUnits. Example: kly"
 			},
 			"baseDenom": {
 				"type": "string",
@@ -215,7 +215,7 @@
 			},
 			"totalMarketCap": {
 				"type": "number",
-				"description": "total market cap of tokens created by token factory, denominated in LSK",
+				"description": "total market cap of tokens created by token factory, denominated in KLY",
 				"example": 2377200000000000
 			},
 			"totalMarketCapUSD": {

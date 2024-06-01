@@ -91,7 +91,7 @@ Updates about a newly generated block.
       "timestamp": 85944650,
       "previousBlockId": "827080df7829cd2757501a85f80a0767fcb40615304b701c2890dbbaf214bb89",
       "generator": {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "name": "genesis_3",
         "publicKey": "32ddb97e8d7e607a14fef8449c2a2180cd74a51f67b04a50a4b1917d3ca8a52e"
       },
@@ -142,7 +142,7 @@ Updates about a deleted block. This usually happens when the chain switches fork
       "timestamp": 85944650,
       "previousBlockId": "827080df7829cd2757501a85f80a0767fcb40615304b701c2890dbbaf214bb89",
       "generator": {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "name": "genesis_3",
         "publicKey": "32ddb97e8d7e607a14fef8449c2a2180cd74a51f67b04a50a4b1917d3ca8a52e"
       },
@@ -194,14 +194,14 @@ Updates about included transactions within a newly generated block.
       "minFee": "165000",
       "size": 166,
       "sender": {
-        "address": "lskyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
+        "address": "klyyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
         "publicKey": "475697e34ae02b394721020d38677a072dbd5c03d61c1c8fdd6563eb66160fa3",
         "name": "genesis_0"
       },
       "params": {
         "tokenID": "0400000100000000",
         "amount": "10000000000",
-        "recipientAddress": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+        "recipientAddress": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
         "data": ""
       },
       "block": {
@@ -212,7 +212,7 @@ Updates about included transactions within a newly generated block.
       },
       "meta": {
         "recipient": {
-          "address": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+          "address": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
           "publicKey": null,
           "name": null
         }
@@ -246,14 +246,14 @@ Updates about deleted transactions within a deleted block. This usually happens 
       "minFee": "165000",
       "size": 166,
       "sender": {
-        "address": "lskyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
+        "address": "klyyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
         "publicKey": "475697e34ae02b394721020d38677a072dbd5c03d61c1c8fdd6563eb66160fa3",
         "name": "genesis_0"
       },
       "params": {
         "tokenID": "0400000100000000",
         "amount": "10000000000",
-        "recipientAddress": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+        "recipientAddress": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
         "data": ""
       },
       "block": {
@@ -264,7 +264,7 @@ Updates about deleted transactions within a deleted block. This usually happens 
       },
       "meta": {
         "recipient": {
-          "address": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+          "address": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
           "publicKey": null,
           "name": null
         }
@@ -291,7 +291,7 @@ Updates about the generators for the next round.
 {
   "data": [
     {
-      "address": "lskjta9erat6qqpa32hqbssttc6p5da3k7tydvhmv",
+      "address": "klyjta9erat6qqpa32hqbssttc6p5da3k7tydvhmv",
       "name": "panzer",
       "publicKey": "2ca9a7...c23079",
       "nextAllocatedTime": 1659863166,
@@ -317,7 +317,7 @@ Updates the current generators list, so the current generator is in the first po
 {
   "data": [
     {
-      "address": "lskjta9erat6qqpa32hqbssttc6p5da3k7tydvhmv",
+      "address": "klyjta9erat6qqpa32hqbssttc6p5da3k7tydvhmv",
       "name": "panzer",
       "publicKey": "2ca9a7...c23079",
       "nextAllocatedTime": 1659863166

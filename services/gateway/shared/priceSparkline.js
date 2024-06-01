@@ -21,10 +21,10 @@ const updatePriceSparkline = async arrayParam => {
 			await BluebirdPromise.map(
 				arrayParam,
 				async param => {
-					if (tokens.symbol.toLowerCase() !== 'lsk') {
-						const toLskBuff = await requestIndexer('dex.sparkline.buffer', {
+					if (tokens.symbol.toLowerCase() !== 'kly') {
+						const toKlyBuff = await requestIndexer('dex.sparkline.buffer', {
 							base: tokens.symbol.toLowerCase(),
-							quote: 'lsk',
+							quote: 'kly',
 							interval: param.interval,
 							limit: param.limit,
 							start: now - intervalToSecond[param.label],
@@ -32,10 +32,10 @@ const updatePriceSparkline = async arrayParam => {
 						});
 
 						fs.writeFileSync(
-							path.join(basePath, `${param.label}-${tokens.symbol.toLowerCase()}lsk.svg`),
-							Buffer.from(toLskBuff, 'hex'),
+							path.join(basePath, `${param.label}-${tokens.symbol.toLowerCase()}kly.svg`),
+							Buffer.from(toKlyBuff, 'hex'),
 						);
-						logger.debug(`Generated: ${param.label}-${tokens.symbol.toLowerCase()}lsk.svg`);
+						logger.debug(`Generated: ${param.label}-${tokens.symbol.toLowerCase()}kly.svg`);
 					}
 
 					const toUsdBuff = await requestIndexer('dex.sparkline.buffer', {

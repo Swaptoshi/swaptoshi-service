@@ -310,7 +310,7 @@ For example:
 // {
 //   "data": [
 //     {
-//       "address": "lsk2jjg9ob4qh7jokpdbf7hjgqftkaq4b2925f422",
+//       "address": "kly2jjg9ob4qh7jokpdbf7hjgqftkaq4b2925f422",
 //       "name": "genesis_3",
 //       "publicKey": "d16699888782b26c3e4cffd2a94910ec11d59476b2358adc442e010650afe4a9",
 //       "nextAllocatedTime": 1683716840,
@@ -318,7 +318,7 @@ For example:
 //     },
 //     ...
 //     {
-//       "address": "lskx7rscmxc3k9yokbqpxspjj92zz6fue84e2xw92",
+//       "address": "klyx7rscmxc3k9yokbqpxspjj92zz6fue84e2xw92",
 //      "name": "genesis_1",
 //       "publicKey": "44e2b746594f74272d15b6f7d18dffbf83c749bbf1babc5f1d314bdbd08f8215",
 //       "nextAllocatedTime": 1683716850,

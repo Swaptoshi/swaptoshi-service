@@ -143,7 +143,7 @@ _Supports pagination._
 | blockID | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | height | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by height or a height range. Can be expressed as an interval i.e. `1:20` or `1:` or `:20`. Specified values are inclusive. |
 | timestamp | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by timestamp or a timestamp range. Can be expressed as an interval i.e. `1000000:2000000` or `1000000:` or `:2000000`. Specified values are inclusive. |
-| generatorAddress | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
+| generatorAddress | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
 | limit | Number | `[1,100]` | 10 |  |
 | offset | Number | `[0,Inf)` | 0 |  |
 | sort | Enum | `["height:asc", "height:desc", "timestamp:asc", "timestamp:desc"]` | height:desc |  |
@@ -162,7 +162,7 @@ _Supports pagination._
       "timestamp": 85944650,
       "previousBlockId": "827080df7829cd2757501a85f80a0767fcb40615304b701c2890dbbaf214bb89",
       "generator": {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "name": "genesis_3",
         "publicKey": "32ddb97e8d7e607a14fef8449c2a2180cd74a51f67b04a50a4b1917d3ca8a52e"
       },
@@ -310,9 +310,9 @@ _Supports pagination._
 | --------- | ---- | ---------- | ------- | ------- |
 | transactionID | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | moduleCommand | String | `/^[a-zA-Z][\w]{0,31}:[a-zA-Z][\w]{0,31}$/` | *(empty)* |  |
-| senderAddress | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
-| recipientAddress | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
-| address | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | Resolves for both senderAddress and recipientAddress. |
+| senderAddress | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
+| recipientAddress | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
+| address | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | Resolves for both senderAddress and recipientAddress. |
 | blockID | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | height | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by height or a height range. Can be expressed as an interval i.e. `1:20` or `1:` or `:20`. Specified values are inclusive. |
 | timestamp | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by timestamp or a timestamp range. Can be expressed as an interval i.e. `1000000:2000000` or `1000000:` or `:2000000`. Specified values are inclusive. |
@@ -344,14 +344,14 @@ _Supports pagination._
         "isFinal": true
       },
       "sender": {
-        "address": "lskyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
+        "address": "klyyvvam5rxyvbvofxbdfcupxetzmqxu22phm4yuo",
         "publicKey": "475697e34ae02b394721020d38677a072dbd5c03d61c1c8fdd6563eb66160fa3",
         "name": "genesis_0"
       },
       "params": {
         "tokenID": "0400000100000000",
         "amount": "10000000000",
-        "recipientAddress": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+        "recipientAddress": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
         "data": ""
       },
       "signatures": [
@@ -361,7 +361,7 @@ _Supports pagination._
       "index": 0,
       "meta": {
         "recipient": {
-          "address": "lskezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
+          "address": "klyezo8pcrbsoceuuu64rpc8w2qkont2ec3n772yu",
           "publicKey": null,
           "name": null
         }
@@ -393,10 +393,10 @@ Get transaction by transactionID
 https://service.klayr.xyz/api/v3/transactions?transactionID=65c28137c130c6609a67fccfcd9d0f7c3df3577324f8d33134326d653ded613f
 ```
 
-Get the last 25 transactions for account `lsk24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu`
+Get the last 25 transactions for account `kly24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu`
 
 ```
-https://service.klayr.xyz/api/v3/transactions?address=lsk24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu
+https://service.klayr.xyz/api/v3/transactions?address=kly24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu
 ```
 
 ### Transaction Dryrun
@@ -430,7 +430,7 @@ Request payload:
       "48425002226745847e155cf5480478c2336a43bb178439e9058cc2b50e26335cf7c8360b6c6a49793d7ae8d087bc746cab9618655e6a0adba4694cce2015b50f"
     ],
     "params": {
-      "recipientAddress": "lskz4upsnrwk75wmfurf6kbxsne2nkjqd3yzwdaup",
+      "recipientAddress": "klyz4upsnrwk75wmfurf6kbxsne2nkjqd3yzwdaup",
       "amount": "10000000000",
       "tokenID": "0000000000000000",
       "data": "Token transfer tx"
@@ -462,19 +462,19 @@ or
     "events": [
       {
         "data": {
-          "senderAddress": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+          "senderAddress": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
           "tokenID": "0000000000000000",
           "amount": "100003490",
-          "recipientAddress": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+          "recipientAddress": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
         },
         "index": 0,
         "module": "token",
         "name": "transferEvent",
         "topics": [
           "86afcdd640846bf41525481938653ee942be3fac1ecbcff08e98f9aeda3a9583",
-          "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+          "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
           "0000000000000000",
-          "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+          "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
         ],
         "height": 10
       }
@@ -524,7 +524,7 @@ Request payload:
     "nonce": "0",
     "senderPublicKey": "a3f96c50d0446220ef2f98240898515cbba8155730679ca35326d98dcfb680f0",
     "params": {
-      "recipientAddress": "lskz4upsnrwk75wmfurf6kbxsne2nkjqd3yzwdaup",
+      "recipientAddress": "klyz4upsnrwk75wmfurf6kbxsne2nkjqd3yzwdaup",
       "receivingChainID": "00000001",
       "amount": "10000000000",
       "tokenID": "0000000000000000",
@@ -760,8 +760,8 @@ _Supports pagination._
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
 | transactionID | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
-| senderAddress | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
-| topic | String | `/^\b(?:(?:04\|05)?[0-9a-fA-F]{64}\|lsk[a-hjkm-z2-9]{38})(?:,(?:(?:04\|05)?[0-9a-fA-F]{64}\|lsk[a-hjkm-z2-9]{38}))*\b$/` | *(empty)* | Can be expressed as a CSV. For performance reasons, we do not allow users to query default topics such as `03`. |
+| senderAddress | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* |  |
+| topic | String | `/^\b(?:(?:04\|05)?[0-9a-fA-F]{64}\|kly[a-hjkm-z2-9]{38})(?:,(?:(?:04\|05)?[0-9a-fA-F]{64}\|kly[a-hjkm-z2-9]{38}))*\b$/` | *(empty)* | Can be expressed as a CSV. For performance reasons, we do not allow users to query default topics such as `03`. |
 | blockID | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | height | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by height or a height range. Can be expressed as an interval i.e. `1:20` or `1:` or `:20`. Specified values are inclusive. |
 | timestamp | String | `/^(?:(?:\d+)\|(?::(?:\d+))\|(?:(?:\d+):(?:\d+)?))$/` | *(empty)* | Query by timestamp or a timestamp range. Can be expressed as an interval i.e. `1000000:2000000` or `1000000:` or `:2000000`. Specified values are inclusive. |
@@ -787,7 +787,7 @@ _Supports pagination._
       },
       "topics": [
         "03",
-        "lsksod8bj35gmndy94yehxm25nybg5os6ycysejsm"
+        "klysod8bj35gmndy94yehxm25nybg5os6ycysejsm"
       ],
       "index": 0,
       "block": {
@@ -822,7 +822,7 @@ https://service.klayr.xyz/api/v3/events?blockID=01967dba384998026fe028119bd099ec
 
 Get events by topic
 ```
-https://service.klayr.xyz/api/v3/events?topic=lsksod8bj35gmndy94yehxm25nybg5os6ycysejsm
+https://service.klayr.xyz/api/v3/events?topic=klysod8bj35gmndy94yehxm25nybg5os6ycysejsm
 ```
 
 
@@ -855,7 +855,7 @@ _Supports pagination._
 {
   "data": [
     {
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "name": "genesis_84",
       "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
       "nextForgingTime": 1616058987,
@@ -900,7 +900,7 @@ Retrieves user-specific details from the Auth module.
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
+| address | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
 <!-- | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  | -->
 <!-- | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  | -->
 
@@ -921,7 +921,7 @@ Retrieves user-specific details from the Auth module.
     ]
   },
   "meta": {
-    "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+    "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
     "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
     "name": "genesis_84"
   }
@@ -940,7 +940,7 @@ Retrieves user-specific details from the Auth module.
 
 Get auth details by address
 ```
-https://service.klayr.xyz/api/v3/auth?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/auth?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ## Validator
@@ -958,7 +958,7 @@ Retrieves user-specific details from the Validator module.
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
+| address | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
 <!-- | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  | -->
 <!-- | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  | -->
 
@@ -974,7 +974,7 @@ Retrieves user-specific details from the Validator module.
     "proofOfPossession": "abb6c31f5885022765301fbfcc6c34686ef9a9b0eec34cb487433558071ab57fd28852752f81dda00447e69d61f63f48174c10a0a0a2d34d230b9a75d903a0befdef82708e5f869ff75090c1b5ce85565e8a17e5e06c4cae305c5efb1f37d996"
   },
   "meta": {
-    "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+    "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
     "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
     "name": "genesis_84"
   }
@@ -993,7 +993,7 @@ Retrieves user-specific details from the Validator module.
 
 Get auth details by address
 ```
-https://service.klayr.xyz/api/v3/validator?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/validator?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Validate BLS Key
@@ -1057,7 +1057,7 @@ Validates if an entry exists in the Token sub-store for the specified address.
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
 | tokenID | String | `/^\b[a-fA-F0-9]{16}\b$/` | *(empty)* | Required. |
-| address | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 
@@ -1086,7 +1086,7 @@ Validates if an entry exists in the Token sub-store for the specified address.
 
 Get token account exists by address
 ```
-https://service.klayr.xyz/api/v3/token/account/exists?tokenID=0400000000000000&address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/token/account/exists?tokenID=0400000000000000&address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Token Balances
@@ -1102,7 +1102,7 @@ Retrieves the balances from the Token sub-store for the specified address.
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
+| address | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | Required. |
 | tokenID | String | `/^\b[a-fA-F0-9]{16}\b$/` | *(empty)* |  |
 | limit | Number | `[1,100]` | 10 |  |
 | offset | Number | `[0,Inf)` | 0 |  |
@@ -1126,7 +1126,7 @@ Retrieves the balances from the Token sub-store for the specified address.
     ]
   },
   "meta": {
-    "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+    "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
     "count": 10,
     "offset": 10,
     "total": 100
@@ -1146,7 +1146,7 @@ Retrieves the balances from the Token sub-store for the specified address.
 
 Get token balances by address
 ```
-https://service.klayr.xyz/api/v3/token/balances?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/token/balances?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Module Constants
@@ -1336,7 +1336,7 @@ Retrieves top token balances for a token ID.
   "data": {
     "0000000000000000": [
       {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
         "name": "genesis_84",
         "balance": "10000000",
@@ -1446,7 +1446,7 @@ _Supports pagination._
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | limit | Number | `[1,100]` | 10 |  |
@@ -1483,7 +1483,7 @@ _Supports pagination._
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/rewards/claimable?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/rewards/claimable?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Locked rewards
@@ -1501,7 +1501,7 @@ _Supports pagination._
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | limit | Number | `[1,100]` | 10 |  |
@@ -1538,7 +1538,7 @@ _Supports pagination._
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/rewards/locked?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/rewards/locked?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Module constants
@@ -1620,7 +1620,7 @@ _Supports pagination._
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | search | String | `/^[\w!@$&.]{1,64}$/` | *(empty)* | Case-insensitive search by name, address or publicKey. Supports both partial and full text search. |
@@ -1636,7 +1636,7 @@ _Supports pagination._
   "data": {
     "stakers": [
       {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "amount": "10815000000000",
         "name": "klayrhq"
       }
@@ -1644,7 +1644,7 @@ _Supports pagination._
   },
   "meta": {
     "validator": {
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
       "name": "genesis_84"
     },
@@ -1666,7 +1666,7 @@ _Supports pagination._
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/stakers?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/stakers?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Stakes (Sent stakes)
@@ -1682,7 +1682,7 @@ Retrieves the list of stakes sent by the specified user by their address, public
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | search | String | `/^[\w!@$&.]{1,64}$/` | *(empty)* | Case-insensitive search by name, address or publicKey. Supports both partial and full text search. |
@@ -1696,7 +1696,7 @@ Retrieves the list of stakes sent by the specified user by their address, public
   "data": {
     "stakes": [
       {
-        "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+        "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
         "amount": "10815000000000",
         "name": "klayrhq"
       }
@@ -1704,7 +1704,7 @@ Retrieves the list of stakes sent by the specified user by their address, public
   },
   "meta": {
     "staker": {
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
       "name": "genesis_84"
     },
@@ -1724,7 +1724,7 @@ Retrieves the list of stakes sent by the specified user by their address, public
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/stakes?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/stakes?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Available unlocks
@@ -1742,7 +1742,7 @@ _Supports pagination._
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | isLocked | Boolean | `[true, false]` | *(empty)* |  |
@@ -1757,12 +1757,12 @@ _Supports pagination._
 {
   "data": [
     {
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
       "name": "genesis_84",
       "pendingUnlocks": [
         {
-          "validatorAddress": "lsk24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu",
+          "validatorAddress": "kly24cd35u4jdq8szo3pnsqe5dsxwrnazyqqqg5eu",
           "amount": "1000000000",
           "tokenID": "0000000000000000",
           "unstakeHeight": 10000,
@@ -1792,7 +1792,7 @@ _Supports pagination._
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/unlocks?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/unlocks?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ### Validators
@@ -1810,7 +1810,7 @@ _Supports pagination._
 
 | Parameter | Type | Validation | Default | Comment |
 | --------- | ---- | ---------- | ------- | ------- |
-| address   | String | `/^lsk[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
+| address   | String | `/^kly[a-hjkm-z2-9]{38}$/` | *(empty)* | One of address, publicKey or name required. |
 | publicKey | String | `/^\b(?:[A-Fa-f0-9]){64}\b$/` | *(empty)* |  |
 | name | String | `/^[a-z0-9!@$&_.]{1,20}$/` | *(empty)* |  |
 | status | String | `/^\b(?:active\|standby\|banned\|punished\|ineligible\|,){0,9}\b$/` | *(empty)* | Can be expressed as a CSV. |
@@ -1831,7 +1831,7 @@ _Supports pagination._
       "totalStake": "109000000000",
       "selfStake": "109000000000",
       "validatorWeight": "109000000000",
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd",
       "lastGeneratedHeight": 0,
       "status": "active",
@@ -1880,7 +1880,7 @@ _Supports pagination._
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/pos/validators?address=lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99
+https://service.klayr.xyz/api/v3/pos/validators?address=klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99
 ```
 
 ## (Dynamic) Reward
@@ -2039,7 +2039,7 @@ Retrieves legacy account details for the specified user publicKey.
     "balance": "10000000"
   },
   "meta": {
-    "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+    "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
     "publicKey": "b1d6bc6c7edd0673f5fed0681b73de6eb70539c21278b300f07ade277e1962cd"
   }
 }
@@ -5657,7 +5657,7 @@ _Supports pagination._
       "name": "Klayr",
       "chainID": "00000000",
       "status": "activated",
-      "address": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
+      "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "lastCertificateHeight": 160,
       "lastUpdated": 1616008148,
       "escrowedLSK": "50000000000",
@@ -6086,7 +6086,7 @@ _Supports pagination._
       "description": "LSK is the utility token of Klayr",
       "denomUnits": [
         {
-          "denom": "lsk",
+          "denom": "kly",
           "decimals": 8,
           "aliases": [
             "KLAYR"
@@ -6162,8 +6162,8 @@ _Supports pagination._
         "png": "https://downloads.klayr.xyz/klayr/images/logo.png",
         "svg": "https://downloads.klayr.xyz/klayr/images/logo.svg"
       },
-      "symbol": "LSK",
-      "displayDenom": "lsk",
+      "symbol": "KLY",
+      "displayDenom": "kly",
       "baseDenom": "beddows",
       "denomUnits": [
         {
@@ -6174,7 +6174,7 @@ _Supports pagination._
           ]
         },
         {
-          "denom": "lsk",
+          "denom": "kly",
           "decimals": 8,
           "aliases": [
             "Klayr"
@@ -6273,7 +6273,7 @@ Returns transaction history export scheduling information
 
 | Parameter | Type             | Validation                                                 | Default        | Comment                                |
 | --------- | ---------------- | ---------------------------------------------------------- | -------------- | -------------------------------------- |
-| address   | String           | `/^lsk[a-hjkm-z2-9]{38}$/`                                 | *(empty)*      |  One of address or publicKey required. |
+| address   | String           | `/^kly[a-hjkm-z2-9]{38}$/`                                 | *(empty)*      |  One of address or publicKey required. |
 | publicKey | String           | `/^\b(?:[A-Fa-f0-9]){64}\b$/`                                 | *(empty)*      |
 | interval  | String           | `/^\b(?:(?:\d{4})-(?:(?:1[012])|(?:0?[1-9]))-(?:(?:[012][1-9])|(?:[123]0)|31))(?::(?:(?:\d{4})-(?:(?:1[012])|(?:0?[1-9]))-(?:(?:[012][1-9])|(?:[123]0)|31)))?\b$/`                                                           | *(empty)*      |
 
@@ -6284,7 +6284,7 @@ Schedule transaction export
 ```jsonc
 {
   "data": {
-    "address": "lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw",
+    "address": "klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw",
     "interval": "2023-08-30:2023-08-30",
   },
   "meta": {
@@ -6299,10 +6299,10 @@ The file is ready to export
 ```jsonc
 {
   "data": {
-    "address": "lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw",
+    "address": "klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw",
     "interval": "2023-08-30:2023-08-30",
-    "fileName": "transactions_lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx",
-    "fileUrl": "/api/v3/exports/transactions_00000000_lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx"
+    "fileName": "transactions_klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx",
+    "fileUrl": "/api/v3/exports/transactions_00000000_klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx"
   },
   "meta": {
     "ready": true
@@ -6323,7 +6323,7 @@ _Invalid parameter_
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/export/transactions?address=lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw
+https://service.klayr.xyz/api/v3/export/transactions?address=klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw
 ```
 
 ### File retrieval
@@ -6338,7 +6338,7 @@ Returns transaction history
 
 | Parameter | Type             | Validation                                                 | Default        | Comment                                |
 | --------- | ---------------- | ---------------------------------------------------------- | -------------- | -------------------------------------- |
-| filename   | String          | `/^\btransactions_([a-fA-F0-9]{8})_(lsk[a-hjkm-z2-9]{38})_((\d{4})-((1[012])\|(0?[1-9]))-(([012][1-9])\|([123]0)\|31))_((\d{4})-((1[012])\|(0?[1-9]))-(([012][1-9])\|([123]0)\|31))\.xlsx\b$/` | *(empty)*      |                                        |
+| filename   | String          | `/^\btransactions_([a-fA-F0-9]{8})_(kly[a-hjkm-z2-9]{38})_((\d{4})-((1[012])\|(0?[1-9]))-(([012][1-9])\|([123]0)\|31))_((\d{4})-((1[012])\|(0?[1-9]))-(([012][1-9])\|([123]0)\|31))\.xlsx\b$/` | *(empty)*      |                                        |
 
 #### Response example
 Schedule transaction export
@@ -6362,5 +6362,5 @@ _Invalid parameter_
 #### Examples
 
 ```
-https://service.klayr.xyz/api/v3/export/download?filename=transactions_00000000_lskkje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx
+https://service.klayr.xyz/api/v3/export/download?filename=transactions_00000000_klykje69szpgmfaefmbf7zvw7ghc6mamdvf9z3cpw_2023-08-30_2023-08-30.xlsx
 ```

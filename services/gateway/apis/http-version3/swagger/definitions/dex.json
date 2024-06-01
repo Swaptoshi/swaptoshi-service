@@ -129,7 +129,7 @@
 			"symbol": {
 				"type": "string",
 				"description": "token symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"tokenName": {
 				"type": "string",
@@ -189,7 +189,7 @@
 			"price": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of this token in LSK",
+				"description": "current price of this token in KLY",
 				"example": 1.132
 			},
 			"priceUSD": {
@@ -201,7 +201,7 @@
 			"priceChange": {
 				"type": "number",
 				"format": "float",
-				"description": "percentage of price change in terms of LSK",
+				"description": "percentage of price change in terms of KLY",
 				"example": 5.321
 			},
 			"priceChangeUSD": {
@@ -240,7 +240,7 @@
 			"symbol": {
 				"type": "string",
 				"description": "token symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"tokenName": {
 				"type": "string",
@@ -314,7 +314,7 @@
 			"poolAddress": {
 				"type": "string",
 				"description": "pool address in klayr32 format",
-				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+				"example": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"token0": {
 				"type": "string",
@@ -329,7 +329,7 @@
 			"token0Symbol": {
 				"type": "string",
 				"description": "token0 symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"token0Logo": {
 				"type": "string",
@@ -349,7 +349,7 @@
 			"token1Symbol": {
 				"type": "string",
 				"description": "token1 symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"token1Logo": {
 				"type": "string",
@@ -395,7 +395,7 @@
 			"token0Price": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of token0 in LSK",
+				"description": "current price of token0 in KLY",
 				"example": 1.132
 			},
 			"token0PriceUSD": {
@@ -407,7 +407,7 @@
 			"token1Price": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of token1 in LSK",
+				"description": "current price of token1 in KLY",
 				"example": 1.132
 			},
 			"token1PriceUSD": {
@@ -566,7 +566,7 @@
 			"poolAddress": {
 				"type": "string",
 				"description": "pool address in klayr32 format",
-				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+				"example": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"poolTick": {
 				"type": "integer",
@@ -589,7 +589,7 @@
 			"token0Symbol": {
 				"type": "string",
 				"description": "token0 symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"token0Logo": {
 				"type": "string",
@@ -609,7 +609,7 @@
 			"token1Symbol": {
 				"type": "string",
 				"description": "token1 symbol",
-				"example": "SWT"
+				"example": "XSW"
 			},
 			"token1Logo": {
 				"type": "string",
@@ -629,7 +629,7 @@
 			"owner": {
 				"type": "string",
 				"description": "owner of this position in klayr32 format",
-				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
+				"example": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"collectionId": {
 				"type": "string",
@@ -771,12 +771,12 @@
 			"name": {
 				"type": "string",
 				"description": "name of this position",
-				"example": "Swaptoshi - 0.3% - SWT/LSK - 0.0000000000000000000000000000000000000029387<>271110000000000000000000000000000000000"
+				"example": "Swaptoshi - 0.3% - XSW/KLY - 0.0000000000000000000000000000000000000029387<>271110000000000000000000000000000000000"
 			},
 			"description": {
 				"type": "string",
 				"description": "description of this position",
-				"example": "This NFT represents a liquidity position in a Swaptoshi SWT-LSK pool. The owner of this NFT can modify or redeem the position.\n\nPool Address: 0400000000000000045357540000000000000bb8\nSWT Address: 0453575400000000\nLSK Address: 0400000000000000\nFee Tier: 0.3%\nToken ID: 0\n\n⚠️ DISCLAIMER: Due diligence is imperative when assessing this NFT. Make sure token addresses match the expected tokens, as token symbols may be imitated."
+				"example": "This NFT represents a liquidity position in a Swaptoshi XSW-KLY pool. The owner of this NFT can modify or redeem the position.\n\nPool Address: 0400000000000000045357540000000000000bb8\nXSW Address: 0453575400000000\nKLY Address: 0400000000000000\nFee Tier: 0.3%\nToken ID: 0\n\n⚠️ DISCLAIMER: Due diligence is imperative when assessing this NFT. Make sure token addresses match the expected tokens, as token symbols may be imitated."
 			},
 			"image": {
 				"type": "string",
@@ -854,7 +854,7 @@
 			"value": {
 				"type": "number",
 				"format": "float",
-				"description": "current price of this token denominated in LSK",
+				"description": "current price of this token denominated in KLY",
 				"example": 1.132
 			}
 		}

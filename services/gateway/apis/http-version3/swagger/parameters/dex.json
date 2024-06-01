@@ -20,13 +20,13 @@
 	"baseSymbol": {
 		"name": "base",
 		"in": "query",
-		"description": "Base token symbol, ex: SWT",
+		"description": "Base token symbol, ex: XSW",
 		"type": "string"
 	},
 	"quoteSymbol": {
 		"name": "quote",
 		"in": "query",
-		"description": "Quote token symbol, ex: LSK",
+		"description": "Quote token symbol, ex: KLY",
 		"type": "string"
 	},
 	"baseTokenId": {
