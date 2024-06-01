@@ -9,20 +9,20 @@ const BluebirdPromise = require('bluebird');
 
 const config = require('../../../config');
 const { intervalToSecond, normalizeBlockTime } = require('./timestamp');
-const { getLSKTokenID } = require('../business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../business/interoperability/blockchainApps');
 
 const dexTokenTableSchema = require('../../database/schema/registeredDexToken');
 const lastPriceTableSchema = require('../../database/schema/lastPrice');
 const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickPrice');
 const { getOhlcTableSchema } = require('../../database/dynamic-schema/ohlc');
-const { getLSKUSDPriceAtTimestamp, getLSKUSDCandles } = require('./lskPrices');
+const { getKLYUSDPriceAtTimestamp, getKLYUSDCandles } = require('./klyPrices');
 const { getPrice, transformTickToOhlc, getLastPrice } = require('./priceQuoter');
 const { initializeTickTable } = require('./tickIndexer');
 
 const logger = Logger();
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
-const MAX_PREVIOUS_LSKUSD_INDEX_BATCH = 720;
+const MAX_PREVIOUS_KLYUSD_INDEX_BATCH = 720;
 
 const INDEX_TOKEN_CONCURRENCY = config.dex.indexTokenConcurrency;
 const LAST_PRICE_INTERVAL = config.dex.lastPriceInterval;
@@ -70,8 +70,8 @@ const updateLastPrice = async (baseTokenId, pair, time, dbTrx) => {
 };
 
 const indexTokenLastPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) => {
-	if (quoteTokenId !== (await getLSKTokenID()))
-		throw new Error('quoting last price only supported on LSK');
+	if (quoteTokenId !== (await getKLYTokenID()))
+		throw new Error('quoting last price only supported on KLY');
 
 	const tokenTable = await getDEXTokenTable();
 	const [base] = await tokenTable.find({ tokenId: baseTokenId, limit: 1 }, ['symbol']);
@@ -139,16 +139,16 @@ const indexTokenPrice = async (timestamp, baseTokenId, quoteTokenId) => {
 };
 
 /** @param {{timestamp: number}} job */
-const indexLSKUSDTickPrice = async job => {
+const indexKLYUSDTickPrice = async job => {
 	const time = normalizeBlockTime(job.data.timestamp, TICK_TIMEFRAME);
-	const tickPriceTable = await getTickPriceTable(`lskusd`);
+	const tickPriceTable = await getTickPriceTable(`klyusd`);
 	const priceAtTimestamp = await tickPriceTable.find({ time, limit: 1 }, ['time']);
 	if (priceAtTimestamp.length > 0) return;
 
-	const value = await getLSKUSDPriceAtTimestamp(time);
+	const value = await getKLYUSDPriceAtTimestamp(time);
 	await tickPriceTable.upsert({ time, value });
 
-	logger.info(`Updated tick price at ${time} for pair LSKUSD`);
+	logger.info(`Updated tick price at ${time} for pair KLYUSD`);
 };
 
 /** @param {{data: {timestamp: number, base: string, quote: string}}} job */
@@ -156,7 +156,7 @@ const indexLSDKUSDOhlcPrice = async job => {
 	await BluebirdPromise.map(
 		OHLC_TIMEFRAMES,
 		async timeframe => {
-			const pair = 'lskusd';
+			const pair = 'klyusd';
 			const time = normalizeBlockTime(job.data.timestamp, timeframe);
 			const previousTime = time - intervalToSecond[timeframe];
 
@@ -184,19 +184,19 @@ const indexLSDKUSDOhlcPrice = async job => {
 };
 
 /** @param {{data: {timestamp: number}}} job */
-const indexCurrentLSKUSDPrice = async job => {
-	await indexLSKUSDTickPrice(job);
+const indexCurrentKLYUSDPrice = async job => {
+	await indexKLYUSDTickPrice(job);
 	await indexLSDKUSDOhlcPrice(job);
 };
 
 /** @param {{data: {from: number, to: number}}} job */
-const indexPreviousLSKUSDTickPrice = async job => {
-	const pair = 'lskusd';
+const indexPreviousKLYUSDTickPrice = async job => {
+	const pair = 'klyusd';
 	const tickTable = await getTickPriceTable(pair);
-	const lskCandles = await getLSKUSDCandles(job.data.from, job.data.to, TICK_TIMEFRAME);
+	const klyCandles = await getKLYUSDCandles(job.data.from, job.data.to, TICK_TIMEFRAME);
 
 	await BluebirdPromise.map(
-		lskCandles.map(t => ({ time: t.start, value: t.open })),
+		klyCandles.map(t => ({ time: t.start, value: t.open })),
 		async ohlc => {
 			await tickTable.upsert(ohlc);
 			logger.info(`Updated tick price at ${ohlc.time} for pair ${pair.toUpperCase()}`);
@@ -206,13 +206,13 @@ const indexPreviousLSKUSDTickPrice = async job => {
 };
 
 /** @param {{data: {from: number, to: number, timeframe: string}}} job */
-const indexPreviousLSKUSDOhlcPrice = async job => {
-	const pair = 'lskusd';
+const indexPreviousKLYUSDOhlcPrice = async job => {
+	const pair = 'klyusd';
 	const ohlcPriceTable = await getOhlcPriceTable(pair, job.data.timeframe);
-	const lskCandles = await getLSKUSDCandles(job.data.from, job.data.to, job.data.timeframe);
+	const klyCandles = await getKLYUSDCandles(job.data.from, job.data.to, job.data.timeframe);
 
 	await BluebirdPromise.map(
-		lskCandles,
+		klyCandles,
 		async ohlc => {
 			await ohlcPriceTable.upsert({ time: ohlc.start, ...ohlc });
 			logger.info(
@@ -225,7 +225,7 @@ const indexPreviousLSKUSDOhlcPrice = async job => {
 
 const deleteTickPriceIndex = async (token, block, dbTrx) => {
 	const tickTimestamp = normalizeBlockTime(block.timestamp, TICK_TIMEFRAME);
-	const tickPriceTable = await getTickPriceTable(`${token.symbol.toLowerCase()}lsk`);
+	const tickPriceTable = await getTickPriceTable(`${token.symbol.toLowerCase()}kly`);
 
 	await tickPriceTable.delete(
 		{ propBetweens: [{ property: 'time', greaterThan: tickTimestamp }] },
@@ -233,17 +233,17 @@ const deleteTickPriceIndex = async (token, block, dbTrx) => {
 	);
 
 	logger.info(
-		`Deleted ${`${token.symbol.toLowerCase()}lsk`.toUpperCase()} tick price table after ${tickTimestamp}`,
+		`Deleted ${`${token.symbol.toLowerCase()}kly`.toUpperCase()} tick price table after ${tickTimestamp}`,
 	);
 
-	// NOTE: since lskusd data is retrieved from external source, we don't need to delete it
+	// NOTE: since klyusd data is retrieved from external source, we don't need to delete it
 
-	// const lskUsdTickPriceTable = await getTickPriceTable('lskusd');
-	// await lskUsdTickPriceTable.delete(
+	// const klyUsdTickPriceTable = await getTickPriceTable('klyusd');
+	// await klyUsdTickPriceTable.delete(
 	// 	{ propBetweens: [{ property: 'time', greaterThan: tickTimestamp }] },
 	// 	dbTrx,
 	// );
-	// logger.info(`Deleted LSKUSD tick price table after ${tickTimestamp}`);
+	// logger.info(`Deleted KLYUSD tick price table after ${tickTimestamp}`);
 };
 
 const deleteOhlcPriceIndex = async (token, block, dbTrx) => {
@@ -251,7 +251,7 @@ const deleteOhlcPriceIndex = async (token, block, dbTrx) => {
 		OHLC_TIMEFRAMES,
 		async timeframe => {
 			const ohlcTimestamp = normalizeBlockTime(block.timestamp, timeframe);
-			const ohlcPriceTable = await getOhlcPriceTable(`${token.symbol.toLowerCase()}lsk`, timeframe);
+			const ohlcPriceTable = await getOhlcPriceTable(`${token.symbol.toLowerCase()}kly`, timeframe);
 
 			await ohlcPriceTable.delete(
 				{ propBetweens: [{ property: 'time', greaterThan: ohlcTimestamp }] },
@@ -259,91 +259,91 @@ const deleteOhlcPriceIndex = async (token, block, dbTrx) => {
 			);
 
 			logger.info(
-				`Deleted ${`${token.symbol.toLowerCase()}lsk`.toUpperCase()} ohlc price table after ${ohlcTimestamp}`,
+				`Deleted ${`${token.symbol.toLowerCase()}kly`.toUpperCase()} ohlc price table after ${ohlcTimestamp}`,
 			);
 
-			// NOTE: since lskusd data is retrieved from external source, we don't need to delete it
+			// NOTE: since klyusd data is retrieved from external source, we don't need to delete it
 
-			// const lskUsdOhlcPriceTable = await getOhlcPriceTable('lskusd', timeframe);
-			// await lskUsdOhlcPriceTable.delete(
+			// const klyUsdOhlcPriceTable = await getOhlcPriceTable('klyusd', timeframe);
+			// await klyUsdOhlcPriceTable.delete(
 			// 	{ propBetweens: [{ property: 'time', greaterThan: ohlcTimestamp }] },
 			// 	dbTrx,
 			// );
-			// logger.info(`Deleted LSKUSD ohlc price table after ${ohlcTimestamp}`);
+			// logger.info(`Deleted KLYUSD ohlc price table after ${ohlcTimestamp}`);
 		},
 		{ concurrency: OHLC_TIMEFRAMES.length },
 	);
 };
 
-const indexPreviousLSKUSDTickPriceQueue = Queue(
+const indexPreviousKLYUSDTickPriceQueue = Queue(
 	config.endpoints.cache,
-	config.queue.indexPreviousLSKUSDTickPrice.name,
-	indexPreviousLSKUSDTickPrice,
-	config.queue.indexPreviousLSKUSDTickPrice.concurrency,
+	config.queue.indexPreviousKLYUSDTickPrice.name,
+	indexPreviousKLYUSDTickPrice,
+	config.queue.indexPreviousKLYUSDTickPrice.concurrency,
 );
 
-const indexPreviousLSKUSDOhlcPriceQueue = Queue(
+const indexPreviousKLYUSDOhlcPriceQueue = Queue(
 	config.endpoints.cache,
-	config.queue.indexPreviousLSKUSDOhlcPrice.name,
-	indexPreviousLSKUSDOhlcPrice,
-	config.queue.indexPreviousLSKUSDOhlcPrice.concurrency,
+	config.queue.indexPreviousKLYUSDOhlcPrice.name,
+	indexPreviousKLYUSDOhlcPrice,
+	config.queue.indexPreviousKLYUSDOhlcPrice.concurrency,
 );
 
-const indexCurrentLSKUSDPriceQueue = Queue(
+const indexCurrentKLYUSDPriceQueue = Queue(
 	config.endpoints.cache,
-	config.queue.indexCurrentLSKUSDPrice.name,
-	indexCurrentLSKUSDPrice,
-	config.queue.indexCurrentLSKUSDPrice.concurrency,
+	config.queue.indexCurrentKLYUSDPrice.name,
+	indexCurrentKLYUSDPrice,
+	config.queue.indexCurrentKLYUSDPrice.concurrency,
 );
 
 // eslint-disable-next-line no-unused-vars
 const addPriceIndex = async (block, dbTrx) => {
 	const tokenTable = await getDEXTokenTable();
-	const lskTokenId = await getLSKTokenID();
+	const klyTokenId = await getKLYTokenID();
 	const registeredDexTokens = await tokenTable.find();
 
 	await BluebirdPromise.map(
 		registeredDexTokens,
 		async token => {
-			if (token.tokenId !== lskTokenId) {
-				await indexTokenPrice(block.timestamp, token.tokenId, lskTokenId, dbTrx);
+			if (token.tokenId !== klyTokenId) {
+				await indexTokenPrice(block.timestamp, token.tokenId, klyTokenId, dbTrx);
 			}
 		},
 		{ concurrency: INDEX_TOKEN_CONCURRENCY },
 	);
 
-	indexCurrentLSKUSDPriceQueue.add({ timestamp: block.timestamp });
+	indexCurrentKLYUSDPriceQueue.add({ timestamp: block.timestamp });
 
 	const time = normalizeBlockTime(block.timestamp, LAST_PRICE_INTERVAL);
-	await updateLastPrice(lskTokenId, 'lskusd', time, dbTrx);
+	await updateLastPrice(klyTokenId, 'klyusd', time, dbTrx);
 };
 
 const addGenesisPriceIndex = async (block, dbTrx) => {
 	const currentTimestamp = Math.floor(Date.now() / 1000);
 	const blockTimestamp = block.timestamp;
 
-	logger.info(`Start indexing LSKUSD price from ${blockTimestamp} to ${currentTimestamp}`);
+	logger.info(`Start indexing KLYUSD price from ${blockTimestamp} to ${currentTimestamp}`);
 
 	for (
 		let i = blockTimestamp;
 		i < currentTimestamp;
-		i += intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
+		i += intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_KLYUSD_INDEX_BATCH
 	) {
 		const tickFrom = normalizeBlockTime(i, TICK_TIMEFRAME);
 		const tickTo =
-			tickFrom + intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
-		indexPreviousLSKUSDTickPriceQueue.add({ from: tickFrom, to: tickTo, dbTrx });
+			tickFrom + intervalToSecond[TICK_TIMEFRAME] * MAX_PREVIOUS_KLYUSD_INDEX_BATCH - 1;
+		indexPreviousKLYUSDTickPriceQueue.add({ from: tickFrom, to: tickTo, dbTrx });
 	}
 
 	OHLC_TIMEFRAMES.forEach(timeframe => {
 		for (
 			let i = blockTimestamp;
 			i < currentTimestamp;
-			i += intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH
+			i += intervalToSecond[timeframe] * MAX_PREVIOUS_KLYUSD_INDEX_BATCH
 		) {
 			const ohlcFrom = normalizeBlockTime(i, timeframe);
-			const ohlcTo = ohlcFrom + intervalToSecond[timeframe] * MAX_PREVIOUS_LSKUSD_INDEX_BATCH - 1;
-			indexPreviousLSKUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
+			const ohlcTo = ohlcFrom + intervalToSecond[timeframe] * MAX_PREVIOUS_KLYUSD_INDEX_BATCH - 1;
+			indexPreviousKLYUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
 		}
 	});
 
@@ -352,7 +352,7 @@ const addGenesisPriceIndex = async (block, dbTrx) => {
 
 const deletePriceIndex = async (block, dbTrx) => {
 	const tokenTable = await getDEXTokenTable();
-	const lskTokenId = await getLSKTokenID();
+	const klyTokenId = await getKLYTokenID();
 	const registeredDexTokens = await tokenTable.find({}, ['symbol']);
 
 	await BluebirdPromise.map(
@@ -360,13 +360,13 @@ const deletePriceIndex = async (block, dbTrx) => {
 		async token => {
 			await deleteTickPriceIndex(token, block, dbTrx);
 			await deleteOhlcPriceIndex(token, block, dbTrx);
-			await indexTokenLastPrice(block.timestamp, token, lskTokenId, dbTrx);
+			await indexTokenLastPrice(block.timestamp, token, klyTokenId, dbTrx);
 		},
 		{ concurrency: INDEX_TOKEN_CONCURRENCY },
 	);
 
 	const time = normalizeBlockTime(block.timestamp, LAST_PRICE_INTERVAL);
-	await updateLastPrice(lskTokenId, 'lskusd', time, dbTrx);
+	await updateLastPrice(klyTokenId, 'klyusd', time, dbTrx);
 };
 
 module.exports = { addPriceIndex, deletePriceIndex, addGenesisPriceIndex };

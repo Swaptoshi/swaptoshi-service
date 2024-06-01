@@ -128,16 +128,16 @@ config.queue = {
 		name: 'PendingAddressUpdates',
 		concurrency: 512,
 	},
-	indexPreviousLSKUSDTickPrice: {
-		name: 'IndexPreviousLSKUSDTickPrice',
+	indexPreviousKLYUSDTickPrice: {
+		name: 'IndexPreviousKLYUSDTickPrice',
 		concurrency: 8,
 	},
-	indexPreviousLSKUSDOhlcPrice: {
-		name: 'IndexPreviousLSKUSDOhlcPrice',
+	indexPreviousKLYUSDOhlcPrice: {
+		name: 'IndexPreviousKLYUSDOhlcPrice',
 		concurrency: 8,
 	},
-	indexCurrentLSKUSDPrice: {
-		name: 'IndexCurrentLSKUSDPrice',
+	indexCurrentKLYUSDPrice: {
+		name: 'IndexCurrentKLYUSDPrice',
 		concurrency: 1,
 	},
 	nftStorageUpload: {

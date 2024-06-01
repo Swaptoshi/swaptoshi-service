@@ -123,7 +123,7 @@ const POS_CLAIM_REWARDS_TRANSACTION_OBJECT = {
 	params: {},
 };
 
-const LEGACY_RECLAIM_LSK = {
+const LEGACY_RECLAIM_KLY = {
 	...ESTIMATE_FEES_BASE_TRANSACTION,
 	module: 'legacy',
 	command: 'reclaimKLY',

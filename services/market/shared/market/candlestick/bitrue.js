@@ -5,7 +5,7 @@ const bitrue = new ccxt.bitrue();
 
 const getCandleStickBitrue = async params => {
 	let { symbol } = params;
-	if (symbol === 'LSKUSD') symbol = 'LSKUSDT';
+	if (symbol === 'KLYUSD') symbol = 'KLYUSDT';
 	let data = await bitrue.fetchOHLCV(symbol, params.interval, Number(params.start) * 1000, 720);
 	data = data.map(t => ({
 		start: Math.floor(t[0] / 1000),

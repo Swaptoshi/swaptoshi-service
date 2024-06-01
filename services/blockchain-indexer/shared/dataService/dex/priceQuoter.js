@@ -14,8 +14,8 @@ const poolTableSchema = require('../../database/schema/pool');
 const { getOhlcTableSchema } = require('../../database/dynamic-schema/ohlc');
 const { decodeFirstPool, hasMultiplePools, skipToken } = require('../../indexer/utils/tradingPath');
 const { intervalToSecond, normalizeBlockTime } = require('./timestamp');
-const { getLSKTokenID } = require('../business/interoperability/blockchainApps');
-const { getLSKUSDPrice } = require('./lskPrices');
+const { getKLYTokenID } = require('../business/interoperability/blockchainApps');
+const { getKLYUSDPrice } = require('./klyPrices');
 const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickPrice');
 const { parseQueryResult } = require('../../utils/query');
 
@@ -160,7 +160,7 @@ const getPrice = async (base, quote, dbTrx) => {
 	let price = 1;
 	if (base === quote) return price;
 
-	const _quote = quote === usdTokenId ? await getLSKTokenID() : quote;
+	const _quote = quote === usdTokenId ? await getKLYTokenID() : quote;
 
 	const route = await getRoute(base, _quote, MAX_RECURSION, 1, dbTrx);
 	if (route.length === 0) return 0;
@@ -177,7 +177,7 @@ const getPrice = async (base, quote, dbTrx) => {
 		if (hasMultiplePools(_path)) {
 			_path = skipToken(_path);
 		} else {
-			if (quote === usdTokenId) price *= await getLSKUSDPrice();
+			if (quote === usdTokenId) price *= await getKLYUSDPrice();
 			return price;
 		}
 	}

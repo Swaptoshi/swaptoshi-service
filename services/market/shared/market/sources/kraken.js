@@ -49,7 +49,7 @@ const fetchAllMarketTickers = async () => {
 
 const standardizeTickers = tickers => {
 	const transformedPrices = Object.entries(symbolMap).map(([k, v]) => {
-		if (v === symbolMap.KLY_BTC) v = 'KLYXBT'; // Kraken API returns LSKBTC as LSKXBT
+		if (v === symbolMap.KLY_BTC) v = 'KLYXBT'; // Kraken API returns KLYBTC as KLYXBT
 		const currentTicker = tickers[v];
 		const [from, to] = k.split('_');
 		const price = {

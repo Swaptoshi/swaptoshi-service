@@ -27,11 +27,11 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 	if (start !== undefined && typeof start !== 'number') throw new Error('invalid start');
 	if (end !== undefined && typeof end !== 'number') throw new Error('invalid end');
 
-	const includeConversion = base.toLowerCase() !== 'lsk' && quote.toLowerCase() === 'usd';
+	const includeConversion = base.toLowerCase() !== 'kly' && quote.toLowerCase() === 'usd';
 
-	const pair = `${base.toLowerCase()}${includeConversion ? 'lsk' : quote.toLowerCase()}`;
+	const pair = `${base.toLowerCase()}${includeConversion ? 'kly' : quote.toLowerCase()}`;
 	const joinQuery = `${
-		includeConversion ? 'LEFT JOIN tick_lskusd AS quote ON base.time = quote.time' : ''
+		includeConversion ? 'LEFT JOIN tick_klyusd AS quote ON base.time = quote.time' : ''
 	}`;
 	const limitQuery = limit === -1 ? '' : `LIMIT ${limit}`;
 

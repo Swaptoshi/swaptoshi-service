@@ -18,7 +18,7 @@ const dexTokenTableSchema = require('../../database/schema/registeredDexToken');
 const { requestAppRegistry, requestConnector } = require('../../utils/request');
 const { factoryMetadataSchema } = require('./schema');
 const { nftStorageUploadQueue } = require('../nft.storage');
-const { getLSKUSDLastPrice } = require('../dex');
+const { getKLYUSDLastPrice } = require('../dex');
 const { parseQueryResult } = require('../../utils/query');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
@@ -116,13 +116,13 @@ const getFactoryStatistics = async () => {
 	};
 
 	const tokenFactoryTable = await getTokenFactoryTable();
-	const lskusdprice = await getLSKUSDLastPrice();
+	const klyusdprice = await getKLYUSDLastPrice();
 
 	const query = `
 		SELECT
 			COALESCE(COUNT(tf.tokenID), 0) AS tokenCreated,
 			COALESCE(SUM(tf.supply * lp.current), 0) AS totalMarketCap,
-			COALESCE(SUM(tf.supply * lp.current * ${lskusdprice.current || 0}), 0) AS totalMarketCapUSD
+			COALESCE(SUM(tf.supply * lp.current * ${klyusdprice.current || 0}), 0) AS totalMarketCapUSD
 		FROM
 			token_factory AS tf
 		JOIN
@@ -144,7 +144,7 @@ const getTokenFactories = async params => {
 	};
 
 	const tokenFactoryTable = await getTokenFactoryTable();
-	const lskusdprice = await getLSKUSDLastPrice();
+	const klyusdprice = await getKLYUSDLastPrice();
 	const tokenIdsString = params.tokenIds
 		? params.tokenIds
 				.split(',')
@@ -163,9 +163,9 @@ const getTokenFactories = async params => {
 			tf.owner,
 			tf.supply,
 			lp.current AS price,
-			lp.current * ${lskusdprice.current || 0} AS priceUSD,
+			lp.current * ${klyusdprice.current || 0} AS priceUSD,
 			(tf.supply * lp.current) / POWER(10, tf.decimal) AS marketCap,
-			(tf.supply * lp.current * ${lskusdprice.current || 0}) / POWER(10, tf.decimal) AS marketCapUSD
+			(tf.supply * lp.current * ${klyusdprice.current || 0}) / POWER(10, tf.decimal) AS marketCapUSD
 		FROM
 			token_factory AS tf
 		JOIN

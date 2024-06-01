@@ -2189,7 +2189,7 @@ No parameters are required.
       "interoperability:registerSidechain",
       "interoperability:recoverState",
       "interoperability:terminateSidechainForLiveness",
-      "legacy:reclaimLSK",
+      "legacy:reclaimKLY",
       "legacy:registerKeys",
       "pos:registerValidator",
       "pos:reportMisbehavior",
@@ -5266,9 +5266,9 @@ No parameters are required.
                 }
             },
             {
-                "moduleCommand": "legacy:reclaimLSK",
+                "moduleCommand": "legacy:reclaimKLY",
                 "schema": {
-                    "$id": "/legacy/command/reclaimLSKParams",
+                    "$id": "/legacy/command/reclaimKLYParams",
                     "type": "object",
                     "required": [
                         "amount"
@@ -5660,7 +5660,7 @@ _Supports pagination._
       "address": "klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99",
       "lastCertificateHeight": 160,
       "lastUpdated": 1616008148,
-      "escrowedLSK": "50000000000",
+      "escrowedKLY": "50000000000",
       "escrow": [
         {
           "tokenID": "0000000000000000",
@@ -5716,8 +5716,8 @@ No parameters are required.
     "registered": 2503,
     "activated": 2328,
     "terminated": 35,
-    "totalSupplyLSK": "5000000",
-    "totalStakedLSK": "3000000",
+    "totalSupplyKLY": "5000000",
+    "totalStakedKLY": "3000000",
     "currentAnnualInflationRate": "4.50"
   },
   "meta": {}
@@ -6083,7 +6083,7 @@ _Supports pagination._
       "tokenID": "Klayr",
       "tokenName": "00000000",
       "networkType": "mainnet",
-      "description": "LSK is the utility token of Klayr",
+      "description": "KLY is the utility token of Klayr",
       "denomUnits": [
         {
           "denom": "kly",
@@ -6093,8 +6093,8 @@ _Supports pagination._
           ]
         }
       ],
-      "symbol": "LSK",
-      "displayDenom": "LSK",
+      "symbol": "KLY",
+      "displayDenom": "KLY",
       "baseDenom": "beddows",
       "logo": {
         "png": "https://downloads.klayr.xyz/klayr/images/logo.png",

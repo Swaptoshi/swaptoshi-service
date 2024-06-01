@@ -9,10 +9,10 @@ const { requestMarket } = require('../../utils/request');
 const config = require('../../../config');
 
 const lastPriceTableSchema = require('../../database/schema/lastPrice');
-const { getLSKTokenID } = require('../business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../business/interoperability/blockchainApps');
 const { intervalToSecond } = require('./timestamp');
 
-const LSKUSD_LAST_PRICE_CACHE_KEY = 'lskusd_last_price';
+const KLYUSD_LAST_PRICE_CACHE_KEY = 'klyusd_last_price';
 const LAST_PRICE_TTL = intervalToSecond[config.dex.lastPriceInterval];
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -21,16 +21,16 @@ const redis = new Redis(config.endpoints.cache);
 const getLastPriceTable = () =>
 	getTableInstance(lastPriceTableSchema.tableName, lastPriceTableSchema, MYSQL_ENDPOINT);
 
-const getLSKUSDLastPrice = async () => {
-	const lskTokenId = await getLSKTokenID();
+const getKLYUSDLastPrice = async () => {
+	const klyTokenId = await getKLYTokenID();
 
-	const cache = await redis.get(LSKUSD_LAST_PRICE_CACHE_KEY);
+	const cache = await redis.get(KLYUSD_LAST_PRICE_CACHE_KEY);
 	if (cache) {
 		return JSON.parse(cache);
 	}
 
 	const lastPriceTable = await getLastPriceTable();
-	const lastPrice = await lastPriceTable.find({ tokenId: lskTokenId, limit: 1 }, [
+	const lastPrice = await lastPriceTable.find({ tokenId: klyTokenId, limit: 1 }, [
 		'tokenId',
 		'updatedOn',
 		'current',
@@ -42,7 +42,7 @@ const getLSKUSDLastPrice = async () => {
 	]);
 
 	await redis.set(
-		LSKUSD_LAST_PRICE_CACHE_KEY,
+		KLYUSD_LAST_PRICE_CACHE_KEY,
 		JSON.stringify(lastPrice[0]),
 		'EX',
 		Math.floor(Date.now() / 1000) % LAST_PRICE_TTL,
@@ -51,16 +51,16 @@ const getLSKUSDLastPrice = async () => {
 	return lastPrice[0];
 };
 
-const getLSKUSDPrice = async () => {
+const getKLYUSDPrice = async () => {
 	const market = await requestMarket('prices');
-	const lskusd = market.data.filter(t => t.code === 'LSK_USD');
-	if (lskusd.length === 0) throw new Error('LSKUSD price currently not available');
-	return parseFloat(lskusd[0].rate);
+	const klyusd = market.data.filter(t => t.code === 'KLY_USD');
+	if (klyusd.length === 0) throw new Error('KLYUSD price currently not available');
+	return parseFloat(klyusd[0].rate);
 };
 
-const getLSKUSDPriceAtTimestamp = async timestamp => {
+const getKLYUSDPriceAtTimestamp = async timestamp => {
 	const market = await requestMarket('candlestick', {
-		symbol: 'LSKUSDT',
+		symbol: 'KLYUSDT',
 		interval: '1s',
 		start: timestamp,
 		end: timestamp,
@@ -68,9 +68,9 @@ const getLSKUSDPriceAtTimestamp = async timestamp => {
 	return market[0].open;
 };
 
-const getLSKUSDCandles = async (start, end = start, interval = '5m') => {
+const getKLYUSDCandles = async (start, end = start, interval = '5m') => {
 	const market = await requestMarket('candlestick', {
-		symbol: 'LSKUSDT',
+		symbol: 'KLYUSDT',
 		interval,
 		start,
 		end,
@@ -79,8 +79,8 @@ const getLSKUSDCandles = async (start, end = start, interval = '5m') => {
 };
 
 module.exports = {
-	getLSKUSDPrice,
-	getLSKUSDPriceAtTimestamp,
-	getLSKUSDCandles,
-	getLSKUSDLastPrice,
+	getKLYUSDPrice,
+	getKLYUSDPriceAtTimestamp,
+	getKLYUSDCandles,
+	getKLYUSDLastPrice,
 };

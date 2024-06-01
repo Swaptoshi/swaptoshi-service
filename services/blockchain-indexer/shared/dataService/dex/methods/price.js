@@ -32,16 +32,16 @@ const getTickPrice = async params => {
 	const { start, end } = params;
 
 	const includeConversion =
-		params.base.toLowerCase() !== 'lsk' && params.quote.toLowerCase() === 'usd';
+		params.base.toLowerCase() !== 'kly' && params.quote.toLowerCase() === 'usd';
 	const pair = `${params.base.toLowerCase()}${
-		includeConversion ? 'lsk' : params.quote.toLowerCase()
+		includeConversion ? 'kly' : params.quote.toLowerCase()
 	}`;
 
 	const offset = params.offset || 0;
 	const limit = params.limit || 100;
 
 	const joinQuery = `${
-		includeConversion ? 'LEFT JOIN tick_lskusd AS quote ON base.time = quote.time' : ''
+		includeConversion ? 'LEFT JOIN tick_klyusd AS quote ON base.time = quote.time' : ''
 	}`;
 
 	const query = `
@@ -87,9 +87,9 @@ const getOhlcPrice = async params => {
 	const { start, end, timeframe } = params;
 
 	const includeConversion =
-		params.base.toLowerCase() !== 'lsk' && params.quote.toLowerCase() === 'usd';
+		params.base.toLowerCase() !== 'kly' && params.quote.toLowerCase() === 'usd';
 	const pair = `${params.base.toLowerCase()}${
-		includeConversion ? 'lsk' : params.quote.toLowerCase()
+		includeConversion ? 'kly' : params.quote.toLowerCase()
 	}`;
 
 	if (intervalToSecond[timeframe] === undefined) throw new Error('invalid timeframe');
@@ -108,7 +108,7 @@ const getOhlcPrice = async params => {
 			ohlc1.close * ${includeConversion ? 'ohlc2.close' : '1'} AS close
 		FROM 
 			${getOhlcTableSchema(pair, timeframe).tableName} AS ohlc1 
-			${includeConversion ? `JOIN ohlc_lskusd_${timeframe} AS ohlc2 ON ohlc1.time = ohlc2.time` : ''} 
+			${includeConversion ? `JOIN ohlc_klyusd_${timeframe} AS ohlc2 ON ohlc1.time = ohlc2.time` : ''} 
 		WHERE 1 = 1 
 			${start ? `AND ohlc1.time >= ${start}` : ''} 
 			${end ? `AND ohlc1.time <= ${end}` : ''} 

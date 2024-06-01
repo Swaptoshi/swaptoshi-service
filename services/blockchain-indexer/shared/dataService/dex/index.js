@@ -7,11 +7,11 @@ const {
 	getLastPrice,
 } = require('./priceQuoter');
 const {
-	getLSKUSDCandles,
-	getLSKUSDPrice,
-	getLSKUSDPriceAtTimestamp,
-	getLSKUSDLastPrice,
-} = require('./lskPrices');
+	getKLYUSDCandles,
+	getKLYUSDPrice,
+	getKLYUSDPriceAtTimestamp,
+	getKLYUSDLastPrice,
+} = require('./klyPrices');
 const { intervalToSecond, normalizeBlockTime } = require('./timestamp');
 const {
 	getDEXTokens,
@@ -38,10 +38,10 @@ module.exports = {
 	getRoute,
 	transformTickToOhlc,
 	getLastPrice,
-	getLSKUSDCandles,
-	getLSKUSDPrice,
-	getLSKUSDPriceAtTimestamp,
-	getLSKUSDLastPrice,
+	getKLYUSDCandles,
+	getKLYUSDPrice,
+	getKLYUSDPriceAtTimestamp,
+	getKLYUSDLastPrice,
 	intervalToSecond,
 	normalizeBlockTime,
 	getDEXTokens,

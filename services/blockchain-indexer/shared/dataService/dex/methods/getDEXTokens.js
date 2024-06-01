@@ -7,9 +7,9 @@ const {
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
 
 const config = require('../../../../config');
-const { getLSKUSDLastPrice } = require('../lskPrices');
+const { getKLYUSDLastPrice } = require('../klyPrices');
 const { parseQueryResult } = require('../../../utils/query');
-const { getLSKTokenID } = require('../../business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../../business/interoperability/blockchainApps');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -53,8 +53,8 @@ const getDEXTokens = async params => {
 				${limitQuery} ${offsetQuery};
 				`;
 	} else {
-		const lskusdprice = await getLSKUSDLastPrice();
-		const lskTokenId = await getLSKTokenID();
+		const klyusdprice = await getKLYUSDLastPrice();
+		const klyTokenId = await getKLYTokenID();
 		const changeWindow = params.changeWindow || '24h';
 		const { start, end } = params;
 
@@ -131,21 +131,21 @@ const getDEXTokens = async params => {
 							COUNT(pool.poolAddress) AS poolCount, 
 							COALESCE(vl.amount, 0) AS totalTvl, 
 							COALESCE(vl.amount * pr.priceUSD, 0) AS totalTvlUSD, 
-							COALESCE(CASE WHEN rdt.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
+							COALESCE(CASE WHEN rdt.tokenId = '${klyTokenId}' THEN 1 ELSE lp.current END, 0) AS price, 
 							pr.priceUSD AS priceUSD, 
 							COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) AS priceChange, 
-							CASE WHEN rdt.tokenId = '${lskTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
-			lskusdprice.current || 1
-		}) - (lp.${changeWindow} * ${lskusdprice[changeWindow] || 1})) / (lp.${changeWindow} * ${
-			lskusdprice[changeWindow] || 1
+							CASE WHEN rdt.tokenId = '${klyTokenId}' THEN COALESCE((lp.current - lp.${changeWindow}) / lp.${changeWindow} * 100, 0) ELSE COALESCE(((lp.current * ${
+			klyusdprice.current || 1
+		}) - (lp.${changeWindow} * ${klyusdprice[changeWindow] || 1})) / (lp.${changeWindow} * ${
+			klyusdprice[changeWindow] || 1
 		}) * 100, 0) END AS priceChangeUSD 
 						FROM 
 							registered_dex_token rdt 
 							LEFT JOIN (
 								SELECT
 									t.tokenId,
-									COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
-			lskusdprice.current
+									COALESCE((CASE WHEN t.tokenId = '${klyTokenId}' THEN 1 ELSE lp.current END) * ${
+			klyusdprice.current
 		}, 0) AS priceUSD
 								FROM
 									registered_dex_token t

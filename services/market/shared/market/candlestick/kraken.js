@@ -5,7 +5,7 @@ const kraken = new ccxt.kraken();
 
 const getCandleStickKraken = async params => {
 	let { symbol } = params;
-	if (symbol === 'LSKUSDT') symbol = 'LSKUSD';
+	if (symbol === 'KLYUSDT') symbol = 'KLYUSD';
 	let data;
 
 	try {

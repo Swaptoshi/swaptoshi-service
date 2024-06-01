@@ -7,9 +7,9 @@ const {
 const dexTokenTableSchema = require('../../../database/schema/registeredDexToken');
 
 const config = require('../../../../config');
-const { getLSKUSDLastPrice } = require('../lskPrices');
+const { getKLYUSDLastPrice } = require('../klyPrices');
 const { parseQueryResult } = require('../../../utils/query');
-const { getLSKTokenID } = require('../../business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../../business/interoperability/blockchainApps');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -17,9 +17,9 @@ const getDEXTokenTable = () =>
 	getTableInstance(dexTokenTableSchema.tableName, dexTokenTableSchema, MYSQL_ENDPOINT);
 
 const getDEXStatisticSummary = async params => {
-	const lskusdprice = await getLSKUSDLastPrice();
+	const klyusdprice = await getKLYUSDLastPrice();
 	const registeredDexTokenTable = await getDEXTokenTable();
-	const lskTokenId = await getLSKTokenID();
+	const klyTokenId = await getKLYTokenID();
 	const { start, end } = params;
 
 	const query = `
@@ -40,8 +40,8 @@ const getDEXStatisticSummary = async params => {
                 COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount,
                 SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / POWER(10, t.decimal) AS volume,
                 SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth,
-                COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
-		lskusdprice.current || 0
+                COALESCE((CASE WHEN t.tokenId = '${klyTokenId}' THEN 1 ELSE lp.current END) * ${
+		klyusdprice.current || 0
 	}, 0) AS priceUSD
             FROM
                 registered_dex_token t

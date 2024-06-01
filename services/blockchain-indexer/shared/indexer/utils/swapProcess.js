@@ -33,8 +33,8 @@ const MYSQL_ENDPOINT = config.endpoints.mysql;
 const logger = Logger();
 
 const EXCLUDED_ADDRESS = [
-	'lskwcryfecu7yyyggmuyqcetwxzgnz73ra5hf8cde', // positionManagerAddress
-	'lsko5pdmf2zvezocqfyoejt37so5myqzqxfdke6go', // routerAddress
+	'klywcryfecu7yyyggmuyqcetwxzgnz73ra5hf8cde', // positionManagerAddress
+	'klyo5pdmf2zvezocqfyoejt37so5myqzqxfdke6go', // routerAddress
 ];
 
 const poolTableSchema = require('../../database/schema/pool');
@@ -47,7 +47,7 @@ const { indexAccountAddress } = require('../accountIndex');
 const { decodeFeeGrowth } = require('./priceFormatter');
 const { decodePoolAddress } = require('./poolAddress');
 const { getPrice } = require('../../dataService/dex/priceQuoter');
-const { getLSKTokenID } = require('../../dataService/business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../../dataService/business/interoperability/blockchainApps');
 const { getPriceAtTick } = require('./tickFormatter');
 
 const getPoolTable = () =>
@@ -65,7 +65,7 @@ const getLastPriceTable = () =>
 // Implement the custom logic in the 'applyTransaction' method and export it
 const applySwapEvent = async (blockHeader, events, dbTrx) => {
 	const swapEvent = parseEvents(events, MODULE_NAME_DEX, EVENT_NAME_SWAP);
-	const lskTokenId = await getLSKTokenID();
+	const klyTokenId = await getKLYTokenID();
 
 	const addressToIndex = new Set();
 	swapEvent.forEach(event => {
@@ -156,24 +156,24 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 			logger.debug(`Updated ${token0.symbol}/${token1.symbol} pool price to: ${updatedPrice}`);
 			logger.debug(`Updated ${token0.symbol}/${token1.symbol} pool tick to: ${event.data.tick}`);
 
-			if (poolKey.token0 !== lskTokenId) {
-				const token0Price = await getPrice(poolKey.token0, lskTokenId);
+			if (poolKey.token0 !== klyTokenId) {
+				const token0Price = await getPrice(poolKey.token0, klyTokenId);
 				await lastPriceTable.update({
 					where: { tokenId: poolKey.token0 },
 					updates: { current: token0Price },
 				});
 
-				logger.debug(`Updated ${token0.symbol}/LSK current price to: ${token0Price}`);
+				logger.debug(`Updated ${token0.symbol}/KLY current price to: ${token0Price}`);
 			}
 
-			if (poolKey.token1 !== lskTokenId) {
-				const token1Price = await getPrice(poolKey.token1, lskTokenId);
+			if (poolKey.token1 !== klyTokenId) {
+				const token1Price = await getPrice(poolKey.token1, klyTokenId);
 				await lastPriceTable.update({
 					where: { tokenId: poolKey.token1 },
 					updates: { current: token1Price },
 				});
 
-				logger.debug(`Updated ${token1.symbol}/LSK current price to: ${token1Price}`);
+				logger.debug(`Updated ${token1.symbol}/KLY current price to: ${token1Price}`);
 			}
 
 			return true;
@@ -193,7 +193,7 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 // This logic is executed to revert the effect of 'applyTransaction' method in case of deleteBlock
 const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 	const swapEvent = parseEvents(events, MODULE_NAME_DEX, EVENT_NAME_SWAP);
-	const lskTokenId = await getLSKTokenID();
+	const klyTokenId = await getKLYTokenID();
 
 	const addressToIndex = new Set();
 	swapEvent.forEach(event => {
@@ -291,24 +291,24 @@ const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 				`Reverted ${token0.symbol}/${token1.symbol} pool tick to: ${event.data.tickBefore}`,
 			);
 
-			if (poolKey.token0 !== lskTokenId) {
-				const token0Price = await getPrice(poolKey.token0, lskTokenId);
+			if (poolKey.token0 !== klyTokenId) {
+				const token0Price = await getPrice(poolKey.token0, klyTokenId);
 				await lastPriceTable.update({
 					where: { tokenId: poolKey.token0 },
 					updates: { current: token0Price },
 				});
 
-				logger.debug(`Updated ${token0.symbol}/LSK current price to: ${token0Price}`);
+				logger.debug(`Updated ${token0.symbol}/KLY current price to: ${token0Price}`);
 			}
 
-			if (poolKey.token1 !== lskTokenId) {
-				const token1Price = await getPrice(poolKey.token1, lskTokenId);
+			if (poolKey.token1 !== klyTokenId) {
+				const token1Price = await getPrice(poolKey.token1, klyTokenId);
 				await lastPriceTable.update({
 					where: { tokenId: poolKey.token1 },
 					updates: { current: token1Price },
 				});
 
-				logger.debug(`Updated ${token1.symbol}/LSK current price to: ${token1Price}`);
+				logger.debug(`Updated ${token1.symbol}/KLY current price to: ${token1Price}`);
 			}
 
 			return true;

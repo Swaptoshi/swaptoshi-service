@@ -6,9 +6,9 @@ const {
 
 const poolTableSchema = require('../../../database/schema/pool');
 const config = require('../../../../config');
-const { getLSKUSDLastPrice } = require('../lskPrices');
+const { getKLYUSDLastPrice } = require('../klyPrices');
 const { parseQueryResult } = require('../../../utils/query');
-const { getLSKTokenID } = require('../../business/interoperability/blockchainApps');
+const { getKLYTokenID } = require('../../business/interoperability/blockchainApps');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
 
@@ -17,8 +17,8 @@ const getPoolTable = () =>
 
 const getPools = async params => {
 	const poolTable = await getPoolTable();
-	const lskusdprice = await getLSKUSDLastPrice();
-	const lskTokenId = await getLSKTokenID();
+	const klyusdprice = await getKLYUSDLastPrice();
+	const klyTokenId = await getKLYTokenID();
 
 	const searchTerm = params.search ? params.search.trim() : '';
 	const offset = params.offset || 0;
@@ -87,9 +87,9 @@ const getPools = async params => {
 						COUNT(DISTINCT CONCAT(v.height, '_', v.index)) AS swapCount,
 						SUM(CASE WHEN p.token0 = t.tokenId THEN ABS(v.amount0) ELSE ABS(v.amount1) END) / POWER(10, t.decimal) AS volume,
 						SUM(CASE WHEN p.token0 = t.tokenId THEN v.feeGrowth0 ELSE v.feeGrowth1 END) / POWER(10, t.decimal) AS feeGrowth,
-						(CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) AS price,
-						COALESCE((CASE WHEN t.tokenId = '${lskTokenId}' THEN 1 ELSE lp.current END) * ${
-		lskusdprice.current
+						(CASE WHEN t.tokenId = '${klyTokenId}' THEN 1 ELSE lp.current END) AS price,
+						COALESCE((CASE WHEN t.tokenId = '${klyTokenId}' THEN 1 ELSE lp.current END) * ${
+		klyusdprice.current
 	}, 0) AS priceUSD
 					FROM
 						registered_dex_token t

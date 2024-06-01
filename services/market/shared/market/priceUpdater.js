@@ -46,7 +46,7 @@ const calcTargetPairPrices = (rawPricesBySource, targetPairings = targetPairs) =
 	const sourcePrices = [];
 	Object.entries(rawPricesBySource).forEach(([source, prices]) => {
 		// Append source name to the price code and push to sourcePrices array
-		// Eg: LSK_BTC from binance results in binance_LSK_EUR
+		// Eg: KLY_BTC from binance results in binance_KLY_EUR
 		if (Array.isArray(prices))
 			prices.forEach(item => sourcePrices.push({ ...item, code: `${source}_${item.code}` }));
 		else if (isWarnMessageDisplayed === false) {
@@ -73,9 +73,9 @@ const calcTargetPairPrices = (rawPricesBySource, targetPairings = targetPairs) =
 				});
 			} else {
 				// If exact match not found, check for intermediate pairs and calculate the required price
-				// Eg: LSK_EUR price can be calculated from LSK_BTC and BTC_EUR price values
+				// Eg: KLY_EUR price can be calculated from KLY_BTC and BTC_EUR price values
 
-				// intermediateTarget is BTC in binance_LSK_BTC
+				// intermediateTarget is BTC in binance_KLY_BTC
 				const [, , intermediateTarget] = rps.code.split('_');
 
 				rawPricesWithMatchingTarget
