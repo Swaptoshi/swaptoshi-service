@@ -19,7 +19,7 @@ const { TRANSACTION_STATUS } = require('../../../constants');
 
 const logger = Logger();
 
-const { getLisk32AddressFromHexAddress } = require('../../../dataService/utils/account');
+const { getKlayr32AddressFromHexAddress } = require('../../../dataService/utils/account');
 const { indexAccountAddress } = require('../../accountIndex');
 
 // Declare and export the following command specific constants
@@ -29,8 +29,8 @@ const COMMAND_NAME = 'collect';
 const applyTransaction = async (blockHeader, tx) => {
 	if (tx.executionStatus !== TRANSACTION_STATUS.SUCCESSFUL) return;
 
-	const recipientAddress = getLisk32AddressFromHexAddress(tx.params.recipient);
-	const poolAddress = getLisk32AddressFromHexAddress(tx.params.poolAddress);
+	const recipientAddress = getKlayr32AddressFromHexAddress(tx.params.recipient);
+	const poolAddress = getKlayr32AddressFromHexAddress(tx.params.poolAddress);
 
 	logger.trace(`Updating index for the account with address ${recipientAddress} asynchronously.`);
 	indexAccountAddress(recipientAddress);
@@ -46,8 +46,8 @@ const applyTransaction = async (blockHeader, tx) => {
 const revertTransaction = async (blockHeader, tx) => {
 	if (tx.executionStatus !== TRANSACTION_STATUS.SUCCESSFUL) return;
 
-	const recipientAddress = getLisk32AddressFromHexAddress(tx.params.recipient);
-	const poolAddress = getLisk32AddressFromHexAddress(tx.params.poolAddress);
+	const recipientAddress = getKlayr32AddressFromHexAddress(tx.params.recipient);
+	const poolAddress = getKlayr32AddressFromHexAddress(tx.params.poolAddress);
 
 	logger.trace(`Updating index for the account with address ${recipientAddress} asynchronously.`);
 	indexAccountAddress(recipientAddress);

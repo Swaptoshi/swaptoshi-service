@@ -41,7 +41,7 @@
 			},
 			"owner": {
 				"type": "string",
-				"description": "factory owner which initiate token create transaction, in lisk32 format",
+				"description": "factory owner which initiate token create transaction, in klayr32 format",
 				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"supply": {

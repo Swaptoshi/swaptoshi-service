@@ -130,7 +130,7 @@ const getPositionValue = async params => {
 		endpoint: 'dex_getPosition',
 		params: {
 			poolAddress: cryptography.address
-				.getAddressFromLisk32Address(position.poolAddress)
+				.getAddressFromKlayr32Address(position.poolAddress)
 				.toString('hex'),
 			tokenId: index.toString(),
 		},

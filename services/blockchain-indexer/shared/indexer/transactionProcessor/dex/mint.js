@@ -40,9 +40,9 @@ const positionTableSchema = require('../../../database/schema/position');
 const tvlTableSchema = require('../../../database/schema/tvl');
 const tickTableSchema = require('../../../database/schema/tick');
 const { parseSingleEvent } = require('../../utils/events');
-const { getLisk32AddressFromPublicKey } = require('../../../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../../../utils/account');
 const { computePoolAddress, getPoolKey, decodeNFTId } = require('../../utils/poolAddress');
-const { getLisk32AddressFromHexAddress } = require('../../../dataService/utils/account');
+const { getKlayr32AddressFromHexAddress } = require('../../../dataService/utils/account');
 const { indexAccountAddress } = require('../../accountIndex');
 const { nftStorageUploadQueue } = require('../../../dataService/nft.storage');
 const { invokeEndpoint } = require('../../../dataService/business/invoke');
@@ -86,8 +86,8 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const tokenTable = await getDEXTokenTable();
 
 	const poolKey = getPoolKey(tx.params.token0, tx.params.token1, tx.params.fee);
-	const senderAddress = getLisk32AddressFromPublicKey(tx.senderPublicKey);
-	const poolAddress = getLisk32AddressFromHexAddress(computePoolAddress(poolKey));
+	const senderAddress = getKlayr32AddressFromPublicKey(tx.senderPublicKey);
+	const poolAddress = getKlayr32AddressFromHexAddress(computePoolAddress(poolKey));
 
 	const positionTable = await getPositionTable();
 
@@ -211,8 +211,8 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const tokenTable = await getDEXTokenTable();
 
 	const poolKey = getPoolKey(tx.params.token0, tx.params.token1, tx.params.fee);
-	const senderAddress = getLisk32AddressFromPublicKey(tx.senderPublicKey);
-	const poolAddress = getLisk32AddressFromHexAddress(computePoolAddress(poolKey));
+	const senderAddress = getKlayr32AddressFromPublicKey(tx.senderPublicKey);
+	const poolAddress = getKlayr32AddressFromHexAddress(computePoolAddress(poolKey));
 
 	const [token0] = await tokenTable.find({ tokenId: poolKey.token0, limit: 1 }, ['symbol'], dbTrx);
 	const [token1] = await tokenTable.find({ tokenId: poolKey.token1, limit: 1 }, ['symbol'], dbTrx);

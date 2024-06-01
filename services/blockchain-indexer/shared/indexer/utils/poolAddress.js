@@ -12,7 +12,7 @@ function decodePoolAddress(poolAddress) {
 	let pool = poolAddress;
 	if (typeof poolAddress === 'string') {
 		if (poolAddress.length === 41)
-			pool = cryptography.address.getAddressFromLisk32Address(poolAddress);
+			pool = cryptography.address.getAddressFromKlayr32Address(poolAddress);
 		else pool = Buffer.from(poolAddress, 'hex');
 	}
 	return {
@@ -45,7 +45,7 @@ function computePoolAddress(key) {
 function computePoolId(poolAddress) {
 	let pool = poolAddress;
 	if (typeof poolAddress === 'string')
-		pool = cryptography.address.getAddressFromLisk32Address(poolAddress);
+		pool = cryptography.address.getAddressFromKlayr32Address(poolAddress);
 	if (pool.length !== 20) throw new Error('invalid poolAddress');
 	return cryptography.utils.hash(pool).subarray(0, 4).toString('hex');
 }

@@ -19,7 +19,7 @@ const { TRANSACTION_STATUS } = require('../../../constants');
 
 const logger = Logger();
 
-const { getLisk32AddressFromHexAddress } = require('../../../dataService/utils/account');
+const { getKlayr32AddressFromHexAddress } = require('../../../dataService/utils/account');
 const { indexAccountAddress } = require('../../accountIndex');
 const { parseSingleEvent } = require('../../utils/events');
 const {
@@ -36,8 +36,8 @@ const applyTransaction = async (blockHeader, tx, events) => {
 
 	const treasurifyEvent = parseSingleEvent(events, MODULE_NAME_DEX, EVENT_NAME_TREASURIFY, tx.id);
 
-	const treasuryAddress = getLisk32AddressFromHexAddress(treasurifyEvent.data.treasuryAddress);
-	const poolAddress = getLisk32AddressFromHexAddress(treasurifyEvent.data.poolAddress);
+	const treasuryAddress = getKlayr32AddressFromHexAddress(treasurifyEvent.data.treasuryAddress);
+	const poolAddress = getKlayr32AddressFromHexAddress(treasurifyEvent.data.poolAddress);
 
 	logger.trace(`Updating index for the account with address ${treasuryAddress} asynchronously.`);
 	indexAccountAddress(treasuryAddress);
@@ -55,8 +55,8 @@ const revertTransaction = async (blockHeader, tx, events) => {
 
 	const treasurifyEvent = parseSingleEvent(events, MODULE_NAME_DEX, EVENT_NAME_TREASURIFY, tx.id);
 
-	const treasuryAddress = getLisk32AddressFromHexAddress(treasurifyEvent.data.treasuryAddress);
-	const poolAddress = getLisk32AddressFromHexAddress(treasurifyEvent.data.poolAddress);
+	const treasuryAddress = getKlayr32AddressFromHexAddress(treasurifyEvent.data.treasuryAddress);
+	const poolAddress = getKlayr32AddressFromHexAddress(treasurifyEvent.data.poolAddress);
 
 	logger.trace(`Updating index for the account with address ${treasuryAddress} asynchronously.`);
 	indexAccountAddress(treasuryAddress);

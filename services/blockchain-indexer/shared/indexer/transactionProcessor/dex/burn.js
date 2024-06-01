@@ -35,7 +35,7 @@ const logger = Logger();
 
 const positionTableSchema = require('../../../database/schema/position');
 const { parseSingleEvent } = require('../../utils/events');
-const { getLisk32AddressFromPublicKey } = require('../../../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../../../utils/account');
 
 const getPositionTable = () =>
 	getTableInstance(positionTableSchema.tableName, positionTableSchema, MYSQL_ENDPOINT);
@@ -74,7 +74,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	if (tx.executionStatus !== TRANSACTION_STATUS.SUCCESSFUL) return;
 
-	const senderAddress = getLisk32AddressFromPublicKey(tx.senderPublicKey);
+	const senderAddress = getKlayr32AddressFromPublicKey(tx.senderPublicKey);
 
 	const tokenUriDestroyedEvent = parseSingleEvent(
 		events,

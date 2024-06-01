@@ -313,7 +313,7 @@
 		"properties": {
 			"poolAddress": {
 				"type": "string",
-				"description": "pool address in lisk32 format",
+				"description": "pool address in klayr32 format",
 				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"token0": {
@@ -565,7 +565,7 @@
 		"properties": {
 			"poolAddress": {
 				"type": "string",
-				"description": "pool address in lisk32 format",
+				"description": "pool address in klayr32 format",
 				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"poolTick": {
@@ -628,7 +628,7 @@
 			},
 			"owner": {
 				"type": "string",
-				"description": "owner of this position in lisk32 format",
+				"description": "owner of this position in klayr32 format",
 				"example": "lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99"
 			},
 			"collectionId": {

@@ -117,7 +117,7 @@
 	"poolAddress": {
 		"name": "poolAddress",
 		"in": "query",
-		"description": "poolAddress in lisk32 format",
+		"description": "poolAddress in klayr32 format",
 		"type": "string"
 	},
 	"tokenId": {
