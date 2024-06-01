@@ -107,6 +107,7 @@ const getWeightedPrice = async (token0, token1, dbTrx) => {
 	return pool[0].weightedPrice || 0;
 };
 
+// eslint-disable-next-line default-param-last
 const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
 	if (typeof from !== 'string' || from.length !== 16) throw new Error('invalid from');
 	if (typeof to !== 'string' || to.length !== 16) throw new Error('invalid to');

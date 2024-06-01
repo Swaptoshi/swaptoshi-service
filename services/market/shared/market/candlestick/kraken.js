@@ -21,6 +21,7 @@ const getCandleStickKraken = async params => {
 		return data;
 	} catch (err) {
 		if (err.message === 'kraken {"error":["EGeneral:Too many requests"]}') {
+			// eslint-disable-next-line no-promise-executor-return
 			await new Promise(r => setInterval(r, 2000));
 			return getCandleStickKraken(params);
 		}
