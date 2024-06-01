@@ -29,7 +29,7 @@ const {
 		},
 	},
 	Utils: { waitForIt },
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const { applyTransaction, revertTransaction } = require('./transactionProcessor');
 
@@ -48,7 +48,7 @@ const {
 } = require('../dataService');
 
 const { range } = require('../utils/array');
-const { getLisk32AddressFromPublicKey } = require('../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../utils/account');
 const { getTransactionExecutionStatus } = require('../utils/transactions');
 const { getEventsInfoToIndex } = require('./utils/events');
 const { calcCommissionAmount, calcSelfStakeReward } = require('./utils/validator');
@@ -244,7 +244,7 @@ const indexBlock = async job => {
 					tx.moduleCommand = `${tx.module}:${tx.command}`;
 					tx.blockID = blockToIndexFromNode.id;
 					tx.height = blockToIndexFromNode.height;
-					tx.senderAddress = getLisk32AddressFromPublicKey(tx.senderPublicKey);
+					tx.senderAddress = getKlayr32AddressFromPublicKey(tx.senderPublicKey);
 					tx.timestamp = blockToIndexFromNode.timestamp;
 					tx.executionStatus = getTransactionExecutionStatus(tx, events);
 
@@ -358,7 +358,7 @@ const indexBlock = async job => {
 			await updateTotalLockedAmounts(tokenIDLockedAmountChangeMap, dbTrx);
 
 			// Get addresses to schedule account balance updates from token module events
-			addressesToUpdateBalance = getAddressesFromTokenEvents(events);
+			addressesToUpdateBalance = await getAddressesFromTokenEvents(events);
 		}
 
 		const blockToIndex = {
@@ -636,7 +636,7 @@ const deleteIndexedBlocks = async job => {
 					await updateTotalLockedAmounts(tokenIDLockedAmountChangeMap, dbTrx);
 
 					// Get addresses to schedule account balance updates from token module events
-					addressesToUpdateBalance = getAddressesFromTokenEvents(events);
+					addressesToUpdateBalance = await getAddressesFromTokenEvents(events);
 				}
 
 				// Invalidate cached events for this block. Must be done after processing all event related calculations

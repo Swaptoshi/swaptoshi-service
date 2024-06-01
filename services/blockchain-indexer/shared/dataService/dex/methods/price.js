@@ -3,7 +3,7 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const { getTickPriceTableSchema } = require('../../../database/dynamic-schema/tickPrice');
 

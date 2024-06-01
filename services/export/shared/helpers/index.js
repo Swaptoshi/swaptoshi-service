@@ -14,9 +14,9 @@
  *
  */
 const {
-	validateLisk32Address,
+	validateKlayr32Address,
 	validatePublicKey,
-	getLisk32AddressFromPublicKey,
+	getKlayr32AddressFromPublicKey,
 	getLegacyAddress,
 } = require('./account');
 
@@ -25,9 +25,18 @@ const {
 	resolveReceivingChainID,
 	getNetworkStatus,
 	getUniqueChainIDs,
+	getBlocks,
+	getTransactions,
 } = require('./chain');
 
-const { MODULE, COMMAND, EVENT, MODULE_SUB_STORE } = require('./constants');
+const {
+	MODULE,
+	COMMAND,
+	EVENT,
+	MODULE_SUB_STORE,
+	LENGTH_ID,
+	EVENT_TOPIC_PREFIX,
+} = require('./constants');
 
 const {
 	init,
@@ -48,7 +57,7 @@ const {
 	requestAppRegistry,
 } = require('./request');
 
-const { getDaysInMilliseconds, dateFromTimestamp, timeFromTimestamp } = require('./time');
+const { getToday, getDaysInMilliseconds, dateFromTimestamp, timeFromTimestamp } = require('./time');
 
 const {
 	normalizeTransactionAmount,
@@ -57,20 +66,24 @@ const {
 } = require('./transaction');
 
 module.exports = {
-	validateLisk32Address,
+	validateKlayr32Address,
 	validatePublicKey,
-	getLisk32AddressFromPublicKey,
+	getKlayr32AddressFromPublicKey,
 	getLegacyAddress,
 
 	getCurrentChainID,
 	resolveReceivingChainID,
 	getNetworkStatus,
 	getUniqueChainIDs,
+	getBlocks,
+	getTransactions,
 
 	MODULE,
 	COMMAND,
 	EVENT,
 	MODULE_SUB_STORE,
+	LENGTH_ID,
+	EVENT_TOPIC_PREFIX,
 
 	init,
 	write,
@@ -87,6 +100,7 @@ module.exports = {
 	requestConnector,
 	requestAppRegistry,
 
+	getToday,
 	getDaysInMilliseconds,
 	dateFromTimestamp,
 	timeFromTimestamp,

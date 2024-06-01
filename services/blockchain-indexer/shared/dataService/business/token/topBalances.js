@@ -17,7 +17,7 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const config = require('../../../../config');
 const accountBalancesTableSchema = require('../../../database/schema/accountBalances');
@@ -51,11 +51,15 @@ const getTokenTopBalances = async params => {
 	if (search) {
 		params.orSearch = [
 			{
-				property: `${accountTableSchema.tableName}.name`,
+				property: `${accountBalancesTableSchema.tableName}.address`,
 				pattern: search,
 			},
 			{
 				property: `${accountTableSchema.tableName}.address`,
+				pattern: search,
+			},
+			{
+				property: `${accountTableSchema.tableName}.name`,
 				pattern: search,
 			},
 			{

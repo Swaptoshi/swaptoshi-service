@@ -3,8 +3,8 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
-const cryptography = require('@liskhq/lisk-cryptography');
+} = require('klayr-service-framework');
+const cryptography = require('@klayr/cryptography');
 
 const positionTableSchema = require('../../../database/schema/position');
 

@@ -13,7 +13,7 @@
  * Removal or modification of this copyright notice is prohibited.
  *
  */
-const { Signals } = require('lisk-service-framework');
+const { Signals } = require('klayr-service-framework');
 
 const config = require('../../config');
 
@@ -65,6 +65,7 @@ const {
 	getTotalSupply,
 	getTokenInitializationFees,
 	updateTokenInfo,
+	getTokenBalancesAtGenesis,
 } = require('./token');
 
 const {
@@ -178,7 +179,7 @@ module.exports = {
 	dryRunTransaction,
 	formatTransaction,
 
-	// Tokens
+	// Token
 	tokenHasUserAccount,
 	tokenHasEscrowAccount,
 	getTokenBalance,
@@ -187,6 +188,7 @@ module.exports = {
 	getSupportedTokens,
 	getTotalSupply,
 	getTokenInitializationFees,
+	getTokenBalancesAtGenesis,
 
 	// PoS
 	getAllPosValidators,

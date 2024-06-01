@@ -18,17 +18,17 @@ const packageJson = require('./package.json');
 const config = {};
 
 // Moleculer broker config
-config.transporter = process.env.SERVICE_BROKER || 'redis://lisk:password@127.0.0.1:6379/0';
-config.brokerTimeout = Number(process.env.SERVICE_BROKER_TIMEOUT) || 5; // in seconds
+config.transporter = process.env.SERVICE_BROKER || 'redis://klayr:password@127.0.0.1:6379/0';
+config.brokerTimeout = Number(process.env.SERVICE_BROKER_TIMEOUT) || 10; // in seconds
 
 /**
  * External endpoints
  */
 config.endpoints = {};
 config.endpoints.redis =
-	process.env.SERVICE_EXPORT_REDIS || 'redis://lisk:password@127.0.0.1:6379/3';
+	process.env.SERVICE_EXPORT_REDIS || 'redis://klayr:password@127.0.0.1:6379/3';
 config.endpoints.volatileRedis =
-	process.env.SERVICE_EXPORT_REDIS_VOLATILE || 'redis://lisk:password@127.0.0.1:6379/4';
+	process.env.SERVICE_EXPORT_REDIS_VOLATILE || 'redis://klayr:password@127.0.0.1:6379/4';
 
 // Logging
 config.log = {
@@ -78,7 +78,20 @@ config.excel.sheets = {
 config.queue = {
 	scheduleTransactionExport: {
 		name: 'ScheduleTransactionExportQueue',
-		concurrency: 50,
+		concurrency: 10,
+		options: {
+			defaultJobOptions: {
+				attempts: 5,
+				timeout: 5 * 60 * 1000, // millisecs
+				backoff: {
+					type: 'exponential',
+					delay: 1 * 60 * 1000, // millisecs
+				},
+				removeOnComplete: true,
+				removeOnFail: true,
+				stackTraceLimit: 0,
+			},
+		},
 	},
 	defaults: {
 		jobOptions: {

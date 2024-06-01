@@ -13,13 +13,10 @@
  * Removal or modification of this copyright notice is prohibited.
  *
  */
-const {
-	Exceptions: { TimeoutException },
-	Logger,
-} = require('lisk-service-framework');
-const { timeoutMessage, invokeEndpoint } = require('./client');
-
-const logger = Logger();
+const { invokeEndpoint } = require('./client');
+const { isMainchain } = require('./interoperability');
+const { getGenesisAssetByModule } = require('./genesisBlock');
+const { MODULE_NAME_TOKEN } = require('./constants/names');
 
 let escrowedAmounts;
 let supportedTokens;
@@ -27,119 +24,69 @@ let totalSupply;
 let initializationFees;
 
 const getTokenBalances = async address => {
-	try {
-		const balances = await invokeEndpoint('token_getBalances', { address });
-		return balances;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getTokenBalances'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getBalances'.\n${err.stack}`);
-		throw err;
-	}
+	const balances = await invokeEndpoint('token_getBalances', { address });
+	return balances;
 };
 
 const getTokenBalance = async ({ address, tokenID }) => {
-	try {
-		const balance = await invokeEndpoint('token_getBalance', { address, tokenID });
-		return balance;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getTokenBalance'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getBalance'.\n${err.stack}`);
-		throw err;
-	}
+	const balance = await invokeEndpoint('token_getBalance', { address, tokenID });
+	return balance;
 };
 
 const getEscrowedAmounts = async (isForceUpdate = false) => {
-	try {
-		if (isForceUpdate || !escrowedAmounts) {
-			escrowedAmounts = await invokeEndpoint('token_getEscrowedAmounts');
-		}
-		return escrowedAmounts;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getEscrowedAmounts'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getEscrowedAmounts'.\n${err.stack}`);
-		throw err;
+	if (isForceUpdate || !escrowedAmounts) {
+		escrowedAmounts = await invokeEndpoint('token_getEscrowedAmounts');
 	}
+	return escrowedAmounts;
 };
 
 const getSupportedTokens = async (isForceUpdate = false) => {
-	try {
-		if (isForceUpdate || !supportedTokens) {
-			supportedTokens = await invokeEndpoint('token_getSupportedTokens');
-		}
-		return supportedTokens;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getSupportedTokens'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getSupportedTokens'.\n${err.stack}`);
-		throw err;
+	if (isForceUpdate || !supportedTokens) {
+		supportedTokens = await invokeEndpoint('token_getSupportedTokens');
 	}
+	return supportedTokens;
 };
 
 const getTotalSupply = async (isForceUpdate = false) => {
-	try {
-		if (isForceUpdate || !totalSupply) {
-			totalSupply = await invokeEndpoint('token_getTotalSupply');
-		}
-		return totalSupply;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getTotalSupply'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getTotalSupply'.\n${err.stack}`);
-		throw err;
+	if (isForceUpdate || !totalSupply) {
+		totalSupply = await invokeEndpoint('token_getTotalSupply');
 	}
+	return totalSupply;
 };
 
 const getTokenInitializationFees = async () => {
-	try {
-		if (!initializationFees) {
-			const response = await invokeEndpoint('token_getInitializationFees');
-			if (response.error) throw new Error(response.error);
-			initializationFees = response;
-		}
-		return initializationFees;
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'getTokenInitializationFees'.");
-		}
-		logger.warn(`Error returned when invoking 'token_getInitializationFees'.\n${err.stack}`);
-		throw err;
+	if (!initializationFees) {
+		const response = await invokeEndpoint('token_getInitializationFees');
+		if (response.error) throw new Error(response.error);
+		initializationFees = response;
 	}
+	return initializationFees;
 };
 
-const hasUserAccount = async ({ address, tokenID }) => {
-	try {
-		return invokeEndpoint('token_hasUserAccount', { address, tokenID });
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'hasUserAccount'.");
-		}
-		throw err;
-	}
-};
+const hasUserAccount = async ({ address, tokenID }) =>
+	invokeEndpoint('token_hasUserAccount', { address, tokenID });
 
-const hasEscrowAccount = async ({ tokenID, escrowChainID }) => {
-	try {
-		return invokeEndpoint('token_hasEscrowAccount', { tokenID, escrowChainID });
-	} catch (err) {
-		if (err.message.includes(timeoutMessage)) {
-			throw new TimeoutException("Request timed out when calling 'hasUserAccount'.");
-		}
-		throw err;
-	}
-};
+const hasEscrowAccount = async ({ tokenID, escrowChainID }) =>
+	invokeEndpoint('token_hasEscrowAccount', { tokenID, escrowChainID });
 
 const updateTokenInfo = async () => {
 	escrowedAmounts = await getEscrowedAmounts(true);
-	supportedTokens = await getSupportedTokens(true);
+	if (!(await isMainchain()) || !supportedTokens) supportedTokens = await getSupportedTokens(true);
 	totalSupply = await getTotalSupply(true);
+};
+
+const getTokenBalancesAtGenesis = async address => {
+	const MODULE_TOKEN_SUBSTORE_USER = 'userSubstore';
+
+	const tokenModuleGenesisAssets = await getGenesisAssetByModule({
+		module: MODULE_NAME_TOKEN,
+		subStore: MODULE_TOKEN_SUBSTORE_USER,
+	});
+
+	const balancesAtGenesis = tokenModuleGenesisAssets[MODULE_TOKEN_SUBSTORE_USER];
+	const balancesByAddress = balancesAtGenesis.filter(e => e.address === address);
+
+	return balancesByAddress;
 };
 
 module.exports = {
@@ -152,4 +99,5 @@ module.exports = {
 	getTotalSupply,
 	getTokenInitializationFees,
 	updateTokenInfo,
+	getTokenBalancesAtGenesis,
 };

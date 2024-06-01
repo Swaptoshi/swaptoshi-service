@@ -1,4 +1,4 @@
-const { Logger, Queue } = require('lisk-service-framework');
+const { Logger, Queue } = require('klayr-service-framework');
 
 const config = require('../../../config');
 const { NFTStorage } = require('./instance');

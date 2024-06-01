@@ -13,7 +13,7 @@
  * Removal or modification of this copyright notice is prohibited.
  *
  */
-const { Logger, Signals } = require('lisk-service-framework');
+const { Logger, Signals } = require('klayr-service-framework');
 
 const {
 	reloadAllPendingTransactions,
@@ -82,7 +82,11 @@ module.exports = [
 					logger.error(`Error occurred when processing 'transactions.new' event:\n${err.stack}`);
 				}
 			};
+
+			const txPoolNewTransactionListener = async payload => callback(payload);
+
 			Signals.get('newBlock').add(newTransactionsListener);
+			Signals.get('txPoolNewTransaction').add(txPoolNewTransactionListener);
 		},
 	},
 	{

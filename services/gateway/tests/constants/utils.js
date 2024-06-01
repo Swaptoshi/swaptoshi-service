@@ -67,9 +67,9 @@ const requireAllJsonExpectedResponse = {
 				address: {
 					type: 'string',
 					format: 'address',
-					example: 'lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99',
+					example: 'klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99',
 					description:
-						"The Lisk Address is the human readable representation of the accounts owners' public key.\nIt is 41 character long address thats begins with `lsk`.\n",
+						"The Klayr Address is the human readable representation of the accounts owners' public key.\nIt is 41 character long address thats begins with `kly`.\n",
 				},
 				publicKey: {
 					type: 'string',
@@ -118,9 +118,9 @@ const requireAllJsonExpectedResponse = {
 				address: {
 					type: 'string',
 					format: 'address',
-					example: 'lskdwsyfmcko6mcd357446yatromr9vzgu7eb8y99',
+					example: 'klydwsyfmcko6mcd357446yatromr9vzgu7eb8y99',
 					description:
-						"The Lisk Address is the human readable representation of the accounts owners' public key.\nIt is 41 character long address thats begins with `lsk`.\n",
+						"The Klayr Address is the human readable representation of the accounts owners' public key.\nIt is 41 character long address thats begins with `kly`.\n",
 				},
 				publicKey: {
 					type: 'string',
@@ -138,14 +138,14 @@ const requireAllJsonExpectedResponse = {
 				fileName: {
 					type: 'string',
 					format: 'fileName',
-					example: 'transactions_<currentChainID>_<address>_<from>_<to>.csv',
+					example: 'transactions_<currentChainID>_<address>_<from>_<to>.xlsx',
 					description:
 						'The name of the file containing the exported account transaction history.\n',
 				},
 				fileUrl: {
 					type: 'string',
 					format: 'fileUrl',
-					example: '/api/v3/exports/transactions_<currentChainID>_<address>_<from>_<to>.csv',
+					example: '/api/v3/exports/transactions_<currentChainID>_<address>_<from>_<to>.xlsx',
 					description: 'The file URL path containing the exported account transaction history.\n',
 				},
 			},
@@ -215,12 +215,12 @@ const requireAllJsonExpectedResponse = {
 		swagger: '2.0',
 		info: {
 			title: 'Swaptoshi Service API',
-			version: '0.7.0',
+			version: '0.7.7',
 			contact: {
-				email: 'swapsatoshi@gmail.com',
+				email: 'admin@klayr.xyz',
 			},
 			description:
-				'# Swaptoshi Service API Documentation\n\nSwaptoshi Service is a middleware web application that interacts with the entire Swaptoshi ecosystem in various aspects, such as accessing blockchain data (both on-chain and off-chain information), retrieving and storing market data, and exporting account history.\n\nThe main focus of this project is to provide data to Swaptoshi blockchain users by serving them in a standardized JSON format and exposing a public RESTful API. The project is split into several smaller components (microservices) each focused on serving a single specific purpose. \n\nAs a pure backend project, it is designed to meet the requirements of front-end developers, especially Swaptoshi Interface.\n\nThe Swaptoshi Service API is compatible with RESTful guidelines. The specification below contains numerous examples of how to use the API in practice.\n\n## Endpoint Logic\n\nThe logic of the endpoints are as follows:\n- the structure is always based on `/<root_entity>/<object>/<properties>`\n\n## Responses\n\nAll responses are returned in the JSON format - `application/json`.\n\nEach API request has the following structure:\n\n```\n{\n  "data": {}, // Contains the requested data\n  "meta": {}, // Contains additional metadata, e.g. the values of `limit` and `offset`\n}\n```\n\nAnd, the error responses adhere to the following structure:\n\n```\n{\n  "error": true,\n  "message": "Not found", // Contains the error message\n}\n```',
+				'# Swaptoshi Service API Documentation\n\nSwaptoshi Service is a middleware web application that interacts with the entire Klayr ecosystem in various aspects, such as accessing blockchain data (both on-chain and off-chain information), retrieving and storing market data, and exporting account history.\n\nThe main focus of this project is to provide data to Klayr blockchain users by serving them in a standardized JSON format and exposing a public RESTful API. The project is split into several smaller components (microservices) each focused on serving a single specific purpose. \n\nAs a pure backend project, it is designed to meet the requirements of front-end developers, especially Klayr Desktop and Klayr Mobile.\n\nThe API can be accessed at `https://service.klayr.xyz`.\nIt is also possible to access the Testnet network at `https://testnet-service.klayr.xyz`.\n\nThe Swaptoshi Service API is compatible with RESTful guidelines. The specification below contains numerous examples of how to use the API in practice.\n\n## Endpoint Logic\n\nThe logic of the endpoints are as follows:\n- the structure is always based on `/<root_entity>/<object>/<properties>`\n\n## Responses\n\nAll responses are returned in the JSON format - `application/json`.\n\nEach API request has the following structure:\n\n```\n{\n  "data": {}, // Contains the requested data\n  "meta": {}, // Contains additional metadata, e.g. the values of `limit` and `offset`\n}\n```\n\nAnd, the error responses adhere to the following structure:\n\n```\n{\n  "error": true,\n  "message": "Not found", // Contains the error message\n}\n```',
 			license: {
 				name: 'GPL v3.0',
 				url: 'https://www.gnu.org/licenses/gpl-3.0.en.html',
@@ -230,7 +230,7 @@ const requireAllJsonExpectedResponse = {
 		tags: [
 			{
 				name: 'Account History Export',
-				description: 'Swaptoshi network transaction history export API.',
+				description: 'Klayr network transaction history export API.',
 			},
 		],
 		schemes: ['http', 'https'],

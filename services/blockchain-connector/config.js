@@ -28,22 +28,25 @@ const config = {
 /**
  * Inter-service message broker
  */
-config.transporter = process.env.SERVICE_BROKER || 'redis://lisk:password@127.0.0.1:6379/0';
+config.transporter = process.env.SERVICE_BROKER || 'redis://klayr:password@127.0.0.1:6379/0';
 config.brokerTimeout = Number(process.env.SERVICE_BROKER_TIMEOUT) || 10; // in seconds
 
 /**
  * External endpoints
  */
-config.endpoints.liskWs = process.env.LISK_APP_WS || 'ws://127.0.0.1:7887';
-config.endpoints.geoip = process.env.GEOIP_JSON || 'https://geoip.lisk.com/json';
+config.endpoints.klayrWs = process.env.KLAYR_APP_WS || 'ws://127.0.0.1:7887';
+config.endpoints.klayrHttp =
+	process.env.KLAYR_APP_HTTP || config.endpoints.klayrWs.replace('ws', 'http');
+config.endpoints.geoip = process.env.GEOIP_JSON || 'https://geoip.klayr.xyz/json';
 
 /**
  * API Client related settings
  */
-config.isUseLiskIPCClient = Boolean(
-	String(process.env.USE_LISK_IPC_CLIENT).toLowerCase() === 'true',
+config.isUseHttpApi = Boolean(String(process.env.USE_KLAYR_HTTP_API).toLowerCase() === 'true'); // Disabled by default
+config.isUseKlayrIPCClient = Boolean(
+	String(process.env.USE_KLAYR_IPC_CLIENT).toLowerCase() === 'true',
 );
-config.liskAppDataPath = process.env.LISK_APP_DATA_PATH || '~/.lisk/lisk-core';
+config.klayrAppDataPath = process.env.KLAYR_APP_DATA_PATH || '~/.klayr/klayr-core';
 
 /**
  * Network-related settings
@@ -52,21 +55,21 @@ config.constants.GENESIS_BLOCK_URL_DEFAULT = '';
 config.genesisBlockUrl =
 	process.env.GENESIS_BLOCK_URL || config.constants.GENESIS_BLOCK_URL_DEFAULT;
 config.networks = {
-	LISK: [
+	KLAYR: [
 		{
 			name: 'mainnet',
 			chainID: '00000000',
-			genesisBlockUrl: 'https://downloads.lisk.com/lisk/mainnet/genesis_block.json.tar.gz',
+			genesisBlockUrl: 'https://downloads.klayr.xyz/klayr/mainnet/genesis_block.json.tar.gz',
 		},
 		{
 			name: 'testnet',
 			chainID: '01000000',
-			genesisBlockUrl: 'https://downloads.lisk.com/lisk/testnet/genesis_block.json.tar.gz',
+			genesisBlockUrl: 'https://downloads.klayr.xyz/klayr/testnet/genesis_block.json.tar.gz',
 		},
 		{
 			name: 'betanet',
 			chainID: '02000000',
-			genesisBlockUrl: 'https://downloads.lisk.com/lisk/betanet/genesis_block.json.tar.gz',
+			genesisBlockUrl: 'https://downloads.klayr.xyz/klayr/betanet/genesis_block.json.tar.gz',
 		},
 	],
 };
@@ -113,17 +116,12 @@ config.job = {
 };
 
 config.apiClient = {
-	heartbeatAckMaxWaitTime: Number(process.env.HEARTBEAT_ACK_MAX_WAIT_TIME) || 1000, // in millisecs
-	aliveAssumptionTime: Number(process.env.CLIENT_ALIVE_ASSUMPTION_TIME) || 5 * 1000, // in millisecs
-	aliveAssumptionTimeBeforeGenesis: 30 * 1000,
-	wsConnectionLimit: 10,
-	instantiation: {
-		maxWaitTime: Number(process.env.CLIENT_INSTANTIATION_MAX_WAIT_TIME) || 5 * 1000, // in millisecs
-		retryInterval: Number(process.env.CLIENT_INSTANTIATION_RETRY_INTERVAL) || 1, // in millisecs
-	},
+	poolSize: Number(process.env.CLIENT_POOL_SIZE) || 10,
+	wsServerPingInterval: Number(process.env.WS_SERVER_PING_INTERVAL) || 3 * 1000, // in millisecs
+	pingIntervalBuffer: Number(process.env.WS_SERVER_PING_INTERVAL_BUFFER) || 1000, // in millisecs
 	request: {
 		maxRetries: Number(process.env.ENDPOINT_INVOKE_MAX_RETRIES) || 3,
-		retryDelay: Number(process.env.ENDPOINT_INVOKE_RETRY_DELAY) || 10, // in millisecs
+		retryDelay: Number(process.env.ENDPOINT_INVOKE_RETRY_DELAY) || 1000, // in millisecs
 	},
 };
 

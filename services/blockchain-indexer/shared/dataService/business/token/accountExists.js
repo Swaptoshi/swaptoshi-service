@@ -16,7 +16,8 @@
 const { requestConnector } = require('../../../utils/request');
 const { getAddressByName } = require('../../utils/validator');
 
-const { getLisk32AddressFromPublicKey } = require('../../../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../../../utils/account');
+const { getAvailableTokenIDs } = require('./availableIDs');
 
 const tokenHasUserAccount = async params => {
 	const response = {
@@ -26,7 +27,6 @@ const tokenHasUserAccount = async params => {
 		meta: {},
 	};
 
-	const { tokenID } = params;
 	let { address } = params;
 
 	if (!address && params.name) {
@@ -34,16 +34,33 @@ const tokenHasUserAccount = async params => {
 	}
 
 	if (!address && params.publicKey) {
-		address = getLisk32AddressFromPublicKey(params.publicKey);
+		address = getKlayr32AddressFromPublicKey(params.publicKey);
 	}
 
 	// Check existence if address found. Return false otherwise
 	if (address) {
-		const { exists: isExists } = await requestConnector('tokenHasUserAccount', {
-			address,
-			tokenID,
-		});
-		response.data.isExists = isExists;
+		const tokenIDs = [];
+
+		if (params.tokenID) {
+			tokenIDs.push(params.tokenID);
+		} else {
+			// Logic introduced to support the export microservice
+			const result = await getAvailableTokenIDs();
+			tokenIDs.push(...result.data.tokenIDs);
+		}
+
+		// eslint-disable-next-line no-restricted-syntax
+		for (const tokenID of tokenIDs) {
+			const { exists: isExists } = await requestConnector('tokenHasUserAccount', {
+				address,
+				tokenID,
+			});
+
+			if (isExists) {
+				response.data.isExists = isExists;
+				break;
+			}
+		}
 	}
 
 	return response;

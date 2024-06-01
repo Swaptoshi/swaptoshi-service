@@ -13,7 +13,7 @@
  * Removal or modification of this copyright notice is prohibited.
  *
  */
-const { Signals } = require('lisk-service-framework');
+const { Signals } = require('klayr-service-framework');
 const { requestConnector } = require('./utils/request');
 
 let genesisConfig;
@@ -140,6 +140,7 @@ const COMMAND = Object.freeze({
 	REGISTER_VALIDATOR: 'registerValidator',
 	STAKE: 'stake',
 	CHANGE_COMMISSION: 'changeCommission',
+	REPORT_MISBEHAVIOR: 'reportMisbehavior',
 	TRANSFER: 'transfer',
 	TRANSFER_CROSS_CHAIN: 'transferCrossChain',
 	REGISTER_SIDECHAIN: 'registerSidechain',
@@ -179,6 +180,7 @@ const EVENT = Object.freeze({
 	UNLOCK: 'unlock',
 	COMMAND_EXECUTION_RESULT: 'commandExecutionResult',
 	REWARD_MINTED: 'rewardMinted',
+	REWARDS_ASSIGNED: 'rewardsAssigned',
 	CCM_SEND_SUCCESS: 'ccmSendSuccess',
 	CCM_SENT_FAILED: 'ccmSentFailed',
 });

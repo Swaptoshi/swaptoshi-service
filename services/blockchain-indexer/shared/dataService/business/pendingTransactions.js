@@ -17,7 +17,8 @@ const BluebirdPromise = require('bluebird');
 const {
 	Logger,
 	Exceptions: { ValidationException },
-} = require('lisk-service-framework');
+	Signals,
+} = require('klayr-service-framework');
 
 const logger = Logger();
 
@@ -25,45 +26,48 @@ const { getCurrentChainID } = require('./interoperability/chain');
 const { normalizeTransaction } = require('./transactions');
 const { getIndexedAccountInfo } = require('../utils/account');
 const { requestConnector } = require('../../utils/request');
-const { getLisk32AddressFromPublicKey } = require('../../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../../utils/account');
+const { TRANSACTION_STATUS } = require('../../constants');
 const { indexAccountPublicKey } = require('../../indexer/accountIndex');
 
 let pendingTransactionsList = [];
 
-const getPendingTransactionsFromCore = async () => {
+const formatPendingTransaction = async transaction => {
+	const normalizedTransaction = await normalizeTransaction(transaction);
+	const senderAddress = getKlayr32AddressFromPublicKey(normalizedTransaction.senderPublicKey);
+	const account = await getIndexedAccountInfo({ address: senderAddress }, ['name']);
+
+	normalizedTransaction.sender = {
+		address: senderAddress,
+		publicKey: normalizedTransaction.senderPublicKey,
+		name: account.name || null,
+	};
+
+	if (normalizedTransaction.params.recipientAddress) {
+		const recipientAccount = await getIndexedAccountInfo(
+			{ address: normalizedTransaction.params.recipientAddress },
+			['publicKey', 'name'],
+		);
+
+		normalizedTransaction.meta = {
+			recipient: {
+				address: normalizedTransaction.params.recipientAddress,
+				publicKey: recipientAccount ? recipientAccount.publicKey : null,
+				name: recipientAccount ? recipientAccount.name : null,
+			},
+		};
+	}
+
+	indexAccountPublicKey(normalizedTransaction.senderPublicKey);
+	normalizedTransaction.executionStatus = TRANSACTION_STATUS.PENDING;
+	return normalizedTransaction;
+};
+
+const getPendingTransactionsFromNode = async () => {
 	const response = await requestConnector('getTransactionsFromPool');
 	const pendingTx = await BluebirdPromise.map(
 		response,
-		async transaction => {
-			const normalizedTransaction = await normalizeTransaction(transaction);
-			const senderAddress = getLisk32AddressFromPublicKey(normalizedTransaction.senderPublicKey);
-			const account = await getIndexedAccountInfo({ address: senderAddress }, ['name']);
-
-			normalizedTransaction.sender = {
-				address: senderAddress,
-				publicKey: normalizedTransaction.senderPublicKey,
-				name: account.name || null,
-			};
-
-			if (normalizedTransaction.params.recipientAddress) {
-				const recipientAccount = await getIndexedAccountInfo(
-					{ address: normalizedTransaction.params.recipientAddress },
-					['publicKey', 'name'],
-				);
-
-				normalizedTransaction.meta = {
-					recipient: {
-						address: normalizedTransaction.params.recipientAddress,
-						publicKey: recipientAccount ? recipientAccount.publicKey : null,
-						name: recipientAccount ? recipientAccount.name : null,
-					},
-				};
-			}
-
-			indexAccountPublicKey(normalizedTransaction.senderPublicKey);
-			normalizedTransaction.executionStatus = 'pending';
-			return normalizedTransaction;
-		},
+		async transaction => formatPendingTransaction(transaction),
 		{ concurrency: response.length },
 	);
 	return pendingTx;
@@ -71,7 +75,7 @@ const getPendingTransactionsFromCore = async () => {
 
 const loadAllPendingTransactions = async () => {
 	try {
-		pendingTransactionsList = await getPendingTransactionsFromCore();
+		pendingTransactionsList = await getPendingTransactionsFromNode();
 		logger.info(
 			`Updated pending transaction cache with ${pendingTransactionsList.length} transactions.`,
 		);
@@ -105,8 +109,6 @@ const validateParams = async params => {
 		}
 	}
 
-	if (params.sort) validatedParams.sort = params.sort;
-
 	return validatedParams;
 };
 
@@ -116,21 +118,14 @@ const getPendingTransactions = async params => {
 		meta: { total: 0 },
 	};
 
+	if ('blockID' in params || 'timestamp' in params || 'height' in params) {
+		return pendingTransactions;
+	}
+
 	const offset = Number(params.offset) || 0;
 	const limit = Number(params.limit) || 10;
 
 	const validatedParams = await validateParams(params);
-
-	const sortComparator = sortParam => {
-		const sortProp = sortParam.split(':')[0];
-		const sortOrder = sortParam.split(':')[1];
-
-		const comparator = (a, b) =>
-			sortOrder === 'asc'
-				? Number(a[sortProp] || 0) - Number(b[sortProp] || 0)
-				: Number(b[sortProp] || 0) - Number(a[sortProp] || 0);
-		return comparator;
-	};
 
 	if (pendingTransactionsList.length) {
 		// Filter according to the request params
@@ -151,14 +146,11 @@ const getPendingTransactions = async params => {
 				(!validatedParams.currentChainTransactions || !transaction.params.receivingChainID),
 		);
 
-		pendingTransactions.data = filteredPendingTxs
-			.sort(sortComparator(validatedParams.sort))
-			.slice(offset, offset + limit)
-			.map(transaction => {
-				// Set the 'executionStatus'
-				transaction.executionStatus = 'pending';
-				return transaction;
-			});
+		pendingTransactions.data = filteredPendingTxs.slice(offset, offset + limit).map(transaction => {
+			// Set the 'executionStatus'
+			transaction.executionStatus = TRANSACTION_STATUS.PENDING;
+			return transaction;
+		});
 
 		pendingTransactions.meta = {
 			count: pendingTransactions.data.length,
@@ -169,9 +161,16 @@ const getPendingTransactions = async params => {
 	return pendingTransactions;
 };
 
+const txPoolNewTransactionListener = async payload => {
+	const [transaction] = payload.data;
+	pendingTransactionsList.push(transaction);
+};
+Signals.get('txPoolNewTransaction').add(txPoolNewTransactionListener);
+
 module.exports = {
 	getPendingTransactions,
 	loadAllPendingTransactions,
+	formatPendingTransaction,
 
 	// For unit test
 	validateParams,

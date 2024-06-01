@@ -1,4 +1,4 @@
-const cryptography = require('@liskhq/lisk-cryptography');
+const cryptography = require('@klayr/cryptography');
 
 function getPoolKey(tokenA, tokenB, fee) {
 	if (tokenA === tokenB) throw new Error('same token address');

@@ -35,9 +35,9 @@ describe('getTokenTopBalances', () => {
 		// Declare constants needed for the tests
 		const count = 2;
 
-		// Mock lisk-service-framework
-		jest.mock('lisk-service-framework', () => {
-			const actual = jest.requireActual('lisk-service-framework');
+		// Mock klayr-service-framework
+		jest.mock('klayr-service-framework', () => {
+			const actual = jest.requireActual('klayr-service-framework');
 			return {
 				...actual,
 				CacheRedis: jest.fn(() => ({
@@ -119,9 +119,9 @@ describe('getTokenTopBalances', () => {
 	});
 
 	it('should throw an error when an error occurs during the find operation', async () => {
-		// Mock lisk-service-framework
-		jest.mock('lisk-service-framework', () => {
-			const actual = jest.requireActual('lisk-service-framework');
+		// Mock klayr-service-framework
+		jest.mock('klayr-service-framework', () => {
+			const actual = jest.requireActual('klayr-service-framework');
 			return {
 				...actual,
 				CacheRedis: jest.fn(() => ({
@@ -167,9 +167,9 @@ describe('getTokenTopBalances', () => {
 	});
 
 	it('should throw an error when an error occurs during the count operation', async () => {
-		// Mock lisk-service-framework
-		jest.mock('lisk-service-framework', () => {
-			const actual = jest.requireActual('lisk-service-framework');
+		// Mock klayr-service-framework
+		jest.mock('klayr-service-framework', () => {
+			const actual = jest.requireActual('klayr-service-framework');
 			return {
 				...actual,
 				CacheRedis: jest.fn(() => ({
@@ -215,9 +215,9 @@ describe('getTokenTopBalances', () => {
 	});
 
 	it('should throw an error when the params argument is null', async () => {
-		// Mock lisk-service-framework
-		jest.mock('lisk-service-framework', () => {
-			const actual = jest.requireActual('lisk-service-framework');
+		// Mock klayr-service-framework
+		jest.mock('klayr-service-framework', () => {
+			const actual = jest.requireActual('klayr-service-framework');
 			return {
 				...actual,
 				CacheRedis: jest.fn(() => ({

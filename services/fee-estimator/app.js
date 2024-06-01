@@ -14,7 +14,7 @@
  *
  */
 const path = require('path');
-const { Microservice, Logger, LoggerConfig, Signals } = require('lisk-service-framework');
+const { Microservice, Logger, LoggerConfig, Signals } = require('klayr-service-framework');
 
 const config = require('./config');
 
@@ -32,6 +32,7 @@ const app = Microservice({
 	logger: config.log,
 	events: {
 		chainNewBlock: async payload => Signals.get('newBlock').dispatch(payload),
+		chainDeleteBlock: async payload => Signals.get('deleteBlock').dispatch(payload),
 	},
 	dependencies: ['connector'],
 });

@@ -14,7 +14,7 @@
  *
  */
 const path = require('path');
-const { Microservice, Logger, LoggerConfig, Signals } = require('lisk-service-framework');
+const { Microservice, Logger, LoggerConfig, Signals } = require('klayr-service-framework');
 
 const config = require('./config');
 const packageJson = require('./package.json');
@@ -46,6 +46,10 @@ const app = Microservice({
 		systemNodeInfo: async payload => {
 			logger.debug("Received a 'systemNodeInfo' moleculer event from connecter.");
 			Signals.get('nodeInfo').dispatch(payload);
+		},
+		txpoolNewTransaction: async payload => {
+			logger.debug("Received a 'txpoolNewTransaction' moleculer event from connecter.");
+			Signals.get('txpoolNewTransaction').dispatch(payload);
 		},
 	},
 	dependencies: ['connector', 'indexer'],

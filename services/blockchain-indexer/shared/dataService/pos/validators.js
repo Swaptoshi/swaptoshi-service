@@ -14,8 +14,9 @@
  *
  */
 const BluebirdPromise = require('bluebird');
-const Transactions = require('@liskhq/lisk-transactions');
+const Transactions = require('@klayr/transactions');
 
+const { codec } = require('@klayr/codec');
 const {
 	CacheRedis,
 	Logger,
@@ -23,18 +24,19 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const business = require('../business');
 const config = require('../../../config');
 
+const { getSchemas } = require('../schemas');
 const { getLastBlock } = require('../blocks');
 const { isSubstringInArray } = require('../../utils/array');
 const { getHexAddress } = require('../utils/account');
 const { MODULE, COMMAND } = require('../../constants');
 const { sortComparator } = require('../../utils/array');
 const { parseToJSONCompatObj } = require('../../utils/parser');
-const { updateAccountInfo, getLisk32AddressFromPublicKey } = require('../../utils/account');
+const { updateAccountInfo, getKlayr32AddressFromPublicKey } = require('../../utils/account');
 
 const validatorsTableSchema = require('../../database/schema/validators');
 const { indexAccountPublicKey } = require('../../indexer/accountIndex');
@@ -78,7 +80,7 @@ const computeValidatorStatus = async () => {
 		data: { numberActiveValidators, numberStandbyValidators },
 	} = await business.getPosConstants();
 
-	const MIN_ELIGIBLE_VOTE_WEIGHT = Transactions.convertLSKToBeddows('1000');
+	const MIN_ELIGIBLE_VOTE_WEIGHT = Transactions.convertKLYToBeddows('1000');
 
 	const latestBlock = await getLastBlock();
 	const generatorsList = await business.getGenerators();
@@ -181,7 +183,7 @@ const getPosValidators = async params => {
 	const statusSet = new Set();
 
 	if (params.publicKey) {
-		const address = getLisk32AddressFromPublicKey(params.publicKey);
+		const address = getKlayr32AddressFromPublicKey(params.publicKey);
 
 		// Return empty response if user specified address and publicKey pair does not match
 		if (params.address && !params.address.split(',').includes(address)) {
@@ -265,17 +267,29 @@ const updateValidatorListEveryBlock = () => {
 		const [block] = data.data;
 		try {
 			if (block && block.transactions && Array.isArray(block.transactions)) {
-				block.transactions.forEach(tx => {
+				let includesMisbehaviorTx = false;
+
+				// eslint-disable-next-line no-restricted-syntax
+				for (const tx of block.transactions) {
 					if (tx.module === MODULE.POS) {
 						if ([COMMAND.REGISTER_VALIDATOR, COMMAND.CHANGE_COMMISSION].includes(tx.command)) {
-							updatedValidatorAddresses.push(getLisk32AddressFromPublicKey(tx.senderPublicKey));
+							updatedValidatorAddresses.push(getKlayr32AddressFromPublicKey(tx.senderPublicKey));
 						} else if (tx.command === COMMAND.STAKE) {
 							tx.params.stakes.forEach(stake =>
 								updatedValidatorAddresses.push(stake.validatorAddress),
 							);
+						} else if (tx.command === COMMAND.REPORT_MISBEHAVIOR) {
+							includesMisbehaviorTx = true;
+							const { data: schemas } = await getSchemas();
+							const blockHeaderSchema = schemas.header.schema;
+							const header = codec.decodeJSON(
+								blockHeaderSchema,
+								Buffer.from(tx.params.header1, 'hex'),
+							);
+							updatedValidatorAddresses.push(header.generatorAddress);
 						}
 					}
-				});
+				}
 
 				if (updatedValidatorAddresses.length) {
 					const updatedValidatorAccounts = await business.getPosValidators({
@@ -304,6 +318,9 @@ const updateValidatorListEveryBlock = () => {
 
 					// Rank is impacted only when a validator gets (un-)voted
 					await computeValidatorRank();
+
+					// Validator status changes only when gets punished/banned
+					if (includesMisbehaviorTx) await computeValidatorStatus();
 				}
 
 				// Update validator cache with generatedBlocks and rewards

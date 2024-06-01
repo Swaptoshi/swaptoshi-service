@@ -58,10 +58,11 @@ module.exports = [
 		name: 'token.account.exists',
 		controller: tokenHasUserAccount,
 		params: {
-			address: { optional: true, type: 'string', pattern: regex.ADDRESS_LISK32 },
+			address: { optional: true, type: 'string', pattern: regex.ADDRESS_KLAYR32 },
 			publicKey: { optional: true, type: 'string', pattern: regex.PUBLIC_KEY },
 			name: { optional: true, type: 'string', pattern: regex.NAME },
-			tokenID: { optional: false, type: 'string', pattern: regex.TOKEN_ID },
+			// Set tokenID as optional in indexer because export microservice needs it to be optional. Should remain mandatory everywhere else.
+			tokenID: { optional: true, type: 'string', pattern: regex.TOKEN_ID },
 		},
 	},
 	{

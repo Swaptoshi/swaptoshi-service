@@ -119,7 +119,7 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 		[EVENT_NAME_TOKEN_URI_CREATED]: ['transactionID', 'senderAddress'],
 		[EVENT_NAME_COLLECT_POSITION]: ['transactionID', 'poolAddress', 'recipientAddress'],
 		[EVENT_NAME_TOKEN_URI_DESTROYED]: ['transactionID', 'poolAddress', 'senderAddress'],
-		[EVENT_NAME_TOKEN_REGISTERED]: ['transactionID'],
+		[EVENT_NAME_TOKEN_REGISTERED]: ['transactionID', 'tokenID'],
 	},
 	[MODULE_NAME_NFT]: {
 		[EVENT_NAME_NFT_TRANSFER]: ['transactionID', 'senderAddress', 'recipientAddress'],

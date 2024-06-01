@@ -1,4 +1,4 @@
-const { Logger } = require('lisk-service-framework');
+const { Logger } = require('klayr-service-framework');
 const fs = require('fs');
 
 const path = require('path');

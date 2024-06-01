@@ -15,12 +15,12 @@
  */
 const {
 	math: { q96 },
-} = require('@liskhq/lisk-utils');
+} = require('@klayr/utils');
 const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const config = require('../../../config');
 const { MAX_COMMISSION } = require('../../constants');
@@ -75,6 +75,7 @@ const calcSelfStakeReward = async (generatorAddress, blockReward, commissionAmou
 			{ amount: BigInt('0') },
 		);
 
+		// Return commission as 0 if total stake is 0. Skip further calculations to avoid division by zero
 		if (totalStakes <= BigInt('0')) {
 			return BigInt('0');
 		}

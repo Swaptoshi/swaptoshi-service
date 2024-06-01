@@ -2,7 +2,7 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 const Redis = require('ioredis');
 const { requestMarket } = require('../../utils/request');
 

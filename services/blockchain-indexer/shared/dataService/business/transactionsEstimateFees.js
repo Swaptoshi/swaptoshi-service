@@ -16,15 +16,15 @@
 const _ = require('lodash');
 const {
 	utils: { getRandomBytes },
-} = require('@liskhq/lisk-cryptography');
+} = require('@klayr/cryptography');
 
-const { validator } = require('@liskhq/lisk-validator');
+const { validator } = require('@klayr/validator');
 
 const {
 	HTTP,
 	Exceptions: { ValidationException },
 	Logger,
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 
 const {
 	resolveMainchainServiceURL,
@@ -45,7 +45,7 @@ const {
 	CCM_SENT_FAILED_ERROR_MESSAGE,
 } = require('../../constants');
 
-const { getLisk32AddressFromPublicKey } = require('../../utils/account');
+const { getKlayr32AddressFromPublicKey } = require('../../utils/account');
 const { parseToJSONCompatObj, parseInputBySchema } = require('../../utils/parser');
 const { requestConnector } = require('../../utils/request');
 const config = require('../../../config');
@@ -315,18 +315,12 @@ const validateTransactionParams = async transaction => {
 	}
 
 	if (transaction.params.tokenID) {
-		const senderAddress = getLisk32AddressFromPublicKey(transaction.senderPublicKey);
-		const {
-			data: { extraCommandFees },
-		} = await getTokenConstants();
+		const senderAddress = getKlayr32AddressFromPublicKey(transaction.senderPublicKey);
 		const {
 			data: [balanceInfo],
 		} = await getTokenBalances({ address: senderAddress, tokenID: transaction.params.tokenID });
 
-		if (
-			BigInt(balanceInfo.availableBalance) <
-			BigInt(transaction.params.amount) + BigInt(extraCommandFees.userAccountInitializationFee)
-		) {
+		if (BigInt(balanceInfo.availableBalance) < BigInt(transaction.params.amount)) {
 			throw new ValidationException(
 				`${senderAddress} has insufficient balance for ${transaction.params.tokenID} to send the transaction.`,
 			);
@@ -372,7 +366,7 @@ const estimateTransactionFees = async params => {
 		meta: {},
 	};
 
-	const senderAddress = getLisk32AddressFromPublicKey(params.transaction.senderPublicKey);
+	const senderAddress = getKlayr32AddressFromPublicKey(params.transaction.senderPublicKey);
 	const feeEstimatePerByte = getFeeEstimates();
 
 	// Validate if the sender has balance for transaction fee

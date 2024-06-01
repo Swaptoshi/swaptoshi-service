@@ -1,29 +1,29 @@
 {
-	"name": "lisk-service-framework",
-	"version": "1.6.11",
-	"description": "Lisk Service Framework",
+	"name": "klayr-service-framework",
+	"version": "1.6.15",
+	"description": "Klayr Service Framework",
 	"keywords": [
-		"lisk",
+		"klayr",
 		"blockchain"
 	],
-	"homepage": "https://github.com/LiskHQ/lisk-service",
+	"homepage": "https://github.com/klayrHQ/klayr-service",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:LiskHQ/lisk-service.git"
+		"url": "git@github.com:klayrHQ/klayr-service.git"
 	},
 	"bugs": {
-		"url": "https://github.com/LiskHQ/lisk-service/issues"
+		"url": "https://github.com/klayrHQ/klayr-service/issues"
 	},
-	"author": "Lisk Foundation <admin@lisk.com>, lightcurve GmbH <admin@lightcurve.io>",
+	"author": "Klayr Holding <admin@klayr.xyz>, Lisk Foundation <admin@lisk.com>, lightcurve GmbH <admin@lightcurve.io>",
 	"license": "Apache-2.0",
 	"private": true,
 	"main": "index.js",
 	"engines": {
-		"node": ">=18.16 <=18",
+		"node": ">=18.20.2 <=18",
 		"npm": ">=8.5.0"
 	},
 	"scripts": {
-		"release:github": "npm pack && mv lisk-service-framework-$npm_package_version.tgz ./dist/lisk-service-framework-$npm_package_version.tgz",
+		"release:github": "npm pack && mv klayr-service-framework-$npm_package_version.tgz ./dist/klayr-service-framework-$npm_package_version.tgz",
 		"test:unit": "./node_modules/.bin/jest --config=tests/unit.config.js --detectOpenHandles  --forceExit",
 		"test:functional": "./node_modules/.bin/jest --config=tests/functional.config.js --detectOpenHandles --runInBand --forceExit"
 	},
@@ -48,7 +48,7 @@
 		"moleculer": "^0.14.21",
 		"moleculer-web": "^0.10.4",
 		"moment": "^2.29.4",
-		"mysql2": "^3.5.2",
+		"mysql2": "^3.9.7",
 		"nats": "^1.4.12",
 		"node-cron": "^2.0.3",
 		"prettyjson": "^1.2.1",

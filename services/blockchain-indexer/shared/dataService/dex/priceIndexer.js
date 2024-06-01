@@ -4,7 +4,7 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
+} = require('klayr-service-framework');
 const BluebirdPromise = require('bluebird');
 
 const config = require('../../../config');

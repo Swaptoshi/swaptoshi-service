@@ -16,7 +16,7 @@
 const MessageQueue = require('bull');
 const BluebirdPromise = require('bluebird');
 
-const { Logger } = require('lisk-service-framework');
+const { Logger } = require('klayr-service-framework');
 
 const logger = Logger();
 
@@ -98,7 +98,7 @@ const waitForGenesisBlockIndexing = (resolve, reject) =>
 			const jobCount = await getLiveIndexingJobCount();
 			if (jobCount >= 1) {
 				logger.info(
-					`Genesis block indexing is still in progress. Waiting for ${REFRESH_INTERVAL}ms to re-check the genesis block indexing status.`,
+					`Genesis block indexing still in progress. Waiting for ${REFRESH_INTERVAL}ms to re-check the genesis block indexing status.`,
 				);
 				intervalID = setInterval(
 					waitForGenesisBlockIndexing.bind(null, resolve, reject),

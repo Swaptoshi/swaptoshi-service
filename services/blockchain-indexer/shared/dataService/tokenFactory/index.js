@@ -4,8 +4,8 @@ const {
 	DB: {
 		MySQL: { getTableInstance },
 	},
-} = require('lisk-service-framework');
-const { codec } = require('@liskhq/lisk-codec');
+} = require('klayr-service-framework');
+const { codec } = require('@klayr/codec');
 const IPFSHash = require('ipfs-only-hash');
 
 const config = require('../../../config');
