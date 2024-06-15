@@ -20,7 +20,7 @@
 	"baseSymbol": {
 		"name": "base",
 		"in": "query",
-		"description": "Base token symbol, ex: XSW",
+		"description": "Base token symbol, ex: SWX",
 		"type": "string"
 	},
 	"quoteSymbol": {
