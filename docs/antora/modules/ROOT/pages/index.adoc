@@ -250,11 +250,11 @@ The Gateway service provides the following APIs, which all users of Klayr Servic
 // ----
 // ## Required
 // # The local Lisk Core node WebSocket API port
-// export LISK_APP_WS="ws://host.docker.internal:7667"
+// export KLAYR_APP_WS="ws://host.docker.internal:7667"
 // ----
 
 // When running a node inside of a Docker container, the variable needs to refer to the container as shown below:
-// `LISK_APP_WS="ws://<your_docker_container>:7667"`.
+// `KLAYR_APP_WS="ws://<your_docker_container>:7667"`.
 
 // For more information, the configuration options are described here in the {url_service_config}[Lisk Service Configuration Reference^], which may also be helpful with regard to PM2-based installations.
 

@@ -81,10 +81,10 @@ module.exports = {
 			env: {
 				// --- Remember to set the properties below
 				SERVICE_BROKER: 'redis://lisk:password@127.0.0.1:6379/0',
-				LISK_APP_WS: 'ws://127.0.0.1:7887',
+				KLAYR_APP_WS: 'ws://127.0.0.1:7887',
 				GEOIP_JSON: 'https://geoip.lisk.com/json',
-				// USE_LISK_IPC_CLIENT: true,
-				// LISK_APP_DATA_PATH: '~/.lisk/lisk-core',
+				// USE_KLAYR_IPC_CLIENT: true,
+				// KLAYR_APP_DATA_PATH: '~/.lisk/lisk-core',
 				ENABLE_TESTING_MODE: true,
 			},
 		},

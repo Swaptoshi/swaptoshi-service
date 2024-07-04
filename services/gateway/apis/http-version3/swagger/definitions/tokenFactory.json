@@ -149,7 +149,7 @@
 							"type": "array",
 							"items": {
 								"type": "string",
-								"example": "LISK",
+								"example": "KLAYR",
 								"description": "Human friendly aliases for the denomination unit"
 							}
 						}

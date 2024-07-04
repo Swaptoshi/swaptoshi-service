@@ -1,6 +1,6 @@
 MYSQL_PORT = 3306;
 REDIS_PORT = 6381;
-LISK_CORE_WS_PORT = 7887;
+KLAYR_CORE_WS_PORT = 7887;
 SERVICE_BROKER_PORT = 4222;
 
 def checkOpenPort(nPort) {
@@ -46,7 +46,7 @@ pipeline {
 	environment {
 		ENABLE_HTTP_API='http-status,http-version3,http-exports'
 		ENABLE_WS_API='rpc-v3,rpc-test,blockchain'
-		LISK_APP_WS='ws://host.docker.internal:7887'
+		KLAYR_APP_WS='ws://host.docker.internal:7887'
 		ENABLE_TESTING_MODE='true'
     }
 	stages {
@@ -108,7 +108,7 @@ pipeline {
 							pm2 flush
 							rm -rf ~/.lisk/
 							lisk-core blockchain:import jenkins/lisk-core/snapshots/blockchain.tar.gz
-							LISK_CONFIG_FILE=$PWD/jenkins/lisk-core/config/config.json pm2 start jenkins/lisk-core/pm2.config.json
+							KLAYR_CONFIG_FILE=$PWD/jenkins/lisk-core/config/config.json pm2 start jenkins/lisk-core/pm2.config.json
 						'''
 					}
 					sleep(5)
