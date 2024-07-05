@@ -35,6 +35,7 @@ const expireMiliseconds = config.ttl.binance;
 const symbolMap = {
 	KLY_BTC: 'LSKBTC',
 	KLY_ETH: 'LSKETH',
+	KLY_USD: 'LSKUSDT',
 
 	BTC_EUR: 'BTCEUR',
 	BTC_GBP: 'BTCGBP',

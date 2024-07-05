@@ -32,7 +32,7 @@ const expireMiliseconds = config.ttl.bittrex;
 const bittrexCache = CacheRedis('bittrex', config.endpoints.redis);
 
 const symbolMap = {
-	KLY_BTC: 'KLY-BTC',
+	KLY_BTC: 'LSK-BTC',
 	BTC_USD: 'BTC-USD',
 	BTC_EUR: 'BTC-EUR',
 };
