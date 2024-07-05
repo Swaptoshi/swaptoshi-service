@@ -132,8 +132,8 @@ const EVENT_NAME_FEE_CONVERTED = 'feeConverted';
 
 // Liquid POS
 const MODULE_NAME_LIQUID_POS = 'liquidPos';
-const EVENT_NAME_LST_MINT = 'lstMint';
-const EVENT_NAME_LST_BURN = 'lstBurn';
+const EVENT_NAME_LST_MINT = 'liquidStakingTokenMint';
+const EVENT_NAME_LST_BURN = 'liquidStakingTokenBurn';
 
 module.exports = {
 	MODULE_NAME_DEX,
