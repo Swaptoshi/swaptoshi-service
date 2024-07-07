@@ -93,13 +93,23 @@ const generateSparklineBuffer = async ({ base, quote, interval, limit, start, en
 	const image = canvasRenderService.renderToBufferSync(configuration);
 
 	let svgString = image.toString();
+
+	// Replace black stroke colors with the current color in both formats
 	svgString = svgString.replace(
 		/stroke:rgb\s*\(\s*0%\s*,\s*0%\s*,\s*0%\s*\)|stroke:rgb\s*\(0%,0%,0%\)/g,
 		'stroke:currentColor',
 	);
-	svgString = svgString.replace(/stroke-opacity:"?\d+(\.\d{1,32})?"?;/g, '');
-	svgString = svgString.replace(/width="(\d+)pt"/g, 'width="$1"');
-	svgString = svgString.replace(/height="(\d+)pt"/g, 'height="$1"');
+	svgString = svgString.replace(
+		/stroke\s*=\s*"rgb\s*\(\s*0%\s*,\s*0%\s*,\s*0%\s*\)"/g,
+		'stroke="currentColor"',
+	);
+
+	// Remove stroke-opacity attributes in both formats
+	svgString = svgString.replace(/stroke-opacity:"?\d+(\.\d{1,32})?"?;?/g, '');
+	svgString = svgString.replace(/stroke-opacity\s*=\s*"?\d+(\.\d{1,32})?"?/g, '');
+
+	svgString = svgString.replace(/width\s*=\s*"(\d+)pt"/g, 'width="$1"');
+	svgString = svgString.replace(/height\s*=\s*"(\d+)pt"/g, 'height="$1"');
 
 	return Buffer.from(svgString).toString('hex');
 };
