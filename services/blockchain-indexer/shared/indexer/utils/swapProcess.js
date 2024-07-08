@@ -129,8 +129,13 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 				`Added new items to Volume index: ${event.data.amount0} ${token0.symbol} & ${event.data.amount1} ${token1.symbol} on pool ${event.topics[1]}`,
 			);
 
-			const updatedPrice = getPriceAtTick(event.data.tick);
-			const updatedPriceInverse = getPriceAtTick(event.data.tick, true);
+			const updatedPrice = getPriceAtTick(event.data.tick, token0.decimal, token1.decimal);
+			const updatedPriceInverse = getPriceAtTick(
+				event.data.tick,
+				token0.decimal,
+				token1.decimal,
+				true,
+			);
 			await poolTable.update({
 				where: {
 					token0: poolKey.token0,
@@ -257,8 +262,13 @@ const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 				`Removed items from Volume index: ${event.data.amount0} ${token0.symbol} & ${event.data.amount1} ${token1.symbol} on pool ${event.topics[1]}`,
 			);
 
-			const revertedPrice = getPriceAtTick(event.data.tickBefore);
-			const revertedPriceInverse = getPriceAtTick(event.data.tickBefore, true);
+			const revertedPrice = getPriceAtTick(event.data.tickBefore, token0.decimal, token1.decimal);
+			const revertedPriceInverse = getPriceAtTick(
+				event.data.tickBefore,
+				token0.decimal,
+				token1.decimal,
+				true,
+			);
 
 			await poolTable.update({
 				where: {

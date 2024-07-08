@@ -22,13 +22,9 @@ const getPoolTicks = async params => {
 	const query = `
 		SELECT 
 			t.tick,
-			ptp.price0,
-			ptp.price1, 
 			t.liquidityNet 
 		FROM 
 			tick AS t
-		LEFT JOIN
-			pool_tick_price AS ptp ON ptp.tick = t.tick
 		WHERE 
 			t.poolAddress = '${poolAddress}' 
 		ORDER BY 

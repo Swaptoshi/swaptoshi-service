@@ -80,15 +80,11 @@ const getPositions = async params => {
             pos.owner,
             pos.collectionId,
             pos.tickLower,
-			low.price0 AS priceLower,
             pos.tickUpper,
-			up.price0 AS priceUpper,
             pos.liquidity,
 			pos.tokenURI,
 			CASE WHEN pos.liquidity = 0 THEN 0 WHEN pos.tickLower < pool.tick AND pool.tick < pos.tickUpper THEN 2 ELSE 1 END AS status
         FROM position pos
-			LEFT JOIN pool_tick_price AS up ON up.tick = pos.tickUpper
-			LEFT JOIN pool_tick_price AS low ON low.tick = pos.tickLower
             LEFT JOIN pool ON pool.inverted = false AND pool.collectionId = pos.collectionId
 			LEFT JOIN registered_dex_token t0 ON t0.tokenId = pool.token0
 			LEFT JOIN registered_dex_token t1 ON t1.tokenId = pool.token1

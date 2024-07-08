@@ -115,6 +115,27 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const feeHex = Buffer.allocUnsafe(3);
 	feeHex.writeUIntBE(parseInt(poolCreatedEventData.data.fee, 10), 0, 3);
 
+	let [token0] = await tokenTable.find({ tokenId: poolCreatedEventData.data.token0, limit: 1 }, [
+		'decimal',
+	]);
+	let [token1] = await tokenTable.find({ tokenId: poolCreatedEventData.data.token1, limit: 1 }, [
+		'decimal',
+	]);
+
+	if (!token0) {
+		const token = tokenRegisteredEvent.find(
+			t => t.data.tokenId === poolCreatedEventData.data.token0,
+		);
+		if (token) token0 = token;
+	}
+
+	if (!token1) {
+		const token = tokenRegisteredEvent.find(
+			t => t.data.tokenId === poolCreatedEventData.data.token1,
+		);
+		if (token) token1 = token;
+	}
+
 	await poolTable.upsert(
 		{
 			token0: poolCreatedEventData.data.token0,
@@ -128,7 +149,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tickSpacing: poolCreatedEventData.data.tickSpacing,
 			tick: poolInitializedEventData.data.tick,
 			liquidity: 0,
-			price: getPriceAtTick(poolInitializedEventData.data.tick),
+			price: getPriceAtTick(poolInitializedEventData.data.tick, token0.decimal, token1.decimal),
 		},
 		dbTrx,
 	);
@@ -146,7 +167,12 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 			tickSpacing: poolCreatedEventData.data.tickSpacing,
 			tick: poolInitializedEventData.data.tick,
 			liquidity: 0,
-			price: getPriceAtTick(poolInitializedEventData.data.tick, true),
+			price: getPriceAtTick(
+				poolInitializedEventData.data.tick,
+				token0.decimal,
+				token1.decimal,
+				true,
+			),
 		},
 		dbTrx,
 	);

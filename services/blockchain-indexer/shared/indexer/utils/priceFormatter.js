@@ -16,8 +16,11 @@ function decodePriceSqrt(
 	inverse = false,
 	disableFiveSigPrevision = false,
 ) {
-	const ratioNum = ((parseInt(sqrtRatioX96.toString(), 10) / 2 ** 96) ** 2).toPrecision(5);
-	let ratio = new Decimal(ratioNum.toString());
+	const ratioNum = new Decimal(sqrtRatioX96)
+		.div(2 ** 96)
+		.pow(2)
+		.toPrecision(5);
+	let ratio = new Decimal(ratioNum);
 
 	if (decimalsToken1 < decimalsToken0) {
 		ratio = ratio.mul(TEN.pow(decimalsToken0 - decimalsToken1).toString());

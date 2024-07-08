@@ -17,7 +17,6 @@ const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickP
 const { getOhlcTableSchema } = require('../../database/dynamic-schema/ohlc');
 const { getKLYUSDPriceAtTimestamp, getKLYUSDCandles } = require('./klyPrices');
 const { getPrice, transformTickToOhlc, getLastPrice } = require('./priceQuoter');
-const { initializeTickTable } = require('./tickIndexer');
 
 const logger = Logger();
 
@@ -76,6 +75,19 @@ const indexTokenLastPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 	const tokenTable = await getDEXTokenTable();
 	const [base] = await tokenTable.find({ tokenId: baseTokenId, limit: 1 }, ['symbol']);
 	const [quote] = await tokenTable.find({ tokenId: quoteTokenId, limit: 1 }, ['symbol']);
+
+	if (!base) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${baseTokenId} is not registered on DEX`,
+		);
+		return;
+	}
+	if (!quote) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${quoteTokenId} is not registered on DEX`,
+		);
+		return;
+	}
 	const pair = `${base.symbol}${quote.symbol}`.toLowerCase();
 
 	const time = normalizeBlockTime(timestamp, LAST_PRICE_INTERVAL);
@@ -86,6 +98,19 @@ const indexTokenTickPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 	const tokenTable = await getDEXTokenTable();
 	const [base] = await tokenTable.find({ tokenId: baseTokenId, limit: 1 }, ['symbol']);
 	const [quote] = await tokenTable.find({ tokenId: quoteTokenId, limit: 1 }, ['symbol']);
+
+	if (!base) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${baseTokenId} is not registered on DEX`,
+		);
+		return;
+	}
+	if (!quote) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${quoteTokenId} is not registered on DEX`,
+		);
+		return;
+	}
 	const pair = `${base.symbol}${quote.symbol}`.toLowerCase();
 
 	const time = normalizeBlockTime(timestamp, TICK_TIMEFRAME);
@@ -104,6 +129,19 @@ const indexTokenOhlcPrice = async (timestamp, baseTokenId, quoteTokenId, dbTrx) 
 	const tokenTable = await getDEXTokenTable();
 	const [base] = await tokenTable.find({ tokenId: baseTokenId, limit: 1 }, ['symbol']);
 	const [quote] = await tokenTable.find({ tokenId: quoteTokenId, limit: 1 }, ['symbol']);
+
+	if (!base) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${baseTokenId} is not registered on DEX`,
+		);
+		return;
+	}
+	if (!quote) {
+		logger.warn(
+			`Aborting indexTokenTickPrice because token ${quoteTokenId} is not registered on DEX`,
+		);
+		return;
+	}
 	const pair = `${base.symbol}${quote.symbol}`.toLowerCase();
 
 	await BluebirdPromise.map(
@@ -346,8 +384,6 @@ const addGenesisPriceIndex = async (block, dbTrx) => {
 			indexPreviousKLYUSDOhlcPriceQueue.add({ from: ohlcFrom, to: ohlcTo, timeframe, dbTrx });
 		}
 	});
-
-	await initializeTickTable(dbTrx);
 };
 
 const deletePriceIndex = async (block, dbTrx) => {
