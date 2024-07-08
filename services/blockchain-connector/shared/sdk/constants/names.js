@@ -109,6 +109,8 @@ const EVENT_NAME_TOKEN_REGISTERED = 'tokenRegistered';
 // NFT
 const MODULE_NAME_NFT = 'nft';
 const EVENT_NAME_NFT_TRANSFER = 'transfer';
+const EVENT_NAME_NFT_CREATE = 'create';
+const EVENT_NAME_NFT_SET_ATTRIBUTE = 'setAttributes';
 
 // Token Factory
 const MODULE_NAME_TOKEN_FACTORY = 'tokenFactory';
@@ -178,6 +180,8 @@ module.exports = {
 
 	MODULE_NAME_NFT,
 	EVENT_NAME_NFT_TRANSFER,
+	EVENT_NAME_NFT_CREATE,
+	EVENT_NAME_NFT_SET_ATTRIBUTE,
 
 	MODULE_NAME_AUTH,
 	EVENT_NAME_INVALID_SIGNATURE,

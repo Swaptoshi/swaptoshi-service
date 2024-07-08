@@ -115,6 +115,8 @@ const {
 	EVENT_NAME_ICO_TREASURIFY,
 	EVENT_NAME_ICO_WITHDRAW,
 	EVENT_NAME_VESTED_TOKEN_LOCKED,
+	EVENT_NAME_NFT_CREATE,
+	EVENT_NAME_NFT_SET_ATTRIBUTE,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
@@ -140,6 +142,8 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 	},
 	[MODULE_NAME_NFT]: {
 		[EVENT_NAME_NFT_TRANSFER]: ['transactionID', 'senderAddress', 'recipientAddress'],
+		[EVENT_NAME_NFT_CREATE]: ['transactionID', 'recipientAddress', 'NFTID'],
+		[EVENT_NAME_NFT_SET_ATTRIBUTE]: ['transactionID', 'NFTID'],
 	},
 	[MODULE_NAME_TOKEN_FACTORY]: {
 		[EVENT_NAME_AIRDROP_CREATED]: ['transactionID', 'providerAddress'],
