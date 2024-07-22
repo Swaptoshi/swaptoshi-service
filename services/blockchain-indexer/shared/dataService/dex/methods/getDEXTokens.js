@@ -43,7 +43,7 @@ const getDEXTokens = async params => {
 						COALESCE(tm.tokenID, tf.tokenID) AS tokenId,
 						COALESCE(rdt.symbol, tf.symbol) AS symbol,
 						COALESCE(tm.tokenName, tf.tokenName) AS tokenName,
-						COALESCE(rdt.logo, tf.logoPng) AS logo,
+						COALESCE(rdt.logo, tf.logoSvg) AS logo,
 						COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`
 					FROM registered_dex_token AS rdt
 					LEFT JOIN token_metadata AS tm ON rdt.tokenId = tm.tokenID
@@ -121,7 +121,7 @@ const getDEXTokens = async params => {
 							rdt.tokenId, 
 							COALESCE(rdt.symbol, tf.symbol) AS symbol, 
 							COALESCE(tm.tokenName, tf.tokenName) AS tokenName, 
-							COALESCE(rdt.logo, tf.logoPng) AS logo, 
+							COALESCE(rdt.logo, tf.logoSvg) AS logo, 
 							COALESCE(rdt.decimal, tf.decimal) AS \`decimal\`, 
 							vol.volume AS volume, 
 							vol.volume * pr.priceUSD AS volumeUSD, 

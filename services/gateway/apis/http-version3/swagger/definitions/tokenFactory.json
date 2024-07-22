@@ -1,35 +1,4 @@
 {
-	"TokenFactoryCreate": {
-		"type": "object",
-		"required": ["message", "transactionID", "logoCid"],
-		"properties": {
-			"message": {
-				"type": "string",
-				"description": "transaction execution result",
-				"example": "Transaction payload was successfully passed to the network node."
-			},
-			"transactionID": {
-				"type": "string",
-				"description": "executed transaction uid",
-				"example": "29e308c1aa47a6abd512a4fa30c6c6b84d2d69782b3baf1357e483cd89bb8396"
-			},
-			"logoCid": {
-				"type": "string",
-				"description": "content id (CID) of logo uploaded to IPFS",
-				"example": "bafkreiadkscgioffsslry4mfg7sb3x7scspgiax4ie6k2z6zsvhhe76tvu"
-			}
-		}
-	},
-	"TokenFactoryCreateWithEnvelope": {
-		"type": "object",
-		"required": ["data", "meta"],
-		"properties": {
-			"data": {
-				"$ref": "#/definitions/TokenFactoryCreate"
-			},
-			"meta": { "$ref": "#/definitions/emptyObject" }
-		}
-	},
 	"TokenFactoryToken": {
 		"type": "object",
 		"required": ["tokenID", "owner", "supply", "price", "priceUSD", "marketCap", "marketCapUSD"],

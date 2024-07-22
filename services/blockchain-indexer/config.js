@@ -62,6 +62,7 @@ config.endpoints.mysql =
 config.endpoints.mysqlReplica =
 	process.env.SERVICE_INDEXER_MYSQL_READ_REPLICA || config.endpoints.mysql;
 config.endpoints.mainchainServiceUrl = process.env.MAINCHAIN_SERVICE_URL; // For custom deployments
+config.serviceUrl = process.env.SERVICE_URL || 'https://service.swaptoshi.com';
 config.endpoints.klayrStatic = process.env.KLAYR_STATIC || 'https://static-data.klayr.xyz';
 
 /**
@@ -259,7 +260,8 @@ config.invokeAllowedMethods = process.env.INVOKE_ALLOWED_METHODS
 			'interoperability_getMinimumMessageFee',
 			'txpool_getTransactionsFromPool',
 			'pos_getExpectedSharedRewards',
-			'dex'
+			'dex',
+			'tokenFactory',
 	  ];
 
 module.exports = config;

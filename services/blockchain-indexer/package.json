@@ -50,7 +50,8 @@
 		"nft.storage": "^7.1.1",
 		"patch-package": "^8.0.0",
 		"postinstall-postinstall": "^2.1.0",
-		"require-all": "^3.0.0"
+		"require-all": "^3.0.0",
+		"svg2img": "^1.0.0-beta.2"
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.14.0",

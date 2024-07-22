@@ -1,5 +1,4 @@
 const {
-	createTokenFactory,
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
@@ -7,15 +6,6 @@ const {
 } = require('../controllers/tokenFactory');
 
 module.exports = [
-	{
-		name: 'factory.create',
-		controller: createTokenFactory,
-		params: {
-			transaction: { optional: false, type: 'string' },
-			metadata: { optional: false, type: 'string' },
-			logo: { optional: false, type: 'string' },
-		},
-	},
 	{
 		name: 'factory.token.meta',
 		controller: getTokenFactoriesMeta,

@@ -31,6 +31,8 @@ const requestConnector = async (method, params) => requestRpc('connector', metho
 
 const requestAppRegistry = async (method, params) => requestRpc('app-registry', method, params);
 
+const requestGateway = async (method, params) => requestRpc('gateway', method, params);
+
 const requestFeeEstimator = async (method, params) => requestRpc('fees', method, params);
 
 const requestMarket = async (method, params) => requestRpc('market', method, params);
@@ -41,4 +43,5 @@ module.exports = {
 	requestAppRegistry,
 	requestFeeEstimator,
 	requestMarket,
+	requestGateway,
 };

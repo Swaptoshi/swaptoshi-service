@@ -19,11 +19,14 @@ const {
 		MySQL: { getTableInstance },
 	},
 } = require('klayr-service-framework');
+const { codec } = require('@klayr/codec');
+const svg2img = require('svg2img');
 const config = require('../../../../config');
 
 const { TRANSACTION_STATUS } = require('../../../constants');
 
 const MYSQL_ENDPOINT = config.endpoints.mysql;
+const SERVICE_URL = config.serviceUrl;
 
 const logger = Logger();
 
@@ -33,7 +36,10 @@ const {
 	MODULE_NAME_TOKEN_FACTORY,
 	EVENT_NAME_TOKEN_FACTORY_CREATED,
 } = require('../../../../../blockchain-connector/shared/sdk/constants/names');
-const { requestAppRegistry } = require('../../../utils/request');
+const { requestAppRegistry, requestGateway } = require('../../../utils/request');
+const { factoryMetadataSchema } = require('../../../dataService/tokenFactory/schema');
+const { invokeEndpoint } = require('../../../dataService/invoke');
+const { isTokenAvailable } = require('../../../dataService');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
 
@@ -52,7 +58,33 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	const tokenFactory = await getTokenFactoryTable();
+
+	const onChainFactoryData = await invokeEndpoint({
+		endpoint: 'tokenFactory_getFactory',
+		params: {
+			tokenId: factoryCreatedEvent.data.tokenId,
+		},
+	});
+
+	const metadataAttribute = onChainFactoryData.data.attributesArray.find(t => t.key === 'metadata');
+	if (!metadataAttribute) {
+		logger.debug(`No metadata attribute found on factoryCreate transaction with tx id: ${tx.id}`);
+		return;
+	}
+
+	const metadata = codec.decode(
+		factoryMetadataSchema,
+		Buffer.from(metadataAttribute.attributes, 'hex'),
+	);
+
+	const available = await isTokenAvailable(metadata);
+	if (!available.data.available) {
+		logger.debug('tokenName and/or symbol is not available');
+		return;
+	}
+
 	const param = {
+		...metadata,
 		transactionId: tx.id,
 		tokenID: factoryCreatedEvent.data.tokenId,
 		owner: factoryCreatedEvent.data.ownerAddress,
@@ -76,7 +108,36 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 		if (decimal !== undefined) param.decimal = decimal.decimals;
 	}
 
+	const svgAttribute = onChainFactoryData.data.attributesArray.find(t => t.key === 'svg');
+	if (!svgAttribute) {
+		logger.debug(`No svg attribute found on factoryCreate transaction with tx id: ${tx.id}`);
+		return;
+	}
+
+	let pngBuffer = '';
+
+	svg2img(
+		Buffer.from(svgAttribute.attributes, 'hex').toString('utf8'),
+		{ format: 'png', resvg: { fitTo: { mode: 'width', value: 64 } } },
+		(error, buffer) => (pngBuffer = buffer),
+	);
+
+	await requestGateway('logo.save', {
+		fileName: `${metadata.symbol.toLowerCase()}.svg`,
+		data: svgAttribute.attributes.toString('hex'),
+	});
+
+	await requestGateway('logo.save', {
+		fileName: `${metadata.symbol.toLowerCase()}.png`,
+		data: pngBuffer.toString('hex'),
+	});
+
+	param.logoSvg = `${SERVICE_URL}/static/img/logo/${metadata.symbol.toLowerCase()}.svg`;
+	param.logoPng = `${SERVICE_URL}/static/img/logo/${metadata.symbol.toLowerCase()}.png`;
+
 	await tokenFactory.upsert(param, dbTrx);
+
+	logger.debug(`Added token logo and metadata to index: ${factoryCreatedEvent.data.tokenId}`);
 
 	logger.debug(`Added tokenId to index: ${factoryCreatedEvent.data.tokenId}`);
 
@@ -96,6 +157,18 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	const tokenFactory = await getTokenFactoryTable();
+
+	const metadata = await tokenFactory.find({ transactionId: tx.id }, ['symbol']);
+
+	if (metadata) {
+		await requestGateway('logo.delete', {
+			fileName: `${metadata.symbol.toLowerCase()}.svg`,
+		});
+
+		await requestGateway('logo.delete', {
+			fileName: `${metadata.symbol.toLowerCase()}.png`,
+		});
+	}
 
 	await tokenFactory.deleteByPrimaryKey(tx.id, dbTrx);
 

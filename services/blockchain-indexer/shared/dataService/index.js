@@ -140,7 +140,6 @@ const {
 	generateSparklineBuffer,
 } = require('./dex');
 const {
-	createTokenFactory,
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,
@@ -179,7 +178,6 @@ module.exports = {
 	generateSparklineBuffer,
 
 	// TokenFactory
-	createTokenFactory,
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,

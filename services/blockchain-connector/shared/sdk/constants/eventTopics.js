@@ -117,6 +117,7 @@ const {
 	EVENT_NAME_VESTED_TOKEN_LOCKED,
 	EVENT_NAME_NFT_CREATE,
 	EVENT_NAME_NFT_SET_ATTRIBUTE,
+	EVENT_NAME_TOKEN_FACTORY_SET_ATTRIBUTES,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
@@ -150,6 +151,7 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 		[EVENT_NAME_AIRDROP_DISTRIBUTED]: ['transactionID', 'recipientAddress', 'senderAddress'],
 		[EVENT_NAME_AIRDROP_RECIPIENTS_CHANGED]: ['transactionID', 'recipientAddress'],
 		[EVENT_NAME_TOKEN_FACTORY_CREATED]: ['transactionID', 'senderAddress'],
+		[EVENT_NAME_TOKEN_FACTORY_SET_ATTRIBUTES]: ['transactionID', 'ownerAddress', 'tokenID'],
 		[EVENT_NAME_TOKEN_FACTORY_OWNER_CHANGED]: ['transactionID', 'ownerAddress'],
 		[EVENT_NAME_ICO_CREATED]: ['transactionID', 'providerAddress'],
 		[EVENT_NAME_ICO_DEPOSIT]: ['transactionID', 'poolAddress'],

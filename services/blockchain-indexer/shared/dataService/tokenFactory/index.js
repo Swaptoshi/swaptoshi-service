@@ -5,8 +5,6 @@ const {
 		MySQL: { getTableInstance },
 	},
 } = require('klayr-service-framework');
-const { codec } = require('@klayr/codec');
-const IPFSHash = require('ipfs-only-hash');
 
 const config = require('../../../config');
 
@@ -16,8 +14,6 @@ const tokenFactoryTableSchema = require('../../database/schema/token_factory');
 const dexTokenTableSchema = require('../../database/schema/registeredDexToken');
 
 const { requestAppRegistry, requestConnector } = require('../../utils/request');
-const { factoryMetadataSchema } = require('./schema');
-const { nftStorageUploadQueue } = require('../nft.storage');
 const { getKLYUSDLastPrice } = require('../dex');
 const { parseQueryResult } = require('../../utils/query');
 
@@ -62,49 +58,6 @@ const isTokenAvailable = async params => {
 	if (dexTokenExist) available = false;
 
 	response.data.available = available;
-
-	return response;
-};
-
-const createTokenFactory = async params => {
-	const response = {
-		data: {},
-		meta: {},
-	};
-
-	const tokenFactoryTable = await getTokenFactoryTable();
-	const metadata = codec.decode(factoryMetadataSchema, Buffer.from(params.metadata, 'hex'));
-
-	const available = await isTokenAvailable(metadata);
-	if (!available.data.available) throw new Error('tokenName and/or symbol is not available');
-
-	const dryRunResult = await requestConnector('dryRunTransaction', {
-		transaction: params.transaction,
-	});
-	if (dryRunResult.result === -1) {
-		throw new Error(dryRunResult.errorMessage);
-	}
-
-	const transactionPost = await requestConnector('postTransaction', {
-		transaction: params.transaction,
-	});
-	response.data.message = 'Transaction payload was successfully passed to the network node.';
-	response.data.transactionID = transactionPost.transactionId;
-
-	nftStorageUploadQueue.add({ data: Buffer.from(params.logo, 'base64').toString('hex') });
-	const logoCID = await IPFSHash.of(Buffer.from(params.logo, 'base64'), {
-		cidVersion: 1,
-		rawLeaves: true,
-	});
-	const logoPng = `https://${logoCID}.ipfs.nftstorage.link/`;
-	response.data.logoCid = logoCID;
-
-	await tokenFactoryTable.upsert({
-		transactionId: transactionPost.transactionId,
-		...metadata,
-		symbol: metadata.symbol.toUpperCase(),
-		logoPng,
-	});
 
 	return response;
 };
@@ -251,7 +204,7 @@ const getTokenFactoriesMeta = async params => {
 		baseDenom: f.baseDenom ? f.baseDenom.toLowerCase() : '',
 		logo: {
 			png: f.logoPng ? f.logoPng : '',
-			svg: '',
+			svg: f.logoSvg ? f.logoSvg : '',
 		},
 	}));
 	const registryData = params.registry
@@ -280,7 +233,6 @@ const getTokenFactoriesMeta = async params => {
 };
 
 module.exports = {
-	createTokenFactory,
 	getTokenFactoriesMeta,
 	getFactoryStatistics,
 	getTokenFactories,

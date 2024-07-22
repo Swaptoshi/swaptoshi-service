@@ -75,7 +75,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 					tokenIds: event.data.tokenId,
 					registry: true,
 				});
-				if (tokenMetadata.data.length > 0) logo = tokenMetadata.data[0].logo.png;
+				if (tokenMetadata.data.length > 0) logo = tokenMetadata.data[0].logo.svg;
 			} catch (err) {
 				logger.debug(`Error retrieving tokenMetadata: ${err.message}`);
 			}

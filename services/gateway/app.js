@@ -39,6 +39,7 @@ const { definition: feesDefinition } = require('./sources/version3/fees');
 const { definition: generatorsDefinition } = require('./sources/version3/generators');
 const { definition: transactionsDefinition } = require('./sources/version3/transactions');
 const { definition: indexStatusUpdateDefinition } = require('./sources/version3/indexStatus');
+const { setLogo, deleteLogo } = require('./shared/logo');
 
 const { host, port } = config;
 
@@ -101,6 +102,19 @@ tempApp.run().then(async () => {
 			}
 		},
 		actions: {
+			'logo.save': {
+				params: {
+					fileName: { optional: false, type: 'string' },
+					data: { optional: false, type: 'string' },
+				},
+				handler: ctx => setLogo(ctx.params),
+			},
+			'logo.delete': {
+				params: {
+					fileName: { optional: false, type: 'string' },
+				},
+				handler: ctx => deleteLogo(ctx.params),
+			},
 			ready() {
 				return getReady();
 			},

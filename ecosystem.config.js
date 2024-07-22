@@ -199,7 +199,7 @@ module.exports = {
 				// JOB_SCHEDULE_DELETE_FINALIZED_CCU_METADATA: '0 2 * * *',
 				// JOB_INTERVAL_TRIGGER_ACCOUNT_UPDATES: 0,
 				// JOB_SCHEDULE_TRIGGER_ACCOUNT_UPDATES: '*/15 * * * *',
-				// INVOKE_ALLOWED_METHODS: 'dynamicReward_getExpectedValidatorRewards,token_hasUserAccount,token_getInitializationFees,interoperability_getMinimumMessageFee,txpool_getTransactionsFromPool,pos_getExpectedSharedRewards,dex',
+				// INVOKE_ALLOWED_METHODS: 'dynamicReward_getExpectedValidatorRewards,token_hasUserAccount,token_getInitializationFees,interoperability_getMinimumMessageFee,txpool_getTransactionsFromPool,pos_getExpectedSharedRewards,dex,tokenFactory',
 				// DEX_PRICE_INDEXING_MAX_ROUTE_LENGTH: 5,
 				// DEX_INDEX_TOKEN_CONCURRENCY: 8,
 				// DEX_LAST_PRICE_UPDATE_INTERVAL: '5m',

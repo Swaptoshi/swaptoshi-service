@@ -12,6 +12,7 @@ module.exports = {
 		baseDenom: { type: 'string', null: true, default: null },
 		symbol: { type: 'string', null: true, default: null },
 		logoPng: { type: 'string', null: true, default: null },
+		logoSvg: { type: 'string', null: true, default: null },
 	},
 	indexes: {
 		transactionId: { type: 'key' },
