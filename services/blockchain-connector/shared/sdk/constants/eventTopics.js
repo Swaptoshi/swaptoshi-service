@@ -118,6 +118,9 @@ const {
 	EVENT_NAME_NFT_CREATE,
 	EVENT_NAME_NFT_SET_ATTRIBUTE,
 	EVENT_NAME_TOKEN_FACTORY_SET_ATTRIBUTES,
+	MODULE_NAME_GOVERNANCE,
+	EVENT_NAME_TREASURY_BLOCK_REWARD_TAX,
+	EVENT_NAME_TREASURY_MINT,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
@@ -168,6 +171,10 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 	[MODULE_NAME_LIQUID_POS]: {
 		[EVENT_NAME_LST_BURN]: ['transactionID', 'senderAddress'],
 		[EVENT_NAME_LST_MINT]: ['transactionID', 'senderAddress'],
+	},
+	[MODULE_NAME_GOVERNANCE]: {
+		[EVENT_NAME_TREASURY_BLOCK_REWARD_TAX]: ['defaultTopic', 'treasuryAddress', 'generatorAddress'],
+		[EVENT_NAME_TREASURY_MINT]: ['defaultTopic', 'treasuryAddress'],
 	},
 	[MODULE_NAME_AUTH]: {
 		[EVENT_NAME_MULTISIGNATURE_REGISTERED]: ['transactionID', 'senderAddress'],
