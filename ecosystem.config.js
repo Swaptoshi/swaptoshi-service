@@ -176,6 +176,7 @@ module.exports = {
 				// SERVICE_LOG_GELF: false,
 				// SERVICE_LOG_FILE: false,
 				// DOCKER_HOST: 'local',
+				// SERVICE_URL: 'https://service.swaptoshi.com',
 				// MAINCHAIN_SERVICE_URL: 'https://service.lisk.com',
 				// KLAYR_STATIC: 'https://static-data.lisk.com',
 				// DEVNET_MAINCHAIN_URL: 'http://devnet-service.liskdev.net:9901',
