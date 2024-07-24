@@ -89,7 +89,6 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 
 	const param = {
 		...metadata,
-		transactionId: tx.id,
 		tokenID: factoryCreatedEvent.data.tokenId,
 		owner: factoryCreatedEvent.data.ownerAddress,
 		supply: factoryCreatedEvent.data.amount,
@@ -179,7 +178,9 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const tokenFactory = await getTokenFactoryTable();
 	const tokenMetadataTable = await getTokenMetadataTable();
 
-	const metadata = await tokenFactory.find({ transactionId: tx.id }, ['symbol']);
+	const metadata = await tokenFactory.find({ tokenID: factoryCreatedEvent.data.tokenId }, [
+		'symbol',
+	]);
 
 	if (metadata) {
 		await requestGateway('logo.delete', {
@@ -191,7 +192,7 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 		});
 	}
 
-	await tokenFactory.deleteByPrimaryKey(tx.id, dbTrx);
+	await tokenFactory.deleteByPrimaryKey(factoryCreatedEvent.data.tokenId, dbTrx);
 	await tokenMetadataTable.deleteByPrimaryKey(factoryCreatedEvent.data.tokenId, dbTrx);
 
 	logger.debug(`Removed tokenId from index: ${factoryCreatedEvent.data.tokenId}`);
