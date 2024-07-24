@@ -28,6 +28,7 @@ module.exports = {
 		offset: '=,number',
 		limit: '=,number',
 		sort: '=,string',
+		noFactory: '=,boolean',
 	},
 	definition: {
 		data: ['data', blockchainAppTokenMetadata],

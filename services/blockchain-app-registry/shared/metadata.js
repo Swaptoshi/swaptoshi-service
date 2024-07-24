@@ -313,7 +313,9 @@ const getBlockchainAppsTokenMetadata = async params => {
 		});
 	}
 
-	const tokensResultSet = await tokenMetadataTable.find(params, [
+	const { noFactory, ...restParams } = params;
+
+	const tokensResultSet = await tokenMetadataTable.find(restParams, [
 		'network',
 		'tokenID',
 		'chainName',
@@ -359,11 +361,20 @@ const getBlockchainAppsTokenMetadata = async params => {
 		{ concurrency: uniqueChainList.length },
 	);
 
-	const total = await tokenMetadataTable.count(params);
+	const total = await tokenMetadataTable.count(restParams);
+
+	if (!noFactory) {
+		const factoryData = await requestIndexer('factory.token.meta', {
+			tokenIds: [...resultTokenIDSet].join(','),
+		});
+		factoryData.data.forEach(token => {
+			blockchainAppsTokenMetadata.data.push(token);
+		});
+	}
 
 	blockchainAppsTokenMetadata.meta = {
 		count: blockchainAppsTokenMetadata.data.length,
-		offset: params.offset,
+		offset: restParams.offset,
 		total,
 	};
 

@@ -48,6 +48,11 @@ module.exports = {
 			enum: ['chainName:asc', 'chainName:desc'],
 			default: 'chainName:asc',
 		},
+		noFactory: {
+			optional: true,
+			type: 'boolean',
+			default: false,
+		},
 	},
 	get schema() {
 		const blockchainAppsTokenMetadataSchema = {};

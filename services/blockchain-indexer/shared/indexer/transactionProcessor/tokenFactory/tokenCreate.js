@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /*
  * LiskHQ/lisk-service
  * Copyright © 2022 Lisk Foundation
@@ -31,6 +32,7 @@ const SERVICE_URL = config.serviceUrl;
 const logger = Logger();
 
 const tokenFactoryTableSchema = require('../../../database/schema/token_factory');
+const tokenMetadataTableSchema = require('../../../database/schema/token_metadata');
 const { parseSingleEvent } = require('../../utils/events');
 const {
 	MODULE_NAME_TOKEN_FACTORY,
@@ -42,6 +44,7 @@ const { invokeEndpoint } = require('../../../dataService/invoke');
 const { isTokenAvailable } = require('../../../dataService');
 
 const getTokenFactoryTable = () => getTableInstance(tokenFactoryTableSchema, MYSQL_ENDPOINT);
+const getTokenMetadataTable = () => getTableInstance(tokenMetadataTableSchema, MYSQL_ENDPOINT);
 
 // Declare and export the following command specific constants
 const COMMAND_NAME = 'tokenCreate';
@@ -58,6 +61,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	const tokenFactory = await getTokenFactoryTable();
+	const tokenMetadataTable = await getTokenMetadataTable();
 
 	const onChainFactoryData = await invokeEndpoint({
 		endpoint: 'tokenFactory_getFactory',
@@ -136,6 +140,22 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	param.logoPng = `${SERVICE_URL}/static/img/logo/${metadata.symbol.toLowerCase()}.png`;
 
 	await tokenFactory.upsert(param, dbTrx);
+	await tokenMetadataTable.upsert(
+		{
+			chainName: 'swaptoshi',
+			network:
+				factoryCreatedEvent.data.tokenId.slice(0, 2) === '00'
+					? 'mainnet'
+					: factoryCreatedEvent.data.tokenId.slice(0, 2) === '01'
+					? 'testnet'
+					: factoryCreatedEvent.data.tokenId.slice(0, 2) === '04'
+					? 'devnet'
+					: 'unknown',
+			tokenName: metadata.tokenName,
+			tokenID: factoryCreatedEvent.data.tokenId,
+		},
+		dbTrx,
+	);
 
 	logger.debug(`Added token logo and metadata to index: ${factoryCreatedEvent.data.tokenId}`);
 
@@ -157,6 +177,7 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	);
 
 	const tokenFactory = await getTokenFactoryTable();
+	const tokenMetadataTable = await getTokenMetadataTable();
 
 	const metadata = await tokenFactory.find({ transactionId: tx.id }, ['symbol']);
 
@@ -171,6 +192,7 @@ const revertTransaction = async (blockHeader, tx, events, dbTrx) => {
 	}
 
 	await tokenFactory.deleteByPrimaryKey(tx.id, dbTrx);
+	await tokenMetadataTable.deleteByPrimaryKey(factoryCreatedEvent.data.tokenId, dbTrx);
 
 	logger.debug(`Removed tokenId from index: ${factoryCreatedEvent.data.tokenId}`);
 

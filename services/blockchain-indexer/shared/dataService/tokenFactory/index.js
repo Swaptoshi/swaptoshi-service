@@ -175,7 +175,7 @@ const getTokenFactoriesMeta = async params => {
 
 	const factoryData = parseQueryResult(await tokenFactoryTable.rawQuery(query)).map(f => ({
 		chainID: nodeInfo.chainID,
-		chainName: 'swaptoshi_sidechain',
+		chainName: 'swaptoshi',
 		tokenID: f.tokenID,
 		tokenName: f.tokenName || '',
 		networkType:
