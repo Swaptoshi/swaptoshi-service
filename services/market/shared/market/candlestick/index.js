@@ -3,7 +3,7 @@ const { getCandleStickCoinex } = require('./coinex');
 
 const getCandleStick = async params => {
 	let ret;
-	const promises = [getCandleStickBitrue, getCandleStickCoinex];
+	const promises = [getCandleStickCoinex, getCandleStickBitrue];
 
 	// eslint-disable-next-line no-restricted-syntax
 	for (const method of promises) {
