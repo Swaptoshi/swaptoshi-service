@@ -4,7 +4,6 @@ const {
 		MySQL: { getTableInstance },
 	},
 } = require('klayr-service-framework');
-const cryptography = require('@klayr/cryptography');
 
 const positionTableSchema = require('../../../database/schema/position');
 
@@ -125,9 +124,7 @@ const getPositionValue = async params => {
 	const value = await invokeEndpoint({
 		endpoint: 'dex_getPosition',
 		params: {
-			poolAddress: cryptography.address
-				.getAddressFromKlayr32Address(position.poolAddress)
-				.toString('hex'),
+			poolAddress: position.poolAddress,
 			tokenId: index.toString(),
 		},
 	});

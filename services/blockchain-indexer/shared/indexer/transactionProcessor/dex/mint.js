@@ -95,7 +95,7 @@ const applyTransaction = async (blockHeader, tx, events, dbTrx) => {
 	const metadata = await invokeEndpoint({
 		endpoint: 'dex_getMetadata',
 		params: {
-			poolAddress: computePoolAddress(poolKey).toString('hex'),
+			poolAddress: getKlayr32AddressFromHexAddress(computePoolAddress(poolKey)),
 			tokenId: tokenIndex.toString(),
 		},
 	});
