@@ -1,11 +1,9 @@
-const { getCandleStickBinance } = require('./binance');
-const { getCandleStickBitget } = require('./bitget');
 const { getCandleStickBitrue } = require('./bitrue');
+const { getCandleStickCoinex } = require('./coinex');
 
 const getCandleStick = async params => {
 	let ret;
-	// TODO: right now the price is mocked to LSKUSD
-	const promises = [getCandleStickBinance, getCandleStickBitget, getCandleStickBitrue];
+	const promises = [getCandleStickBitrue, getCandleStickCoinex];
 
 	// eslint-disable-next-line no-restricted-syntax
 	for (const method of promises) {

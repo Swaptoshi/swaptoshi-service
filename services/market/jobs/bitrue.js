@@ -19,14 +19,14 @@ const {
 } = require('klayr-service-framework');
 
 const config = require('../config');
-const { reload } = require('../shared/market/sources/bittrex');
+const { reload } = require('../shared/market/sources/bitrue');
 
 const logger = Logger();
 
 const reloadMarketPrices = async () =>
 	reload().catch(err => {
 		if (err instanceof ServiceUnavailableException) {
-			logger.warn('Unable to fetch market prices from Bittrex right now. Will retry later.');
+			logger.warn('Unable to fetch market prices from Bitrue right now. Will retry later.');
 			return;
 		}
 		throw err;
@@ -34,16 +34,16 @@ const reloadMarketPrices = async () =>
 
 module.exports = [
 	{
-		name: 'prices.retrieve.bittrex',
-		description: 'Fetches up-to-date market prices from Bittrex',
-		interval: config.job.refreshPricesBittrex.interval,
-		schedule: config.job.refreshPricesBittrex.schedule,
+		name: 'prices.retrieve.bitrue',
+		description: 'Fetches up-to-date market prices from Bitrue.',
+		interval: config.job.refreshPricesBitrue.interval,
+		schedule: config.job.refreshPricesBitrue.schedule,
 		init: async () => {
-			logger.debug('Initializing market prices from Bittrex.');
+			logger.debug('Initializing market prices from Bitrue.');
 			await reloadMarketPrices();
 		},
 		controller: async () => {
-			logger.debug('Job scheduled to update prices from Bittrex.');
+			logger.debug('Job scheduled to update prices from Bitrue.');
 			await reloadMarketPrices();
 		},
 	},

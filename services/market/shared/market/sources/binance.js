@@ -31,12 +31,7 @@ const binanceCache = CacheRedis('binance_prices', config.endpoints.redis);
 const { apiEndpoint, allowRefreshAfter } = config.market.sources.binance;
 const expireMiliseconds = config.ttl.binance;
 
-// TODO: change to KLYBTC & KLYETH when market is ready
 const symbolMap = {
-	KLY_BTC: 'LSKBTC',
-	KLY_ETH: 'LSKETH',
-	KLY_USD: 'LSKUSDT',
-
 	BTC_EUR: 'BTCEUR',
 	BTC_GBP: 'BTCGBP',
 	BTC_RUB: 'BTCRUB',

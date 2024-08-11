@@ -20,9 +20,8 @@ const { Logger, CacheRedis } = require('klayr-service-framework');
 const config = require('../../config');
 
 const binance = require('./sources/binance');
-const bittrex = require('./sources/bittrex');
+const bitrue = require('./sources/bitrue');
 const exchangeratesapi = require('./sources/exchangeratesapi');
-const kraken = require('./sources/kraken');
 const { formatCalculatedRate } = require('../utils/priceUpdater');
 
 const pricesCache = CacheRedis('market_prices', config.endpoints.redis);
@@ -34,9 +33,8 @@ let isWarnMessageDisplayed = false;
 
 const getRawPricesBySource = async () => ({
 	binance: await binance.getFromCache(),
-	bittrex: await bittrex.getFromCache(),
+	bitrue: await bitrue.getFromCache(),
 	exchangeratesapi: await exchangeratesapi.getFromCache(),
-	kraken: await kraken.getFromCache(),
 });
 
 const calcTargetPairPrices = (rawPricesBySource, targetPairings = targetPairs) => {
