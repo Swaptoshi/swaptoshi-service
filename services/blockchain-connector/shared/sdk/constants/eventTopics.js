@@ -118,9 +118,22 @@ const {
 	EVENT_NAME_NFT_CREATE,
 	EVENT_NAME_NFT_SET_ATTRIBUTE,
 	EVENT_NAME_TOKEN_FACTORY_SET_ATTRIBUTES,
+
 	MODULE_NAME_GOVERNANCE,
 	EVENT_NAME_TREASURY_BLOCK_REWARD_TAX,
 	EVENT_NAME_TREASURY_MINT,
+	EVENT_NAME_CONFIG_UPDATED,
+	EVENT_NAME_DELEGATED_VOTE_REVOKED,
+	EVENT_NAME_PROPOSAL_ACTIVE,
+	EVENT_NAME_PROPOSAL_CREATED,
+	EVENT_NAME_PROPOSAL_EXECUTED,
+	EVENT_NAME_PROPOSAL_OUTCOME,
+	EVENT_NAME_PROPOSAL_QUORUM_CHECKED,
+	EVENT_NAME_PROPOSAL_SET_ATTRIBUTES,
+	EVENT_NAME_PROPOSAL_VOTED,
+	EVENT_NAME_VOTE_BOOSTED,
+	EVENT_NAME_VOTE_CHANGED,
+	EVENT_NAME_VOTE_DELEGATED,
 } = require('./names');
 
 const COMMAND_EXECUTION_RESULT_TOPICS = ['transactionID'];
@@ -175,6 +188,18 @@ const EVENT_TOPIC_MAPPINGS_BY_MODULE = {
 	[MODULE_NAME_GOVERNANCE]: {
 		[EVENT_NAME_TREASURY_BLOCK_REWARD_TAX]: ['defaultTopic', 'treasuryAddress', 'generatorAddress'],
 		[EVENT_NAME_TREASURY_MINT]: ['defaultTopic', 'treasuryAddress'],
+		[EVENT_NAME_CONFIG_UPDATED]: ['defaultTopic', 'storePrefix'],
+		[EVENT_NAME_DELEGATED_VOTE_REVOKED]: ['defaultTopic', 'senderAddress', 'delegateeAddress'],
+		[EVENT_NAME_PROPOSAL_ACTIVE]: ['defaultTopic', 'authorAddress'],
+		[EVENT_NAME_PROPOSAL_CREATED]: ['defaultTopic', 'senderAddress'],
+		[EVENT_NAME_PROPOSAL_EXECUTED]: ['defaultTopic', 'authorAddress'],
+		[EVENT_NAME_PROPOSAL_OUTCOME]: ['defaultTopic', 'authorAddress'],
+		[EVENT_NAME_PROPOSAL_QUORUM_CHECKED]: ['defaultTopic', 'authorAddress'],
+		[EVENT_NAME_PROPOSAL_SET_ATTRIBUTES]: ['defaultTopic', 'authorAddress'],
+		[EVENT_NAME_PROPOSAL_VOTED]: ['defaultTopic', 'senderAddress'],
+		[EVENT_NAME_VOTE_BOOSTED]: ['defaultTopic', 'senderAddress'],
+		[EVENT_NAME_VOTE_CHANGED]: ['defaultTopic', 'senderAddress'],
+		[EVENT_NAME_VOTE_DELEGATED]: ['defaultTopic', 'senderAddress', 'delegateeAddress'],
 	},
 	[MODULE_NAME_AUTH]: {
 		[EVENT_NAME_MULTISIGNATURE_REGISTERED]: ['transactionID', 'senderAddress'],
