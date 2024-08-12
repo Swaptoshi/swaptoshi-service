@@ -363,7 +363,7 @@ const getBlockchainAppsTokenMetadata = async params => {
 
 	const total = await tokenMetadataTable.count(restParams);
 
-	if (!noFactory) {
+	if (!noFactory && resultTokenIDSet.size > 0) {
 		const factoryData = await requestIndexer('factory.token.meta', {
 			tokenIds: [...resultTokenIDSet].join(','),
 		});
