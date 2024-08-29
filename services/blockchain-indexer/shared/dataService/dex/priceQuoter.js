@@ -108,11 +108,12 @@ const getWeightedPrice = async (token0, token1, dbTrx) => {
 };
 
 // eslint-disable-next-line default-param-last
-const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
+const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1, dbTrx) => {
 	if (typeof from !== 'string' || from.length !== 16) throw new Error('invalid from');
 	if (typeof to !== 'string' || to.length !== 16) throw new Error('invalid to');
 	if (typeof maxRecursion !== 'number') throw new Error('invalid maxRecursion');
 	if (typeof limit !== 'number') throw new Error('invalid limit');
+	if (typeof minLiquidity !== 'number') throw new Error('invalid minLiquidity');
 
 	const poolTable = await getPoolTable();
 	const query = `
@@ -121,12 +122,14 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
           token0 AS node,
           token1 AS nextNode,
           fee AS totalFee,
+          liquidity AS totalLiquidity,
           1 AS depth,
           CONCAT(token0, feeHex, token1) AS path
         FROM
           ${poolTableSchema.tableName}
         WHERE
           token0 = '${from}'
+          AND liquidity >= ${minLiquidity}
       
         UNION ALL
       
@@ -134,6 +137,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
           sp.nextNode AS node,
           t.token1 AS nextNode,
           sp.totalFee + t.fee AS totalFee,
+          sp.totalLiquidity + t.liquidity AS totalLiquidity,
           sp.depth + 1 AS depth,
           CONCAT(sp.path, t.feeHex, t.token1) AS path
         FROM
@@ -142,16 +146,20 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, dbTrx) => {
           ShortestPath sp ON t.token0 = sp.nextNode
         WHERE
           sp.depth < ${maxRecursion}
+          AND t.liquidity >= ${minLiquidity}
       )
       SELECT
         totalFee,
-        path
+        path,
+        totalLiquidity
       FROM
         ShortestPath
       WHERE
         nextNode = '${to}'
+        AND totalLiquidity >= ${minLiquidity}
       ORDER BY
-        totalFee
+        totalLiquidity DESC,
+        totalFee ASC
       LIMIT ${limit}`;
 	const route = parseQueryResult(await poolTable.rawQuery(query, dbTrx));
 	return route;
@@ -163,7 +171,7 @@ const getPrice = async (base, quote, dbTrx) => {
 
 	const _quote = quote === usdTokenId ? await getKLYTokenID() : quote;
 
-	const route = await getRoute(base, _quote, MAX_RECURSION, 1, dbTrx);
+	const route = await getRoute(base, _quote, MAX_RECURSION, 1, 1, dbTrx);
 	if (route.length === 0) return 0;
 	let _path = route[0].path;
 
