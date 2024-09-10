@@ -151,6 +151,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
       SELECT
         totalFee,
         path,
+		depth,
         totalLiquidity
       FROM
         ShortestPath
@@ -158,6 +159,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
         nextNode = '${to}'
         AND totalLiquidity >= ${minLiquidity}
       ORDER BY
+	  	depth ASC,
         totalLiquidity DESC,
         totalFee ASC
       LIMIT ${limit}`;
