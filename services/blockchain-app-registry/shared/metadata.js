@@ -234,7 +234,10 @@ const getBlockchainAppsMetadata = async params => {
 				const blockchainApp = await requestIndexer('blockchain.apps', {
 					chainID: appMeta.chainID,
 				});
-				appMeta.status = blockchainApp ? blockchainApp[0].data.status : APP_STATUS.DEFAULT;
+				appMeta.status =
+					blockchainApp && blockchainApp.length > 0
+						? blockchainApp[0].data.status
+						: APP_STATUS.DEFAULT;
 			}
 
 			return appMeta;
