@@ -67,7 +67,7 @@ const scheduleAddressesBalanceUpdate = async addressTokens => {
 
 const getAddressesFromTokenEvents = async events => {
 	const addressTokensToUpdate = [];
-	const tokenModuleEvents = events.filter(event => event.module === MODULE.TOKEN);
+	const tokenModuleEvents = events.filter(event => event && event.module === MODULE.TOKEN);
 
 	// eslint-disable-next-line no-restricted-syntax
 	for (const event of tokenModuleEvents) {

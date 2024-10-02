@@ -55,7 +55,7 @@ const getEventsInfoToIndex = (block, events) => {
 	};
 
 	events.forEach((event, eventIndex) => {
-		if (event.topics) {
+		if (event && event.topics) {
 			const eventInfo = {
 				id: event.id,
 				name: event.name,
@@ -161,6 +161,7 @@ const deleteEventStrTillHeight = async toHeight => {
 const parseSingleEvent = (events, module, event, topic) => {
 	const singleEvent = events.find(
 		t =>
+			t &&
 			t.module === module &&
 			t.name === event &&
 			(topic !== undefined ? t.topics.includes(EVENT_TOPIC_PREFIX.TX_ID.concat(topic)) : true),
@@ -171,6 +172,7 @@ const parseSingleEvent = (events, module, event, topic) => {
 const parseEvents = (events, module, event, topic) => {
 	const eventItem = events.filter(
 		t =>
+			t &&
 			t.module === module &&
 			t.name === event &&
 			(topic !== undefined ? t.topics.includes(EVENT_TOPIC_PREFIX.TX_ID.concat(topic)) : true),

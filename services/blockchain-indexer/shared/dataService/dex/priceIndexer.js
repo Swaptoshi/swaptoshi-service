@@ -389,14 +389,14 @@ const addGenesisPriceIndex = async (block, dbTrx) => {
 const deletePriceIndex = async (block, dbTrx) => {
 	const tokenTable = await getDEXTokenTable();
 	const klyTokenId = await getKLYTokenID();
-	const registeredDexTokens = await tokenTable.find({}, ['symbol']);
+	const registeredDexTokens = await tokenTable.find({}, ['tokenId', 'symbol']);
 
 	await BluebirdPromise.map(
 		registeredDexTokens,
 		async token => {
 			await deleteTickPriceIndex(token, block, dbTrx);
 			await deleteOhlcPriceIndex(token, block, dbTrx);
-			await indexTokenLastPrice(block.timestamp, token, klyTokenId, dbTrx);
+			await indexTokenLastPrice(block.timestamp, token.tokenId, klyTokenId, dbTrx);
 		},
 		{ concurrency: INDEX_TOKEN_CONCURRENCY },
 	);

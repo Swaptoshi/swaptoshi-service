@@ -567,6 +567,7 @@ const deleteIndexedBlocks = async job => {
 					// Update block generator's rewards
 					const blockRewardEvent = events.find(
 						e =>
+							e &&
 							[MODULE.REWARD, MODULE.DYNAMIC_REWARD].includes(e.module) &&
 							e.name === EVENT.REWARD_MINTED,
 					);
@@ -617,20 +618,22 @@ const deleteIndexedBlocks = async job => {
 					// Calculate locked amount change and update in key_value_store table for affected tokens
 					const tokenIDLockedAmountChangeMap = {};
 					events.forEach(event => {
-						const { data: eventData } = event;
-						// Initialize map entry with BigInt
-						if (
-							[EVENT.LOCK, EVENT.UNLOCK].includes(event.name) &&
-							!(eventData.tokenID in tokenIDLockedAmountChangeMap)
-						) {
-							tokenIDLockedAmountChangeMap[eventData.tokenID] = BigInt(0);
-						}
+						if (event) {
+							const { data: eventData } = event;
+							// Initialize map entry with BigInt
+							if (
+								[EVENT.LOCK, EVENT.UNLOCK].includes(event.name) &&
+								!(eventData.tokenID in tokenIDLockedAmountChangeMap)
+							) {
+								tokenIDLockedAmountChangeMap[eventData.tokenID] = BigInt(0);
+							}
 
-						// Negate amount to reverse the effect
-						if (event.name === EVENT.LOCK) {
-							tokenIDLockedAmountChangeMap[eventData.tokenID] -= BigInt(eventData.amount);
-						} else if (event.name === EVENT.UNLOCK) {
-							tokenIDLockedAmountChangeMap[eventData.tokenID] += BigInt(eventData.amount);
+							// Negate amount to reverse the effect
+							if (event.name === EVENT.LOCK) {
+								tokenIDLockedAmountChangeMap[eventData.tokenID] -= BigInt(eventData.amount);
+							} else if (event.name === EVENT.UNLOCK) {
+								tokenIDLockedAmountChangeMap[eventData.tokenID] += BigInt(eventData.amount);
+							}
 						}
 					});
 					await updateTotalLockedAmounts(tokenIDLockedAmountChangeMap, dbTrx);
