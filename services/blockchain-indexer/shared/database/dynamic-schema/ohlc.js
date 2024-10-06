@@ -3,10 +3,10 @@ const getOhlcTableSchema = (pair, timeframe) => ({
 	primaryKey: ['time'],
 	schema: {
 		time: { type: 'integer' },
-		open: { type: 'decimal', precision: 8, scale: 4 },
-		high: { type: 'decimal', precision: 8, scale: 4 },
-		low: { type: 'decimal', precision: 8, scale: 4 },
-		close: { type: 'decimal', precision: 8, scale: 4 },
+		open: { type: 'decimal', precision: 40, scale: 8 },
+		high: { type: 'decimal', precision: 40, scale: 8 },
+		low: { type: 'decimal', precision: 40, scale: 8 },
+		close: { type: 'decimal', precision: 40, scale: 8 },
 	},
 	indexes: {
 		time: { type: 'key' },
