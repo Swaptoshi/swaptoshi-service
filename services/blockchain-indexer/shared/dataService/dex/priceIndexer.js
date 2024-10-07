@@ -184,13 +184,18 @@ const indexKLYUSDTickPrice = async job => {
 	if (priceAtTimestamp.length > 0) return;
 
 	const value = await getKLYUSDPriceAtTimestamp(time);
+	if (!value) {
+		logger.info(`Tick market price at ${time} for pair KLYUSD is not available`);
+		return;
+	}
+
 	await tickPriceTable.upsert({ time, value });
 
 	logger.info(`Updated tick price at ${time} for pair KLYUSD`);
 };
 
 /** @param {{data: {timestamp: number, base: string, quote: string}}} job */
-const indexLSDKUSDOhlcPrice = async job => {
+const indexKLYUSDOhlcPrice = async job => {
 	await BluebirdPromise.map(
 		OHLC_TIMEFRAMES,
 		async timeframe => {
@@ -203,7 +208,7 @@ const indexLSDKUSDOhlcPrice = async job => {
 			if (ohlcAtTimestamp.length > 0) return;
 
 			const ohlc = await transformTickToOhlc(pair, timeframe, previousTime, time);
-			if (ohlc.length > 0) {
+			if (ohlc.length > 0 && ohlc[0]) {
 				await ohlcPriceTable.upsert({
 					time,
 					open: ohlc[0].open,
@@ -224,7 +229,7 @@ const indexLSDKUSDOhlcPrice = async job => {
 /** @param {{data: {timestamp: number}}} job */
 const indexCurrentKLYUSDPrice = async job => {
 	await indexKLYUSDTickPrice(job);
-	await indexLSDKUSDOhlcPrice(job);
+	await indexKLYUSDOhlcPrice(job);
 };
 
 /** @param {{data: {from: number, to: number}}} job */

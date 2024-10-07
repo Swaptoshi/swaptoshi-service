@@ -61,10 +61,11 @@ const getKLYUSDPrice = async () => {
 const getKLYUSDPriceAtTimestamp = async timestamp => {
 	const market = await requestMarket('candlestick', {
 		symbol: 'KLYUSDT',
-		interval: '1s',
+		interval: '1m',
 		start: timestamp,
 		end: timestamp,
 	});
+	if (!market[0]) return undefined;
 	return market[0].open;
 };
 
