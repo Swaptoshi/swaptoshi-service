@@ -121,7 +121,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
         SELECT
           token0 AS node,
           token1 AS nextNode,
-          fee AS totalFee,
+		  price AS totalPrice,
           liquidity AS totalLiquidity,
           1 AS depth,
           CONCAT(token0, feeHex, token1) AS path
@@ -136,7 +136,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
         SELECT
           sp.nextNode AS node,
           t.token1 AS nextNode,
-          sp.totalFee + t.fee AS totalFee,
+		  sp.totalPrice * t. price AS totalPrice,
           sp.totalLiquidity + t.liquidity AS totalLiquidity,
           sp.depth + 1 AS depth,
           CONCAT(sp.path, t.feeHex, t.token1) AS path
@@ -149,7 +149,7 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
           AND t.liquidity >= ${minLiquidity}
       )
       SELECT
-        totalFee,
+		totalPrice,
         path,
 		depth,
         totalLiquidity
@@ -160,8 +160,8 @@ const getRoute = async (from, to, maxRecursion = 5, limit = 1, minLiquidity = 1,
         AND totalLiquidity >= ${minLiquidity}
       ORDER BY
 	  	depth ASC,
-        totalLiquidity DESC,
-        totalFee ASC
+		totalPrice ASC,
+        totalLiquidity DESC
       LIMIT ${limit}`;
 	const route = parseQueryResult(await poolTable.rawQuery(query, dbTrx));
 	return route;
