@@ -13,7 +13,7 @@ module.exports = {
 		tickSpacing: { type: 'integer' },
 		tick: { type: 'integer' },
 		liquidity: { type: 'decimal', precision: 40, scale: 0 },
-		price: { type: 'decimal', precision: 40, scale: 8 },
+		price: { type: 'decimal', precision: 50, scale: 8 },
 	},
 	indexes: {
 		poolAddress: { type: 'key' },

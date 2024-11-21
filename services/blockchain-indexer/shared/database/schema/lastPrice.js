@@ -4,12 +4,12 @@ module.exports = {
 	schema: {
 		tokenId: { type: 'string' },
 		updatedOn: { type: 'integer' },
-		current: { type: 'decimal', precision: 40, scale: 8 },
-		'1h': { type: 'decimal', precision: 40, scale: 8 },
-		'24h': { type: 'decimal', precision: 40, scale: 8 },
-		'7d': { type: 'decimal', precision: 40, scale: 8 },
-		'30d': { type: 'decimal', precision: 40, scale: 8 },
-		'1y': { type: 'decimal', precision: 40, scale: 8 },
+		current: { type: 'decimal', precision: 50, scale: 8 },
+		'1h': { type: 'decimal', precision: 50, scale: 8 },
+		'24h': { type: 'decimal', precision: 50, scale: 8 },
+		'7d': { type: 'decimal', precision: 50, scale: 8 },
+		'30d': { type: 'decimal', precision: 50, scale: 8 },
+		'1y': { type: 'decimal', precision: 50, scale: 8 },
 	},
 	indexes: {
 		tokenId: { type: 'key' },
