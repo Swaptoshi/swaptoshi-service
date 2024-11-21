@@ -226,7 +226,7 @@ const indexBlock = async job => {
 		let blockReward = BigInt('0');
 
 		if (blockToIndexFromNode.height === genesisHeight) {
-			await indexGenesisBlockAssets(dbTrx);
+			await indexGenesisBlockAssets(blockToIndexFromNode, dbTrx);
 		}
 
 		const events = await getEventsByHeight(blockToIndexFromNode.height);

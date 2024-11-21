@@ -55,7 +55,7 @@ function decodeNFTId(nftId) {
 	return {
 		chainId: nft.subarray(0, 4).toString('hex'),
 		collectionId: nft.subarray(4, 8).toString('hex'),
-		index: nft.subarray(8).readBigInt64BE(),
+		index: nft.subarray(8).readBigUInt64BE(),
 	};
 }
 

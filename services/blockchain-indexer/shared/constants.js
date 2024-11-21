@@ -124,15 +124,30 @@ const MODULE = Object.freeze({
 	REWARD: 'reward',
 	TOKEN: 'token',
 	INTEROPERABILITY: 'interoperability',
+	DEX: 'dex',
+	TOKEN_FACTORY: 'tokenFactory',
+	NFT: 'nft',
 });
 
 const MODULE_SUB_STORE = Object.freeze({
 	TOKEN: {
 		USER: 'userSubstore',
+		SUPPLY: 'supplySubstore',
 	},
 	POS: {
 		STAKERS: 'stakers',
 		VALIDATORS: 'validators',
+	},
+	DEX: {
+		POOL: 'poolSubstore',
+		TOKEN_SYMBOL: 'tokenSymbolSubstore',
+		TICK_INFO: 'tickInfoSubstore',
+	},
+	NFT: {
+		NFT: 'nftSubstore',
+	},
+	TOKEN_FACTORY: {
+		FACTORY: 'factorySubstore',
 	},
 });
 
