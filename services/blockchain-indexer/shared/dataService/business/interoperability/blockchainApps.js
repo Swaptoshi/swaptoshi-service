@@ -43,6 +43,16 @@ const getKLYTokenID = async () => {
 	return klyTokenID;
 };
 
+const getSWXTokenID = async () => {
+	const klyTokenId = await getKLYTokenID();
+	return `${klyTokenId.substring(0, LENGTH_NETWORK_ID)}55555500000000`;
+};
+
+const getSWLTokenID = async () => {
+	const klyTokenId = await getKLYTokenID();
+	return `${klyTokenId.substring(0, LENGTH_NETWORK_ID)}55555500000001`;
+};
+
 const getBlockchainApps = async params => {
 	const blockchainAppsTable = await getBlockchainAppsTable();
 
@@ -135,4 +145,6 @@ module.exports = {
 
 	// Testing
 	getKLYTokenID,
+	getSWXTokenID,
+	getSWLTokenID,
 };

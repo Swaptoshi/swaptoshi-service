@@ -14,7 +14,11 @@ const poolTableSchema = require('../../database/schema/pool');
 const { getOhlcTableSchema } = require('../../database/dynamic-schema/ohlc');
 const { decodeFirstPool, hasMultiplePools, skipToken } = require('../../indexer/utils/tradingPath');
 const { intervalToSecond, normalizeBlockTime } = require('./timestamp');
-const { getKLYTokenID } = require('../business/interoperability/blockchainApps');
+const {
+	getKLYTokenID,
+	getSWLTokenID,
+	getSWXTokenID,
+} = require('../business/interoperability/blockchainApps');
 const { getKLYUSDPrice } = require('./klyPrices');
 const { getTickPriceTableSchema } = require('../../database/dynamic-schema/tickPrice');
 const { parseQueryResult } = require('../../utils/query');
@@ -171,11 +175,23 @@ const getPrice = async (base, quote, dbTrx) => {
 	let price = 1;
 	if (base === quote) return price;
 
-	const _quote = quote === usdTokenId ? await getKLYTokenID() : quote;
+	const klyTokenId = await getKLYTokenID();
+	const swlTokenId = await getSWLTokenID();
+	const swxTokenId = await getSWXTokenID();
 
-	const route = await getRoute(base, _quote, MAX_RECURSION, 1, 1, dbTrx);
-	if (route.length === 0) return 0;
-	let _path = route[0].path;
+	const _quote = quote === usdTokenId ? klyTokenId : quote;
+
+	let _path = '';
+
+	if (base === swlTokenId && _quote === klyTokenId) {
+		_path = `${swlTokenId}000064${swxTokenId}000bb8${klyTokenId}`;
+	} else if (base === klyTokenId && _quote === swlTokenId) {
+		_path = `${klyTokenId}000bb8${swxTokenId}000064${swlTokenId}`;
+	} else {
+		const route = await getRoute(base, _quote, MAX_RECURSION, 1, 1, dbTrx);
+		if (route.length === 0) return 0;
+		_path = route[0].path;
+	}
 
 	// eslint-disable-next-line no-constant-condition
 	while (true) {
