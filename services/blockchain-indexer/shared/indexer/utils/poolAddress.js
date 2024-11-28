@@ -1,4 +1,17 @@
 const cryptography = require('@klayr/cryptography');
+const { invokeEndpoint } = require('../../dataService');
+
+let treasuryAddress;
+
+async function getTreasuryAddress() {
+	if (!treasuryAddress) {
+		const config = await invokeEndpoint({
+			endpoint: 'dex_getConfig',
+		});
+		treasuryAddress = config.data.feeProtocolPool;
+	}
+	return treasuryAddress;
+}
 
 function getPoolKey(tokenA, tokenB, fee) {
 	if (tokenA === tokenB) throw new Error('same token address');
@@ -60,6 +73,7 @@ function decodeNFTId(nftId) {
 }
 
 module.exports = {
+	getTreasuryAddress,
 	getPoolKey,
 	decodePoolAddress,
 	computePoolAddress,

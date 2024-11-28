@@ -45,7 +45,7 @@ const lastPriceTableSchema = require('../../database/schema/lastPrice');
 const { parseEvents } = require('./events');
 const { indexAccountAddress } = require('../accountIndex');
 const { decodeFeeGrowth } = require('./priceFormatter');
-const { decodePoolAddress } = require('./poolAddress');
+const { decodePoolAddress, getTreasuryAddress } = require('./poolAddress');
 const { getPrice } = require('../../dataService/dex/priceQuoter');
 const { getKLYTokenID } = require('../../dataService/business/interoperability/blockchainApps');
 const { getPriceAtTick } = require('./tickFormatter');
@@ -66,6 +66,7 @@ const getLastPriceTable = () =>
 const applySwapEvent = async (blockHeader, events, dbTrx) => {
 	const swapEvent = parseEvents(events, MODULE_NAME_DEX, EVENT_NAME_SWAP);
 	const klyTokenId = await getKLYTokenID();
+	const treasuryAddress = await getTreasuryAddress();
 
 	const addressToIndex = new Set();
 	swapEvent.forEach(event => {
@@ -74,6 +75,7 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 		if (!EXCLUDED_ADDRESS.includes(event.data.recipientAddress))
 			addressToIndex.add(event.data.recipientAddress); // recipient
 		addressToIndex.add(event.topics[1]); // poolAddress
+		if (treasuryAddress) addressToIndex.add(treasuryAddress); // treasuryAddress
 	});
 
 	const volumeTable = await getVolumeTable();
@@ -199,6 +201,7 @@ const applySwapEvent = async (blockHeader, events, dbTrx) => {
 const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 	const swapEvent = parseEvents(events, MODULE_NAME_DEX, EVENT_NAME_SWAP);
 	const klyTokenId = await getKLYTokenID();
+	const treasuryAddress = await getTreasuryAddress();
 
 	const addressToIndex = new Set();
 	swapEvent.forEach(event => {
@@ -207,6 +210,7 @@ const revertSwapEvent = async (blockHeader, events, dbTrx) => {
 		if (!EXCLUDED_ADDRESS.includes(event.data.recipientAddress))
 			addressToIndex.add(event.data.recipientAddress); // recipient
 		addressToIndex.add(event.topics[1]); // poolAddress
+		if (treasuryAddress) addressToIndex.add(treasuryAddress); // treasuryAddress
 	});
 
 	const volumeTable = await getVolumeTable();
