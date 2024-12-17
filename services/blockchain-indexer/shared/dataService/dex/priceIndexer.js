@@ -238,6 +238,14 @@ const indexPreviousKLYUSDTickPrice = async job => {
 	const tickTable = await getTickPriceTable(pair);
 	const klyCandles = await getKLYUSDCandles(job.data.from, job.data.to, TICK_TIMEFRAME);
 
+	if (klyCandles.length > 0) {
+		const priceAtTimestamp = await tickTable.find({ time: klyCandles[0].start, limit: 1 }, [
+			'time',
+		]);
+		// already indexed, return
+		if (priceAtTimestamp.length > 0) return;
+	}
+
 	await BluebirdPromise.map(
 		klyCandles.map(t => ({ time: t.start, value: t.open })),
 		async ohlc => {
@@ -253,6 +261,14 @@ const indexPreviousKLYUSDOhlcPrice = async job => {
 	const pair = 'klyusd';
 	const ohlcPriceTable = await getOhlcPriceTable(pair, job.data.timeframe);
 	const klyCandles = await getKLYUSDCandles(job.data.from, job.data.to, job.data.timeframe);
+
+	if (klyCandles.length > 0) {
+		const priceAtTimestamp = await ohlcPriceTable.find({ time: klyCandles[0].start, limit: 1 }, [
+			'time',
+		]);
+		// already indexed, return
+		if (priceAtTimestamp.length > 0) return;
+	}
 
 	await BluebirdPromise.map(
 		klyCandles,
