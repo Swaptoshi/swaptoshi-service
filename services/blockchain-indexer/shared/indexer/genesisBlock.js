@@ -428,13 +428,15 @@ const indexDexModuleAssets = async (blockHeader, dbTrx) => {
 	const genesisBlockAssetsLength = await requestConnector('getGenesisAssetsLength', {
 		module: MODULE.DEX,
 	});
-	const numTokens = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.TOKEN_SYMBOL];
-	const numPools = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.POOL];
-	const numTick = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.TICK_INFO];
+	if (genesisBlockAssetsLength[MODULE.DEX]) {
+		const numTokens = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.TOKEN_SYMBOL];
+		const numPools = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.POOL];
+		const numTick = genesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.TICK_INFO];
 
-	await indexDexRegisteredTokenInfo(numTokens, dbTrx);
-	await indexDexTickInfo(numTick, dbTrx);
-	await indexDexPoolInfo(numPools, numTokens, blockHeader, dbTrx);
+		await indexDexRegisteredTokenInfo(numTokens, dbTrx);
+		await indexDexTickInfo(numTick, dbTrx);
+		await indexDexPoolInfo(numPools, numTokens, blockHeader, dbTrx);
+	}
 
 	logger.info('Finished indexing all the genesis assets from the DEX module.');
 };
@@ -574,10 +576,12 @@ const indexTokenFactoryModuleAssets = async dbTrx => {
 	const genesisBlockAssetsLength = await requestConnector('getGenesisAssetsLength', {
 		module: MODULE.TOKEN_FACTORY,
 	});
-	const numFactory =
-		genesisBlockAssetsLength[MODULE.TOKEN_FACTORY][MODULE_SUB_STORE.TOKEN_FACTORY.FACTORY];
+	if (genesisBlockAssetsLength[MODULE.TOKEN_FACTORY]) {
+		const numFactory =
+			genesisBlockAssetsLength[MODULE.TOKEN_FACTORY][MODULE_SUB_STORE.TOKEN_FACTORY.FACTORY];
 
-	await indexTokenFactoryInfo(numFactory, dbTrx);
+		await indexTokenFactoryInfo(numFactory, dbTrx);
+	}
 
 	logger.info('Finished indexing all the genesis assets from the TokenFactory module.');
 };
@@ -737,14 +741,19 @@ const indexNFTModuleAssets = async (blockHeader, dbTrx) => {
 	const genesisBlockAssetsLength = await requestConnector('getGenesisAssetsLength', {
 		module: MODULE.NFT,
 	});
-	const numTokens = genesisBlockAssetsLength[MODULE.NFT][MODULE_SUB_STORE.NFT.NFT];
+	if (genesisBlockAssetsLength[MODULE.NFT]) {
+		const numTokens = genesisBlockAssetsLength[MODULE.NFT][MODULE_SUB_STORE.NFT.NFT];
 
-	const dexGenesisBlockAssetsLength = await requestConnector('getGenesisAssetsLength', {
-		module: MODULE.DEX,
-	});
-	const numPools = dexGenesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.POOL];
+		const dexGenesisBlockAssetsLength = await requestConnector('getGenesisAssetsLength', {
+			module: MODULE.DEX,
+		});
 
-	await indexNFTPositionInfo(numTokens, numPools, blockHeader, dbTrx);
+		if (dexGenesisBlockAssetsLength[MODULE.DEX]) {
+			const numPools = dexGenesisBlockAssetsLength[MODULE.DEX][MODULE_SUB_STORE.DEX.POOL];
+
+			await indexNFTPositionInfo(numTokens, numPools, blockHeader, dbTrx);
+		}
+	}
 
 	logger.info('Finished indexing all the genesis assets from the NFT module.');
 };
