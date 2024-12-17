@@ -1,5 +1,5 @@
 const cryptography = require('@klayr/cryptography');
-const { invokeEndpoint } = require('../../dataService');
+const { invokeEndpoint } = require('../../dataService/business/invoke');
 
 let treasuryAddress;
 
@@ -7,6 +7,7 @@ async function getTreasuryAddress() {
 	if (!treasuryAddress) {
 		const config = await invokeEndpoint({
 			endpoint: 'dex_getConfig',
+			params: {},
 		});
 		treasuryAddress = config.data.feeProtocolPool;
 	}
